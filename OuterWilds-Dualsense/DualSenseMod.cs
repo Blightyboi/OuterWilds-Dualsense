@@ -19,7 +19,7 @@ namespace OuterWildsDualSense
 		private void Awake()
 		{
 			Instance = this;
-			Device = new DualSenseDevice();
+			Device = new DualSenseDevice { Log = Log };
 		}
 
 		private void Start()
@@ -31,7 +31,7 @@ namespace OuterWildsDualSense
 
 		public override void Configure(IModConfig config)
 		{
-			Enabled = config.GetSettingsValue<bool>("enabled");
+			Enabled = config.Enabled;
 			AdaptiveTriggers = config.GetSettingsValue<bool>("adaptiveTriggers");
 			TriggerStrength = Mathf.Clamp(config.GetSettingsValue<float>("triggerStrength"), 0f, 2f);
 			Lightbar = config.GetSettingsValue<bool>("lightbar");

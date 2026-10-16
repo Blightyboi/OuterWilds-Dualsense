@@ -1,7 +1,9 @@
 {
   "enabled": true,
-  "adaptiveTriggers": true,
-  "triggerStrength": 1.0,
-  "lightbar": true,
-  "debugLog": false
+  "settings": {
+    "adaptiveTriggers": true,
+    "triggerStrength": 1.0,
+    "lightbar": true,
+    "debugLog": false
+  }
 }

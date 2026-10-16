@@ -105,6 +105,14 @@ namespace OuterWildsDualSense
 		private bool _lightbarEnabled;
 		private bool _dirty = true;
 		private float _retryTimer;
+		private float _resendTimer;
+		private bool _loggedFirstWrite;
+		private bool _loggedMissing;
+		private bool _lightbarSetupPending;
+		private byte _motorRight, _motorLeft;
+
+		/// <summary>Receives diagnostic messages (set by the mod).</summary>
+		public Action<string> Log = delegate { };
 
 		public bool IsOpen { get { return _handle != null && !_handle.IsInvalid && !_handle.IsClosed; } }
 
@@ -114,10 +122,18 @@ namespace OuterWildsDualSense
 			if (!right.SameAs(_right)) { _right = right; _dirty = true; }
 		}
 
+		/// <summary>Sets the two rumble motors (0..1). hi = small right motor, low = big left motor.</summary>
+		public void SetMotors(float hi, float low)
+		{
+			byte r = (byte)Math.Max(0, Math.Min(255, (int)Math.Round(hi * 255f)));
+			byte l = (byte)Math.Max(0, Math.Min(255, (int)Math.Round(low * 255f)));
+			if (r != _motorRight || l != _motorLeft) { _motorRight = r; _motorLeft = l; _dirty = true; }
+		}
+
 		public void SetLightbar(byte r, byte g, byte b)
 		{
 			if (_lightbarEnabled && _r == r && _g == g && _b == b) return;
-			_lightbarEnabled = true; _r = r; _g = g; _b = b; _dirty = true;
+			_lightbarEnabled = true; _lightbarSetupPending = true; _r = r; _g = g; _b = b; _dirty = true;
 		}
 
 		/// <summary>Sends the report if anything changed. Call once per frame; reconnects on its own.</summary>
@@ -131,20 +147,31 @@ namespace OuterWildsDualSense
 				if (!TryOpen()) return;
 				_dirty = true;
 			}
+			// Other software (Rewired, Steam) also writes output reports, so resend periodically.
+			_resendTimer -= unscaledDeltaTime;
+			if (_resendTimer <= 0f) { _dirty = true; _resendTimer = 0.25f; }
 			if (!_dirty) return;
 
 			var d = new byte[ReportSize];
 			d[0] = 0x02;
-			d[1] = 0x0C;                      // valid flags: right + left trigger effect
+			d[1] = 0x0F;                      // valid flags: compat rumble, haptics select, right + left trigger effect
 			d[2] = (byte)(_lightbarEnabled ? 0x04 : 0x00);
+			d[3] = _motorRight;
+			d[4] = _motorLeft;
 			d[11] = _right.Mode;
 			Buffer.BlockCopy(_right.Params ?? new byte[10], 0, d, 12, 10);
 			d[22] = _left.Mode;
 			Buffer.BlockCopy(_left.Params ?? new byte[10], 0, d, 23, 10);
 			if (_lightbarEnabled)
 			{
-				d[39] = 0x02;
-				d[42] = 0x02;
+				// The setup command restarts the lightbar fade animation (visible as blinking),
+				// so only send it with the first report after the colour changed.
+				if (_lightbarSetupPending)
+				{
+					d[39] = 0x02;
+					d[42] = 0x02;
+					_lightbarSetupPending = false;
+				}
 				d[45] = _r; d[46] = _g; d[47] = _b;
 			}
 
@@ -152,20 +179,31 @@ namespace OuterWildsDualSense
 			if (!NativeMethods.WriteFile(_handle, d, d.Length, out written, IntPtr.Zero))
 			{
 				// Controller unplugged or handle lost: drop it and retry later.
+				Log("HID write failed, Win32 error " + Marshal.GetLastWin32Error());
 				Close();
 				return;
 			}
 			_dirty = false;
+			if (!_loggedFirstWrite)
+			{
+				_loggedFirstWrite = true;
+				Log("First HID write ok (" + written + " bytes).");
+			}
 		}
 
 		private bool TryOpen()
 		{
 			_path = NativeMethods.FindDualSensePath();
-			if (_path == null) return false;
+			if (_path == null)
+			{
+				if (!_loggedMissing) { _loggedMissing = true; Log("No DualSense found over USB."); }
+				return false;
+			}
 			// Share read/write so Rewired and Steam can keep using the device.
 			var h = NativeMethods.CreateFile(_path, 0xC0000000, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
 			if (h.IsInvalid) return false;
 			_handle = h;
+			Log("Opened DualSense: " + _path);
 			return true;
 		}
 
@@ -181,6 +219,8 @@ namespace OuterWildsDualSense
 			_left = TriggerEffect.Off;
 			_right = TriggerEffect.Off;
 			_lightbarEnabled = false;
+			_motorRight = 0;
+			_motorLeft = 0;
 			_dirty = true;
 			Flush(10f);
 		}
