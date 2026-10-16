@@ -9,11 +9,15 @@ namespace OuterWildsDualSense
 	{
 		public static DualSenseMod Instance { get; private set; }
 		public static DualSenseDevice Device { get; private set; }
+		public static HapticAudio Haptics { get; private set; }
+		private static float _hapticRetry;
 
 		public bool Enabled = true;
 		public bool AdaptiveTriggers = true;
 		public float TriggerStrength = 1f;
 		public bool Lightbar = true;
+		public bool AudioHaptics = true;
+		public float HapticGain = 1f;
 		public bool DebugLog;
 
 		private void Awake()
@@ -35,6 +39,9 @@ namespace OuterWildsDualSense
 			AdaptiveTriggers = config.GetSettingsValue<bool>("adaptiveTriggers");
 			TriggerStrength = Mathf.Clamp(config.GetSettingsValue<float>("triggerStrength"), 0f, 2f);
 			Lightbar = config.GetSettingsValue<bool>("lightbar");
+			AudioHaptics = config.GetSettingsValue<bool>("audioHaptics");
+			HapticGain = Mathf.Clamp(config.GetSettingsValue<float>("hapticGain"), 0f, 4f);
+			if (Haptics != null) Haptics.MasterGain = HapticGain;
 			DebugLog = config.GetSettingsValue<bool>("debugLog");
 			if (!Enabled) ResetController();
 		}
@@ -45,9 +52,21 @@ namespace OuterWildsDualSense
 			if (Device != null) Device.Dispose();
 		}
 
+		/// <summary>Opens the haptic audio output if needed. Retries at most every 3 seconds.</summary>
+		public static bool EnsureHaptics()
+		{
+			if (Haptics != null) return true;
+			if (Time.unscaledTime < _hapticRetry) return false;
+			_hapticRetry = Time.unscaledTime + 3f;
+			Haptics = HapticAudio.TryCreate(Log);
+			if (Haptics != null) Haptics.MasterGain = Instance.HapticGain;
+			return Haptics != null;
+		}
+
 		private static void ResetController()
 		{
 			if (Device != null && Device.IsOpen) Device.Reset();
+			if (Haptics != null) { Haptics.Dispose(); Haptics = null; }
 		}
 
 		public static void Log(string message)

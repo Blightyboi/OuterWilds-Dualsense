@@ -4,6 +4,8 @@
     "adaptiveTriggers": true,
     "triggerStrength": 1.0,
     "lightbar": true,
+    "audioHaptics": true,
+    "hapticGain": 1.0,
     "debugLog": false
   }
 }
