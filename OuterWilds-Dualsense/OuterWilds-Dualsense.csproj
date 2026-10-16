@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>DualSenseMod</AssemblyName>
+    <RootNamespace>OuterWildsDualSense</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DebugType>portable</DebugType>
+    <GameManaged>D:\Steam\steamapps\common\Outer Wilds\OuterWilds_Data\Managed</GameManaged>
+    <ModsDir>D:\OWML\Mods\Blightyboi.OuterWilds-Dualsense</ModsDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameManaged)\Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(GameManaged)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(GameManaged)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(GameManaged)\0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="OWML.Abstractions"><HintPath>$(GameManaged)\OWML.Abstractions.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="OWML.Common"><HintPath>$(GameManaged)\OWML.Common.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="OWML.ModHelper"><HintPath>$(GameManaged)\OWML.ModHelper.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="manifest.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="default-config.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Deploy straight into the OWML Mods folder after every build. -->
+  <Target Name="DeployMod" AfterTargets="Build">
+    <MakeDir Directories="$(ModsDir)" />
+    <Copy SourceFiles="$(OutputPath)DualSenseMod.dll;$(OutputPath)DualSenseMod.pdb;manifest.json;default-config.json" DestinationFolder="$(ModsDir)" />
+  </Target>
+
+</Project>
