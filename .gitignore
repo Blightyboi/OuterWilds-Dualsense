@@ -1,0 +1,36 @@
+# Сборка
+bin/
+obj/
+out/
+*.dll
+*.pdb
+*.exe
+!lib/**/*.dll
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.csproj.user
+
+# NuGet
+packages/
+*.nupkg
+
+# Декомпилированный код игры (чужой, не публиковать)
+decompiled/
+src-game/
+
+# Локальные настройки Claude Code
+.claude/settings.local.json
+
+# Логи и временные файлы
+*.log
+*.tmp
+Thumbs.db
+.DS_Store
+
+# Markdown notes stay local (plan, CLAUDE.md)
+*.md
