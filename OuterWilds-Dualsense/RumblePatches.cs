@@ -41,7 +41,13 @@ namespace OuterWildsDualSense
 				bool paused = OWTime.IsPaused();
 				if (mod.AdaptiveTriggers && !paused && __instance.enabled)
 				{
-					PickGameEffects(__instance, out left, out right);
+					TriggerLogic.Compute(mod.TriggerStrength, out left, out right);
+
+					// Effects the game asks for itself (ship ignition, turbulence) win over ours.
+					TriggerEffect gameLeft, gameRight;
+					PickGameEffects(__instance, out gameLeft, out gameRight);
+					if (gameLeft.Mode != TriggerEffect.Off.Mode) left = gameLeft;
+					if (gameRight.Mode != TriggerEffect.Off.Mode) right = gameRight;
 
 					if (_jetpackBoost)
 						right = ScaleVibration(30, 4, mod.TriggerStrength);
