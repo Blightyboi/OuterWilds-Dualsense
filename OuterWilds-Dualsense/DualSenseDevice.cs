@@ -80,6 +80,24 @@ namespace OuterWildsDualSense
 			return e;
 		}
 
+		/// <summary>
+		/// Machine effect: the trigger alternates between two amplitudes (1..8) at frequency Hz, which pushes the
+		/// finger back in pulses. period sets how long each phase lasts.
+		/// </summary>
+		public static TriggerEffect Machine(int startZone, int endZone, int amplitudeA, int amplitudeB, int frequencyHz, int period)
+		{
+			var e = Make(0x27);
+			int zones = (1 << Math.Max(0, Math.Min(9, startZone))) | (1 << Math.Max(0, Math.Min(9, endZone)));
+			e.Params[0] = (byte)(zones & 0xFF);
+			e.Params[1] = (byte)((zones >> 8) & 0xFF);
+			int a = Math.Max(1, Math.Min(8, amplitudeA)) - 1;
+			int b = Math.Max(1, Math.Min(8, amplitudeB)) - 1;
+			e.Params[2] = (byte)(a | (b << 3));
+			e.Params[3] = (byte)Math.Min(255, frequencyHz);
+			e.Params[4] = (byte)Math.Min(255, period);
+			return e;
+		}
+
 		public bool SameAs(TriggerEffect other)
 		{
 			if (Mode != other.Mode) return false;

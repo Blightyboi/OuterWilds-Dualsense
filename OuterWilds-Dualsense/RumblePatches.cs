@@ -50,11 +50,22 @@ namespace OuterWildsDualSense
 					if (gameRight.Mode != TriggerEffect.Off.Mode) right = gameRight;
 
 					if (_jetpackBoost)
-						right = ScaleVibration(30, 4, mod.TriggerStrength);
+					{
+						var boost = Effects.Get("jp.boost");
+						right = TriggerEffect.Vibration(boost.Int("zone"), boost.Int("freq"),
+							Mathf.Clamp(Mathf.RoundToInt(boost.Int("amp") * mod.TriggerStrength), 1, 8));
+					}
 				}
 
+				// A "Play" button in the F1 menu overrides the triggers for a few seconds, even while paused.
+				if (EffectPreview.TriggersActive) EffectPreview.GetTriggers(out left, out right);
+
 				device.SetTriggers(left, right);
-				if (mod.Lightbar) device.SetLightbar(255, 110, 20);
+				if (mod.Lightbar)
+				{
+					var color = Effects.Get("light.color");
+					device.SetLightbar((byte)color.Int("r"), (byte)color.Int("g"), (byte)color.Int("b"));
+				}
 				device.Flush(Time.unscaledDeltaTime);
 			}
 			catch (Exception e)

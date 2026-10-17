@@ -53,7 +53,7 @@ namespace OuterWildsDualSense
 		public static void Play(OWAudioSource source, AudioClip clip, float volume)
 		{
 			var mod = DualSenseMod.Instance;
-			if (mod == null || !mod.Enabled || !mod.AudioHaptics || DualSenseMod.Haptics == null || clip == null) return;
+			if (mod == null || !mod.Enabled || !mod.AudioHaptics || !mod.UseExtractedClips || DualSenseMod.Haptics == null || clip == null) return;
 
 			var tap = source.GetComponent<HapticTap>();
 			if (tap == null) return;

@@ -4,47 +4,47 @@ using UnityEngine;
 namespace OuterWildsDualSense
 {
 	/// <summary>
-	/// Sits next to a game AudioSource and turns what it plays into haptics.
-	/// Looping sources (engines): the clip is read from the game's data, converted once into a haptic
-	/// waveform and looped, with its loudness following the source's volume.
-	/// Other sources (one-shots): live copy through OnAudioFilterRead, band-limited.
-	/// The game's own audio is never changed.
+	/// Sits next to a game AudioSource and turns what it plays into haptics. The game's audio is never changed.
+	///
+	/// Live mode (default): the samples the source plays are copied through OnAudioFilterRead and turned into
+	/// haptics on the fly. Needs no extra files.
+	/// Extracted mode (config "useExtractedClips"): looping sources play a haptic waveform prepared by
+	/// tools/extract_haptics.py instead; sources without such a file fall back to live mode.
 	/// </summary>
 	public class HapticTap : MonoBehaviour
 	{
-		private const float LowPassHz = 350f;
-		private const float HighPassHz = 25f;
+		private const float MinVolume = 0.01f;
+		private const float Gate = 0.003f;          // below this broadband level the sound counts as silence
+		private const float PeakDecayPerSecond = 0.97f;
 
-		// Live tap only: filter data is not scaled by the source volume, and the game audio is quiet.
-		private const float TapBoost = 8f;
-
-		// Clip mode: how strongly the source volume drives the looped haptic (square-root curve).
-		private const float LoopDrive = 2f;
-		private const float LoopFloor = 0.5f;
-		private const float LoopMinVolume = 0.01f;
+		// Tunable through the F1 menu (effect "hap.live"), refreshed every frame on the main thread.
+		private float _gainFloor = 0.25f;
+		private float _referenceVolume = 0.25f;     // volume counted as full thrust
+		private float _bandTarget = 0.45f;          // level of the normalised low-frequency part
 
 		private OWAudioSource _owSource;
 		private AudioSource _source;
 		private float _forcedPan = float.NaN;
 
 		private HapticSource _active;            // whatever is currently registered with the output
-		private HapticLoopSource _loop;          // clip mode
-		private HapticStream _tapStream;         // live tap mode
+		private HapticLoopSource _loop;          // extracted mode
+		private HapticStream _tapStream;         // live mode
 		private AudioClip _loopClip;
 		private bool _loopOn;
 
 		// Set on the main thread, read on the audio thread.
 		private volatile float _volume;
-		private float _lpCoeff, _hpCoeff;
+		private volatile float _liveGain;
+		private float _peakVolume = 0.25f;
+		private volatile bool _suppressLiveTap;  // an extracted one-shot played on this source
+		private float _lpCoeff, _hpCoeff, _broadCoeff, _bandCoeff, _refDecay, _phaseStep1, _phaseStep2;
 
-		// Filter state (audio thread only).
-		private float _lp1, _lp2, _hpState;
+		// Live filter state (audio thread only).
+		private float _lp1, _lp2, _hpState, _broadEnv, _bandEnv, _refEnv;
+		private double _phase1, _phase2;
 		private float[] _block = new float[4096];
 
 		private float _peakOut, _logTimer;
-
-		/// <summary>Set once an extracted one-shot has played through this source, so the live copy stays quiet.</summary>
-		private volatile bool _suppressLiveTap;
 
 		/// <summary>Adds a tap to the source's GameObject (once). forcedPan: -1 left, +1 right, NaN = follow the source's pan.</summary>
 		public static void Attach(OWAudioSource source, float forcedPan)
@@ -74,10 +74,25 @@ namespace OuterWildsDualSense
 
 		private void Start()
 		{
-			int rate = AudioSettings.outputSampleRate;
-			_lpCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * LowPassHz / rate);
-			_hpCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * HighPassHz / rate);
+			ApplySettings();
 			if (DualSenseMod.Haptics == null) enabled = false;
+		}
+
+		/// <summary>Copies the current menu values into the fields the audio thread uses.</summary>
+		private void ApplySettings()
+		{
+			var live = Effects.Get("hap.live");
+			int rate = AudioSettings.outputSampleRate;
+			_gainFloor = live["gainFloor"];
+			_referenceVolume = live["refVolume"];
+			_bandTarget = live["bandTarget"];
+			_lpCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * live["lowPass"] / rate);
+			_hpCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * live["highPass"] / rate);
+			_broadCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * 20f / rate);
+			_bandCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * 10f / rate);
+			_refDecay = Mathf.Exp(-1f / (5f * rate));
+			_phaseStep1 = 2f * Mathf.PI * live["rumbleLow"] / rate;
+			_phaseStep2 = 2f * Mathf.PI * live["rumbleHigh"] / rate;
 		}
 
 		private void OnDestroy()
@@ -94,14 +109,15 @@ namespace OuterWildsDualSense
 			_tapStream = null;
 		}
 
-		/// <summary>Picks clip mode for looping sources with a readable clip, live tap otherwise.</summary>
+		/// <summary>Extracted mode for looping sources with a prepared file, live mode otherwise.</summary>
 		private void ChooseMode()
 		{
 			var haptics = DualSenseMod.Haptics;
-			if (haptics == null) return;
+			var mod = DualSenseMod.Instance;
+			if (haptics == null || mod == null) return;
 
 			AudioClip clip = _source.clip;
-			if (_source.loop && clip != null)
+			if (mod.UseExtractedClips && _source.loop && clip != null)
 			{
 				if (_loop != null && clip == _loopClip) return;
 				Unregister();
@@ -126,10 +142,16 @@ namespace OuterWildsDualSense
 		private void Update()
 		{
 			if (_source == null || DualSenseMod.Haptics == null) return;
+			ApplySettings();
 			ChooseMode();
 			if (_active == null) return;
 
 			_volume = _source.mute ? 0f : _source.volume;
+			_peakVolume = Mathf.Max(_referenceVolume, Mathf.Max(_volume, _peakVolume * Mathf.Pow(PeakDecayPerSecond, Time.unscaledDeltaTime)));
+			float gain = 0f;
+			if (_source.isPlaying && _volume > MinVolume)
+				gain = Mathf.Lerp(_gainFloor, 1f, Mathf.Clamp01(_volume / _peakVolume));
+			_liveGain = gain;
 
 			float pan = float.IsNaN(_forcedPan) ? _source.panStereo : _forcedPan;
 			float angle = (Mathf.Clamp(pan, -1f, 1f) + 1f) * 0.25f * Mathf.PI; // equal-power pan
@@ -138,11 +160,6 @@ namespace OuterWildsDualSense
 
 			if (_loop != null)
 			{
-				// Quiet engine sounds (volume 0.03-0.15) must still be felt, so the hum has a floor
-				// while the source is audible and grows with its volume above that.
-				float gain = 0f;
-				if (_source.isPlaying && _volume > LoopMinVolume)
-					gain = Mathf.Clamp01(LoopFloor + Mathf.Sqrt(_volume) * LoopDrive * 0.6f);
 				bool on = gain > 0.01f;
 				if (on != _loopOn)
 				{
@@ -159,13 +176,19 @@ namespace OuterWildsDualSense
 				if (_logTimer > 2f)
 				{
 					_logTimer = 0f;
-					DualSenseMod.Debug(string.Format("tap {0}: mode={1} volume={2:F2} pan={3:F2} gain={4:F2} tapPeak={5:F3}",
-						name, _loop != null ? "clip" : "live", _volume, pan, _loop != null ? _loop.TargetGain : 0f, _peakOut));
+					DualSenseMod.Debug(string.Format("tap {0}: mode={1} volume={2:F2} pan={3:F2} gain={4:F2} outPeak={5:F3}",
+						name, _loop != null ? "clip" : "live", _volume, pan, gain, _peakOut));
 					_peakOut = 0f;
 				}
 			}
 		}
 
+		/// <summary>
+		/// Live conversion. Two parts are blended by how much of the sound lives in the actuators' band:
+		/// the 25-350 Hz part itself, normalised to a constant level, and for hissy sounds a synthetic low rumble
+		/// that follows the sound's overall loudness. The source volume is applied through _liveGain because the
+		/// filter data is not scaled by it.
+		/// </summary>
 		private void OnAudioFilterRead(float[] data, int channels)
 		{
 			var stream = _tapStream;
@@ -174,7 +197,7 @@ namespace OuterWildsDualSense
 			int frames = data.Length / channels;
 			if (_block.Length < frames) _block = new float[frames];
 
-			float volume = Mathf.Sqrt(_volume) * TapBoost;
+			float gain = _liveGain;
 			for (int i = 0; i < frames; i++)
 			{
 				float mono = 0f;
@@ -185,10 +208,33 @@ namespace OuterWildsDualSense
 				_lp1 += _lpCoeff * (mono - _lp1);
 				_lp2 += _lpCoeff * (_lp1 - _lp2);
 				_hpState += _hpCoeff * (_lp2 - _hpState);
-				float shaped = (_lp2 - _hpState) * volume;
+				float band = _lp2 - _hpState;
 
-				_block[i] = shaped;
-				float b = Math.Abs(shaped); if (b > _peakOut) _peakOut = b;
+				_broadEnv += _broadCoeff * (Math.Abs(mono) - _broadEnv);
+				_bandEnv += _bandCoeff * (Math.Abs(band) - _bandEnv);
+				_refEnv = Math.Max(_broadEnv, _refEnv * _refDecay);
+
+				float output = 0f;
+				if (_broadEnv > Gate)
+				{
+					// Share of the sound's level that sits in the band: ~0.4 for engine rumble, ~0.05 for hiss.
+					float ratio = _bandEnv / (_broadEnv + 1e-6f);
+					float w = Math.Min(1f, Math.Max(0f, (ratio - 0.08f) / 0.17f));
+
+					float bandPart = band / Math.Max(_bandEnv, 0.0015f) * _bandTarget;
+					if (bandPart > 1f) bandPart = 1f; else if (bandPart < -1f) bandPart = -1f;
+
+					_phase1 += _phaseStep1; _phase2 += _phaseStep2;
+					if (_phase1 > 6.2831853) _phase1 -= 6.2831853;
+					if (_phase2 > 6.2831853) _phase2 -= 6.2831853;
+					float carrier = (float)(0.65 * Math.Sin(_phase1) + 0.35 * Math.Sin(_phase2));
+					float rumblePart = carrier * _bandTarget * Math.Min(1f, _broadEnv / Math.Max(_refEnv, Gate));
+
+					output = (w * bandPart + (1f - w) * rumblePart) * gain;
+				}
+
+				_block[i] = output;
+				float a = Math.Abs(output); if (a > _peakOut) _peakOut = a;
 			}
 			stream.Write(_block, frames);
 		}

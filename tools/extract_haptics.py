@@ -3,6 +3,9 @@
 Usage:
     python tools/extract_haptics.py [--list PATTERN] [--game "<Outer Wilds folder>"] [--out "<mod folder>/haptic-clips"]
 
+OPTIONAL: the mod works without these files (it filters the game's live audio by default). They are only
+used when the mod setting "useExtractedClips" is on.
+
 The game's AudioClips are compressed in memory, so Unity cannot hand their samples to a mod at runtime.
 This script reads them straight from the game files (UnityPy + FMOD), band-limits them to what the
 DualSense actuators can reproduce (25-350 Hz), normalises the loudness and writes mono 16-bit WAV files

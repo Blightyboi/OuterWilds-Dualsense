@@ -10,12 +10,13 @@ namespace OuterWildsDualSense
 	[HarmonyPatch(typeof(InputManager), nameof(InputManager.Rumble))]
 	internal static class InputManagerRumblePatch
 	{
-		private static bool Prefix(float hiPower, float lowPower)
+		private static bool Prefix(ref float hiPower, ref float lowPower)
 		{
 			var mod = DualSenseMod.Instance;
 			var device = DualSenseMod.Device;
 			if (mod == null || device == null || !mod.Enabled || !device.IsOpen) return true;
 
+			EffectPreview.OverrideRumble(ref hiPower, ref lowPower);
 			var haptics = DualSenseMod.Haptics;
 			if (haptics != null)
 			{

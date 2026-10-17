@@ -6,6 +6,7 @@
     "lightbar": true,
     "audioHaptics": true,
     "hapticGain": 1.0,
+    "useExtractedClips": false,
     "debugLog": false
   }
 }

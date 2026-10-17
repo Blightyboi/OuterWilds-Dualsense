@@ -18,6 +18,7 @@ namespace OuterWildsDualSense
 		public bool Lightbar = true;
 		public bool AudioHaptics = true;
 		public float HapticGain = 1f;
+		public bool UseExtractedClips;
 		public bool DebugLog;
 
 		private void Awake()
@@ -30,7 +31,23 @@ namespace OuterWildsDualSense
 		{
 			new Harmony("Blightyboi.OuterWilds-Dualsense").PatchAll(typeof(DualSenseMod).Assembly);
 			Application.quitting += ResetController;
+			Effects.Load();
+			EffectPreview.Wire();
+			gameObject.AddComponent<DebugMenu>();
 			Log("DualSense mod loaded.");
+		}
+
+		private void Update()
+		{
+			// Keep the output in step with the values being edited in the F1 menu.
+			if (Haptics == null) return;
+			var live = Effects.Get("hap.live");
+			var rumble = Effects.Get("hap.rumble");
+			Haptics.MasterGain = HapticGain * live["gain"];
+			Haptics.Rumble.LowHz = rumble["lowHz"];
+			Haptics.Rumble.HighHz = rumble["highHz"];
+			Haptics.Rumble.LowLevel = rumble["lowLevel"];
+			Haptics.Rumble.HighLevel = rumble["highLevel"];
 		}
 
 		public override void Configure(IModConfig config)
@@ -40,6 +57,7 @@ namespace OuterWildsDualSense
 			TriggerStrength = Mathf.Clamp(config.GetSettingsValue<float>("triggerStrength"), 0f, 2f);
 			Lightbar = config.GetSettingsValue<bool>("lightbar");
 			AudioHaptics = config.GetSettingsValue<bool>("audioHaptics");
+			UseExtractedClips = config.GetSettingsValue<bool>("useExtractedClips");
 			HapticGain = Mathf.Clamp(config.GetSettingsValue<float>("hapticGain"), 0f, 4f);
 			if (Haptics != null) Haptics.MasterGain = HapticGain;
 			DebugLog = config.GetSettingsValue<bool>("debugLog");

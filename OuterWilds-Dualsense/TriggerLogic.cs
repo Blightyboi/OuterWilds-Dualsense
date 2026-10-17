@@ -9,8 +9,6 @@ namespace OuterWildsDualSense
 	/// </summary>
 	internal static class TriggerLogic
 	{
-		private const float LowFuelFraction = 0.2f;
-
 		private static PlayerResources _playerResources;
 		private static JetpackThrusterModel _jetpack;
 		private static ShipThrusterModel _shipThrusters;
@@ -47,17 +45,23 @@ namespace OuterWildsDualSense
 			float fuel = _playerResources.GetFuelFraction();
 			if (!usable) return; // out of fuel and oxygen: the triggers go limp
 
-			float accelY = _jetpack.GetLocalAcceleration().y;
-			bool thrustingUp = accelY > 0.1f;
+			bool thrustingUp = _jetpack.GetLocalAcceleration().y > 0.1f;
+
+			// Boost: slow strong pulses that push the finger back out. Normal flight: the spring that stiffens with
+			// travel. Low fuel makes the trigger buzz as a warning.
+			var boost = Effects.Get("jp.boost");
+			var lowFuel = Effects.Get("jp.lowfuel");
+			var rest = Effects.Get("jp.rest");
+			var down = Effects.Get("jp.down");
 
 			if (_jetpack.IsBoosterFiring())
-				right = TriggerEffect.Vibration(2, 30, Scale(4, strength));
-			else if (fuel < LowFuelFraction && thrustingUp)
-				right = TriggerEffect.Vibration(1, 10, Scale(3, strength)); // low fuel warning
+				right = TriggerEffect.Vibration(boost.Int("zone"), boost.Int("freq"), Scale(boost.Int("amp"), strength));
+			else if (fuel * 100f < lowFuel["threshold"] && thrustingUp)
+				right = TriggerEffect.Vibration(lowFuel.Int("zone"), lowFuel.Int("freq"), Scale(lowFuel.Int("amp"), strength));
 			else
-				right = TriggerEffect.ResistanceSlope(Scale(2, strength), Scale(5, strength));
+				right = TriggerEffect.ResistanceSlope(Scale(rest.Int("start"), strength), Scale(rest.Int("end"), strength));
 
-			left = TriggerEffect.Resistance(0, Scale(2, strength));
+			left = TriggerEffect.Resistance(down.Int("zone"), Scale(down.Int("strength"), strength));
 		}
 
 		// The ship has no real fuel system (the tank only drains when it leaks), so the
@@ -84,8 +88,14 @@ namespace OuterWildsDualSense
 		private static TriggerEffect ShipTrigger(float thrust, float strength)
 		{
 			if (thrust > 0.05f)
-				return TriggerEffect.Vibration(1, Mathf.RoundToInt(Mathf.Lerp(12f, 24f, thrust)), Scale(Mathf.RoundToInt(Mathf.Lerp(2f, 5f, thrust)), strength));
-			return TriggerEffect.Resistance(1, Scale(3, strength));
+			{
+				var fx = Effects.Get("ship.thrust");
+				int freq = Mathf.RoundToInt(Mathf.Lerp(fx["freqMin"], fx["freqMax"], thrust));
+				int amp = Mathf.RoundToInt(Mathf.Lerp(fx["ampMin"], fx["ampMax"], thrust));
+				return TriggerEffect.Vibration(fx.Int("zone"), freq, Scale(amp, strength));
+			}
+			var rest = Effects.Get("ship.rest");
+			return TriggerEffect.Resistance(rest.Int("zone"), Scale(rest.Int("strength"), strength));
 		}
 
 		private static int Scale(int value, float strength)

@@ -54,8 +54,11 @@ namespace OuterWildsDualSense
 	/// </summary>
 	public sealed class HapticRumbleSource : HapticSource
 	{
-		private const double LowHz = 48.0;
-		private const double HighHz = 135.0;
+		// Tunable through the F1 menu (effect "hap.rumble").
+		public volatile float LowHz = 48f;
+		public volatile float HighHz = 135f;
+		public volatile float LowLevel = 0.9f;
+		public volatile float HighLevel = 0.6f;
 
 		private double _lowPhase, _highPhase;
 		private float _low, _high;
@@ -78,7 +81,7 @@ namespace OuterWildsDualSense
 			_highPhase += 2 * Math.PI * HighHz / 48000.0;
 			if (_lowPhase > 2 * Math.PI) _lowPhase -= 2 * Math.PI;
 			if (_highPhase > 2 * Math.PI) _highPhase -= 2 * Math.PI;
-			return (float)(Math.Sin(_lowPhase) * _low * 0.9 + Math.Sin(_highPhase) * _high * 0.6);
+			return (float)(Math.Sin(_lowPhase) * _low * LowLevel + Math.Sin(_highPhase) * _high * HighLevel);
 		}
 	}
 
