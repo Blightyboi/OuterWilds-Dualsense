@@ -30,6 +30,9 @@ namespace OuterWildsDualSense
 		/// </summary>
 		private Func<float> _thrust;
 
+		/// <summary>Optional: a strength multiplier asked for every frame (for example per kind of hazard).</summary>
+		public Func<float> ScaleProvider;
+
 		/// <summary>
 		/// Dynamic mode, for one-shot sounds whose loudness over time is the point (deaths): no loudness
 		/// normalising, so a quiet creak stays quiet and a crunch stays loud.
@@ -40,6 +43,12 @@ namespace OuterWildsDualSense
 
 		/// <summary>Per-sound strength multiplier for dynamic mode, set when the game starts a sound.</summary>
 		public volatile float OneShotGain = 1f;
+
+		/// <summary>Dynamic mode, optional: asks for the strength every frame instead of using OneShotGain.</summary>
+		public Func<float> GainOverride;
+
+		/// <summary>Dynamic mode: only sounds that set OneShotGain are felt (the source also plays unrelated sounds).</summary>
+		public bool Strict;
 
 		private OWAudioSource _owSource;
 		private AudioSource _source;
@@ -178,7 +187,7 @@ namespace OuterWildsDualSense
 			{
 				if (_dynamic)
 				{
-					gain = OneShotGain;
+					gain = GainOverride != null ? GainOverride() : OneShotGain;
 				}
 				else if (_thrust != null)
 				{
@@ -198,6 +207,7 @@ namespace OuterWildsDualSense
 					gain = Mathf.Lerp(_gainFloor, 1f, Mathf.Clamp01(_volume / _peakVolume));
 				}
 			}
+			if (ScaleProvider != null) gain *= ScaleProvider();
 			_liveGain = gain;
 
 			float pan = float.IsNaN(_forcedPan) ? _source.panStereo : _forcedPan;

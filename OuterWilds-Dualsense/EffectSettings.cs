@@ -170,14 +170,38 @@ namespace OuterWildsDualSense
 			Define("death.live", fatal, "Death sounds as haptics", "The death sounds are played as haptics with their own loudness. Raise the gains if they are too weak.")
 				.Add("bandGain", "Low-frequency part gain", 3f, 0.5f, 10)
 				.Add("rumbleGain", "Creak/hiss rumble gain", 2.5f, 0, 10);
-			Define("death.sand", fatal, "Crushed by sand", "Quiet creaking that builds up, a big crunch at the end, then silence.")
+			Define("death.sand", fatal, "Crushed by sand", "Crushed_To_Death_V2_01, 5.7 s: quiet creaking that builds, a big crunch at 4.5 s, then silence.")
 				.Add("gain", "Strength", 1f, 0, 3);
-			Define("death.elevator", fatal, "Crushed by an elevator", "One short, hard crunch.")
+			Define("death.elevator", fatal, "Crushed by an elevator", "CrushedByElevator, 1.2 s: one short, hard crunch.")
 				.Add("gain", "Strength", 1f, 0, 3);
-			Define("death.instant", fatal, "Deadly collision / sudden death", "A loud blow followed by a long ringing that fades over about four seconds.")
+			Define("death.instant", fatal, "Deadly collision / sudden death", "InstantDeath2_Long_Ringing, 4.9 s: a loud blow, then a ringing that fades over about four seconds. Used for collisions and for every death by health running out, which includes ghost matter, fire, heat and electricity, and for any death without a sound of its own.")
 				.Add("gain", "Strength", 1f, 0, 3);
-			Define("death.other", fatal, "Other deaths", "Energy, supernova, digestion, lava, time loop, big bang and the rest.")
+			Define("death.energy", fatal, "Burning (sun, supernova, dream explosion)", "Incinerate_v3_01/02, 3 s: strong at first, gone after two seconds.")
 				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.digestion", fatal, "Eaten (anglerfish)", "Anglerfish_Awake4, 4.9 s: a steady growl that fades. The anglerfish of Dark Bramble. The game code uses the same sound for two creatures that look like DLC content (a swamp water monster and a ghost that haunts rooms); they were not checked in the game.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.lava", fatal, "Lava", "Lava_Splash_01/02, 2.7 s: a splash that hits at once and dies away.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.bigbang", fatal, "Big bang (Eye of the Universe finale)", "BigBang_EndFlash, 4.8 s: a swelling roar that lasts and then fades. The player is killed by it when the cosmic inflation at the Eye of the Universe reaches them; the supernova is not this one, it is under Burning.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.timeloop", fatal, "Time loop ending", "OW NM Flashback stinger, 3.9 s: swells up until the end.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.helmet", fatal, "Helmet cracking", "Helmet_Glass_Crack_08, 0.7 s: breaking glass with nothing in the low band, so only a light tick. Plays on top of a death sound.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.groan", fatal, "Ship creaking (eaten inside the ship)", "ShipEatenGroan (OW_SP_MetalCreak), about 4.6 s: soft metal creaking, starts a second after the death sound.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.shipexplosion", fatal, "Ship explosion", "OW_SP_ShipExploding, 4 s: very strong at the start, gone after three seconds. Only when the player is close enough to be hit.")
+				.Add("gain", "Strength", 1f, 0, 3);
+
+			const string hazard = "Hazards (while they hurt)";
+			Define("hazard.live", hazard, "Hazard damage", "The sound of a hazard is felt with a strength that follows the damage per second the game computes for it.")
+				.Add("fullDamage", "Damage per second counted as full strength", 20f, 1, 100);
+			Define("hazard.ghost", hazard, "Ghost matter", "OW_NM_BlackHole_Lp, a steady low drone that plays while ghost matter hurts. Dying of it uses the sudden death sound.")
+				.Add("gain", "Strength", 1.5f, 0, 5);
+			Define("hazard.fire", hazard, "Fire", "Player_On_Fire_Loop, a soft crackle while the character burns.")
+				.Add("gain", "Strength", 3f, 0, 5);
+			Define("hazard.heat", hazard, "Heat and other damage", "Heat_Damage_Loop_01, a soft hiss in hot places. Also used for the hazards that have no loop of their own.")
+				.Add("gain", "Strength", 3f, 0, 5);
 
 			const string light = "Lightbar";
 			Define("light.settings", light, "Lightbar behaviour", "The colour follows the planet or place where the character is.")

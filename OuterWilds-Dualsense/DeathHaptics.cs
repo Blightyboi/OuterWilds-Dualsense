@@ -9,6 +9,8 @@ namespace OuterWildsDualSense
 	/// Death haptics. The game plays one of its death sounds through PlayerDeathAudio when the player dies (which
 	/// sound depends on the way of dying). Those sources carry a dynamic tap, so what is felt is the death sound
 	/// itself with its own build-up, blow and fade, and each kind of death has its own strength setting.
+	/// Inside a ship two more sounds can join: the ship groaning when the player is digested, and the ship
+	/// exploding.
 	/// </summary>
 	internal static class DeathHaptics
 	{
@@ -16,27 +18,40 @@ namespace OuterWildsDualSense
 		private static FieldInfo _deathSource;
 		private static FieldInfo _helmetSource;
 		private static FieldInfo _groanSource;
+		private static ShipAudioController _shipAudio;
+		private static FieldInfo _loudShipSource;
+
+		/// <summary>True when the ship that is exploding is close enough to hit the player.</summary>
+		public static bool ShipExplosionNear;
 
 		/// <summary>Puts dynamic taps on the death sound sources. Safe to call repeatedly.</summary>
 		public static void EnsureTaps()
 		{
 			try
 			{
-				if (_audio == null) _audio = UnityEngine.Object.FindObjectOfType<PlayerDeathAudio>();
-				if (_audio == null) return;
+				const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 
-				if (_deathSource == null)
+				if (_audio == null) _audio = UnityEngine.Object.FindObjectOfType<PlayerDeathAudio>();
+				if (_audio != null)
 				{
-					var type = typeof(PlayerDeathAudio);
-					const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
-					_deathSource = type.GetField("_deathSource", flags);
-					_helmetSource = type.GetField("_helmetCrackSource", flags);
-					_groanSource = type.GetField("_shipGroanSource", flags);
+					if (_deathSource == null)
+					{
+						var type = typeof(PlayerDeathAudio);
+						_deathSource = type.GetField("_deathSource", flags);
+						_helmetSource = type.GetField("_helmetCrackSource", flags);
+						_groanSource = type.GetField("_shipGroanSource", flags);
+					}
+					Tap(_deathSource.GetValue(_audio) as OWAudioSource, null, false);
+					Tap(_helmetSource.GetValue(_audio) as OWAudioSource, null, false);
+					Tap(_groanSource.GetValue(_audio) as OWAudioSource, () => Effects.Get("death.groan")["gain"], false);
 				}
-				foreach (var field in new[] { _deathSource, _helmetSource, _groanSource })
+
+				if (_shipAudio == null) _shipAudio = UnityEngine.Object.FindObjectOfType<ShipAudioController>();
+				if (_shipAudio != null)
 				{
-					var source = field == null ? null : field.GetValue(_audio) as OWAudioSource;
-					if (source != null) HapticTap.Attach(source, float.NaN, null, true);
+					if (_loudShipSource == null) _loudShipSource = typeof(ShipAudioController).GetField("_loudShipSource", flags);
+					// This source plays other loud ship sounds as well: only the explosion is turned into haptics.
+					Tap(_loudShipSource.GetValue(_shipAudio) as OWAudioSource, null, true);
 				}
 			}
 			catch (Exception e)
@@ -45,7 +60,18 @@ namespace OuterWildsDualSense
 			}
 		}
 
-		/// <summary>Strength setting for a death sound, or null when the sound is not a death sound.</summary>
+		private static void Tap(OWAudioSource source, Func<float> gain, bool strict)
+		{
+			if (source == null) return;
+			HapticTap.Attach(source, float.NaN, null, true);
+			var tap = source.GetComponent<HapticTap>();
+			if (tap == null) return;
+			tap.GainOverride = gain;
+			tap.Strict = strict;
+			if (strict) tap.OneShotGain = 0f;
+		}
+
+		/// <summary>Strength setting for a sound, or null when the sound is not one of the death sounds.</summary>
 		public static float? GainFor(AudioType type)
 		{
 			switch (type)
@@ -53,52 +79,101 @@ namespace OuterWildsDualSense
 				case AudioType.Death_Crushed: return Effects.Get("death.sand")["gain"];
 				case AudioType.Death_CrushedByElevator: return Effects.Get("death.elevator")["gain"];
 				case AudioType.Death_Instant: return Effects.Get("death.instant")["gain"];
-				case AudioType.Death_Energy:
-				case AudioType.Death_BigBang:
-				case AudioType.Death_Digestion:
-				case AudioType.Death_Self:
-				case AudioType.Death_TimeLoop:
-				case AudioType.Death_Lava:
-					return Effects.Get("death.other")["gain"];
-				default:
-					return null;
+				case AudioType.Death_Energy: return Effects.Get("death.energy")["gain"];
+				case AudioType.Death_BigBang: return Effects.Get("death.bigbang")["gain"];
+				case AudioType.Death_Digestion: return Effects.Get("death.digestion")["gain"];
+				case AudioType.Death_Lava: return Effects.Get("death.lava")["gain"];
+				case AudioType.Death_TimeLoop: return Effects.Get("death.timeloop")["gain"];
+				case AudioType.PlayerSuitHelmetCrack: return Effects.Get("death.helmet")["gain"];
+				case AudioType.ShipDamageShipExplosion: return ShipExplosionNear ? Effects.Get("death.shipexplosion")["gain"] : 0f;
+				default: return null;
 			}
 		}
 
-		/// <summary>Plays a death sound from the F1 menu so it can be felt without dying.</summary>
-		public static void PlaySound(AudioType type)
+		public enum Where { Death, Helmet, Groan, ShipExplosion }
+
+		/// <summary>Plays a game sound from the F1 menu so it can be felt without dying.</summary>
+		public static void PlaySound(AudioType type, Where where = Where.Death)
 		{
 			EnsureTaps();
-			if (_audio == null || _deathSource == null) return;
-			var source = _deathSource.GetValue(_audio) as OWAudioSource;
-			if (source != null) source.PlayOneShot(type);
+			try
+			{
+				switch (where)
+				{
+					case Where.Death:
+						if (_audio != null) (_deathSource.GetValue(_audio) as OWAudioSource).PlayOneShot(type);
+						break;
+					case Where.Helmet:
+						if (_audio != null) (_helmetSource.GetValue(_audio) as OWAudioSource).PlayOneShot(type);
+						break;
+					case Where.Groan:
+						if (_audio != null) (_groanSource.GetValue(_audio) as OWAudioSource).Play();
+						break;
+					case Where.ShipExplosion:
+						ShipExplosionNear = true;
+						if (_shipAudio != null) (_loudShipSource.GetValue(_shipAudio) as OWAudioSource).PlayOneShot(type);
+						break;
+				}
+			}
+			catch (Exception e)
+			{
+				DualSenseMod.Log("Could not play the sound: " + e.Message);
+			}
 		}
 
-		/// <summary>Called for every one-shot on a tapped source: sets the strength of the death sound that starts.</summary>
-		public static void OnOneShot(OWAudioSource source, AudioType type)
+		/// <summary>Called for every one-shot on a tapped source: sets the strength of the sound that starts.</summary>
+		public static void OnOneShot(OWAudioSource source, AudioType type, AudioClip clip)
 		{
-			float? gain = GainFor(type);
-			if (!gain.HasValue) return;
 			var tap = source.GetComponent<HapticTap>();
-			if (tap != null) tap.OneShotGain = gain.Value;
+			if (tap == null) return;
+			float? gain = GainFor(type);
+			if (gain.HasValue)
+			{
+				tap.OneShotGain = gain.Value;
+				DualSenseMod.Log(string.Format("Death sound {0}: clip '{1}', {2:F2} s, strength {3:F2}",
+					type, clip != null ? clip.name : "?", clip != null ? clip.length : 0f, gain.Value));
+			}
+			else if (tap.Strict)
+			{
+				tap.OneShotGain = 0f;
+			}
 		}
 	}
 
 	[HarmonyPatch(typeof(OWAudioSource), "PlayOneShot", typeof(AudioType), typeof(float))]
 	internal static class DeathSoundPatch
 	{
-		private static void Postfix(OWAudioSource __instance, AudioType type)
+		private static void Postfix(OWAudioSource __instance, AudioType type, AudioClip __result)
 		{
-			DeathHaptics.OnOneShot(__instance, type);
+			DeathHaptics.OnOneShot(__instance, type, __result);
 		}
 	}
 
 	[HarmonyPatch(typeof(OWAudioSource), "PlayOneShot", typeof(AudioType), typeof(int), typeof(float))]
 	internal static class DeathSoundIndexPatch
 	{
-		private static void Postfix(OWAudioSource __instance, AudioType type)
+		private static void Postfix(OWAudioSource __instance, AudioType type, AudioClip __result)
 		{
-			DeathHaptics.OnOneShot(__instance, type);
+			DeathHaptics.OnOneShot(__instance, type, __result);
+		}
+	}
+
+	/// <summary>Whether the exploding ship is close enough to hit the player, decided the way the game decides it.</summary>
+	[HarmonyPatch(typeof(ExplosionController), "Play")]
+	internal static class ShipExplosionPatch
+	{
+		private static void Prefix(ExplosionController __instance)
+		{
+			try
+			{
+				var sphere = __instance.GetComponent<SphereCollider>();
+				float reach = __instance.transform.localScale.x * (sphere != null ? sphere.radius : 0f);
+				DeathHaptics.ShipExplosionNear = Vector3.Distance(__instance.transform.position, Locator.GetPlayerTransform().position) < reach;
+			}
+			catch (Exception)
+			{
+				DeathHaptics.ShipExplosionNear = false;
+			}
 		}
 	}
 }

@@ -76,7 +76,14 @@ namespace OuterWildsDualSense
 			Effects.Get("death.sand").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Crushed);
 			Effects.Get("death.elevator").Preview = () => DeathHaptics.PlaySound(AudioType.Death_CrushedByElevator);
 			Effects.Get("death.instant").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Instant);
-			Effects.Get("death.other").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Energy);
+			Effects.Get("death.energy").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Energy);
+			Effects.Get("death.bigbang").Preview = () => DeathHaptics.PlaySound(AudioType.Death_BigBang);
+			Effects.Get("death.digestion").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Digestion);
+			Effects.Get("death.lava").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Lava);
+			Effects.Get("death.timeloop").Preview = () => DeathHaptics.PlaySound(AudioType.Death_TimeLoop);
+			Effects.Get("death.helmet").Preview = () => DeathHaptics.PlaySound(AudioType.PlayerSuitHelmetCrack, DeathHaptics.Where.Helmet);
+			Effects.Get("death.groan").Preview = () => DeathHaptics.PlaySound(AudioType.None, DeathHaptics.Where.Groan);
+			Effects.Get("death.shipexplosion").Preview = () => DeathHaptics.PlaySound(AudioType.ShipDamageShipExplosion, DeathHaptics.Where.ShipExplosion);
 
 			foreach (var def in Effects.All)
 			{
@@ -84,6 +91,10 @@ namespace OuterWildsDualSense
 				string id = def.Id;
 				def.Preview = () => PlanetLight.Show(id);
 			}
+
+			Effects.Get("hazard.ghost").Preview = () => HazardHaptics.Preview(HazardVolume.HazardType.DARKMATTER);
+			Effects.Get("hazard.fire").Preview = () => HazardHaptics.Preview(HazardVolume.HazardType.FIRE);
+			Effects.Get("hazard.heat").Preview = () => HazardHaptics.Preview(HazardVolume.HazardType.HEAT);
 
 			var rumble = Effects.Get("hap.rumble");
 			rumble.Preview = () => _rumbleUntil = Time.unscaledTime + 0.4f;
@@ -109,6 +120,8 @@ namespace OuterWildsDualSense
 				}
 			}
 			Effects.Get("hap.rumble").PreviewStop = () => _rumbleUntil = 0f;
+			foreach (var id in new[] { "hazard.ghost", "hazard.fire", "hazard.heat" })
+				Effects.Get(id).PreviewStop = HazardHaptics.StopPreview;
 
 			Effects.Get("hap.live").PreviewPeriod = 2.2f;
 			Effects.Get("step.base").PreviewPeriod = 4.0f;
@@ -117,10 +130,18 @@ namespace OuterWildsDualSense
 			Effects.Get("char.landing").PreviewPeriod = 2.0f;
 			Effects.Get("char.hit").PreviewPeriod = 2.2f;
 			Effects.Get("char.damage").PreviewPeriod = 2.2f;
+			// Lengths of the clips (tools/analyze_clip.py) plus a short pause.
 			Effects.Get("death.sand").PreviewPeriod = 6.2f;
 			Effects.Get("death.elevator").PreviewPeriod = 1.7f;
 			Effects.Get("death.instant").PreviewPeriod = 5.5f;
-			Effects.Get("death.other").PreviewPeriod = 6.0f;
+			Effects.Get("death.energy").PreviewPeriod = 3.6f;
+			Effects.Get("death.digestion").PreviewPeriod = 5.4f;
+			Effects.Get("death.lava").PreviewPeriod = 3.2f;
+			Effects.Get("death.bigbang").PreviewPeriod = 5.3f;
+			Effects.Get("death.timeloop").PreviewPeriod = 4.5f;
+			Effects.Get("death.helmet").PreviewPeriod = 1.2f;
+			Effects.Get("death.groan").PreviewPeriod = 5.5f;
+			Effects.Get("death.shipexplosion").PreviewPeriod = 4.6f;
 		}
 
 		/// <summary>Rumble values for the preview: both motors at full level.</summary>

@@ -38,3 +38,4 @@ Thumbs.db
 # Audio derived from game assets must not be committed
 *.wav
 __pycache__/
+audio-library.txt
