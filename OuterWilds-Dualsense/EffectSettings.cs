@@ -110,6 +110,66 @@ namespace OuterWildsDualSense
 				.Add("lowLevel", "Big motor level", 0.9f, 0, 1.5f)
 				.Add("highLevel", "Small motor level", 0.6f, 0, 1.5f);
 
+			const string steps = "Footsteps";
+			Define("step.base", steps, "Step thump", "A haptic thump on every footstep, at the moment the foot lands. Faster movement is stronger.")
+				.Add("strength", "Strength", 0.7f, 0, 1.5f)
+				.Add("freq", "Tone Hz", 55, 20, 150)
+				.Add("durationMs", "Length ms", 90, 30, 300)
+				.Add("speedScale", "Stronger when running", 0.5f, 0, 1)
+				.Add("panAmount", "Left/right foot emphasis", 0.7f, 0, 1);
+			Define("step.surface", steps, "Ground types", "Soft: grass, sand, snow, foliage, water. Hard: stone, metal, glass, ice. The rest is medium.")
+				.Add("softMul", "Soft ground strength", 0.6f, 0, 2)
+				.Add("mediumMul", "Medium ground strength", 1f, 0, 2)
+				.Add("hardMul", "Hard ground strength", 1.3f, 0, 2)
+				.Add("softFreqSub", "Soft ground: tone lower by Hz", 15, 0, 40)
+				.Add("hardFreqAdd", "Hard ground: tone higher by Hz", 35, 0, 100);
+
+			const string chr = "Character";
+			Define("char.jump", chr, "Jump", "A push-off thump when the character jumps.")
+				.Add("strength", "Strength", 0.6f, 0, 1.5f)
+				.Add("freq", "Tone Hz", 70, 20, 150)
+				.Add("durationMs", "Length ms", 110, 30, 300);
+			Define("char.landing", chr, "Landing", "Strength follows how hard the game counts the landing. Ground types as for footsteps.")
+				.Add("strength", "Strength", 0.9f, 0, 1.5f)
+				.Add("freq", "Tone Hz", 45, 20, 150)
+				.Add("durationMs", "Length ms", 160, 40, 400)
+				.Add("softMul", "Soft ground strength", 0.6f, 0, 2)
+				.Add("mediumMul", "Medium ground strength", 1f, 0, 2)
+				.Add("hardMul", "Hard ground strength", 1.3f, 0, 2);
+			Define("char.hit", chr, "Collisions", "Bumping into something that is not a landing: light, medium and heavy (the game's own three classes).")
+				.Add("lightStrength", "Light: strength", 0.5f, 0, 1.5f)
+				.Add("lightFreq", "Light: tone Hz", 80, 20, 200)
+				.Add("lightMs", "Light: length ms", 90, 30, 500)
+				.Add("mediumStrength", "Medium: strength", 0.9f, 0, 1.5f)
+				.Add("mediumFreq", "Medium: tone Hz", 55, 20, 200)
+				.Add("mediumMs", "Medium: length ms", 160, 30, 600)
+				.Add("heavyStrength", "Heavy: strength", 1.3f, 0, 1.5f)
+				.Add("heavyFreq", "Heavy: tone Hz", 38, 20, 200)
+				.Add("heavyMs", "Heavy: length ms", 300, 30, 800);
+			Define("char.damage", chr, "Damage", "When the character is hurt. Bigger damage is stronger. The impact thump is on top of the collision above.")
+				.Add("impactStrength", "Impact: strength", 0.6f, 0, 1.5f)
+				.Add("impactFreq", "Impact: tone Hz", 50, 20, 200)
+				.Add("punctureStrength", "Puncture: strength", 0.8f, 0, 1.5f)
+				.Add("punctureFreq", "Puncture: tone Hz", 150, 40, 300)
+				.Add("punctureMs", "Puncture: length ms", 120, 30, 600)
+				.Add("electricStrength", "Electrical: strength", 0.9f, 0, 1.5f)
+				.Add("electricFreq", "Electrical: tone Hz", 110, 40, 300)
+				.Add("electricMs", "Electrical: length ms", 350, 50, 1000)
+				.Add("electricChop", "Electrical: chop Hz", 28, 0, 80);
+
+			const string fatal = "Deaths (the game's own death sounds)";
+			Define("death.live", fatal, "Death sounds as haptics", "The death sounds are played as haptics with their own loudness. Raise the gains if they are too weak.")
+				.Add("bandGain", "Low-frequency part gain", 3f, 0.5f, 10)
+				.Add("rumbleGain", "Creak/hiss rumble gain", 2.5f, 0, 10);
+			Define("death.sand", fatal, "Crushed by sand", "Quiet creaking that builds up, a big crunch at the end, then silence.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.elevator", fatal, "Crushed by an elevator", "One short, hard crunch.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.instant", fatal, "Deadly collision / sudden death", "A loud blow followed by a long ringing that fades over about four seconds.")
+				.Add("gain", "Strength", 1f, 0, 3);
+			Define("death.other", fatal, "Other deaths", "Energy, supernova, digestion, lava, time loop, big bang and the rest.")
+				.Add("gain", "Strength", 1f, 0, 3);
+
 			const string light = "Lightbar";
 			Define("light.color", light, "Lightbar colour")
 				.Add("r", "Red", 255, 0, 255, true)

@@ -30,6 +30,17 @@ namespace OuterWildsDualSense
 		/// </summary>
 		private Func<float> _thrust;
 
+		/// <summary>
+		/// Dynamic mode, for one-shot sounds whose loudness over time is the point (deaths): no loudness
+		/// normalising, so a quiet creak stays quiet and a crunch stays loud.
+		/// </summary>
+		private bool _dynamic;
+		private float _dynBandGain = 3f;
+		private float _dynRumbleGain = 2.5f;
+
+		/// <summary>Per-sound strength multiplier for dynamic mode, set when the game starts a sound.</summary>
+		public volatile float OneShotGain = 1f;
+
 		private OWAudioSource _owSource;
 		private AudioSource _source;
 		private float _forcedPan = float.NaN;
@@ -55,7 +66,7 @@ namespace OuterWildsDualSense
 		private float _peakOut, _logTimer;
 
 		/// <summary>Adds a tap to the source's GameObject (once). forcedPan: -1 left, +1 right, NaN = follow the source's pan.</summary>
-		public static void Attach(OWAudioSource source, float forcedPan, Func<float> thrust = null)
+		public static void Attach(OWAudioSource source, float forcedPan, Func<float> thrust = null, bool dynamic = false)
 		{
 			if (source == null || source.GetComponent<HapticTap>() != null) return;
 			var tap = source.gameObject.AddComponent<HapticTap>();
@@ -63,6 +74,7 @@ namespace OuterWildsDualSense
 			tap._source = source.GetAudioSource();
 			tap._forcedPan = forcedPan;
 			tap._thrust = thrust;
+			tap._dynamic = dynamic;
 		}
 
 		/// <summary>Plays an extracted one-shot haptic for a PlayOneShot on this source.</summary>
@@ -95,6 +107,9 @@ namespace OuterWildsDualSense
 			_gainFloor = live["gainFloor"];
 			_startThrust = live["startThrust"];
 			_curve = live["curve"];
+			var dyn = Effects.Get("death.live");
+			_dynBandGain = dyn["bandGain"];
+			_dynRumbleGain = dyn["rumbleGain"];
 			_referenceVolume = live["refVolume"];
 			_bandTarget = live["bandTarget"];
 			_lpCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * live["lowPass"] / rate);
@@ -161,7 +176,11 @@ namespace OuterWildsDualSense
 			float gain = 0f;
 			if (_source.isPlaying)
 			{
-				if (_thrust != null)
+				if (_dynamic)
+				{
+					gain = OneShotGain;
+				}
+				else if (_thrust != null)
 				{
 					// Real thrust from the game's thruster model: starts and stops with the thrust itself.
 					float t = Mathf.Clamp01(_thrust());
@@ -248,6 +267,20 @@ namespace OuterWildsDualSense
 					// Share of the sound's level that sits in the band: ~0.4 for engine rumble, ~0.05 for hiss.
 					float ratio = _bandEnv / (_broadEnv + 1e-6f);
 					float w = Math.Min(1f, Math.Max(0f, (ratio - 0.08f) / 0.17f));
+
+					if (_dynamic)
+					{
+						// Keep the sound's own loudness: the band as it is, plus a rumble whose level follows the
+						// overall level for the hissy, creaky parts that have little in the band itself.
+						_phase1 += _phaseStep1; _phase2 += _phaseStep2;
+						if (_phase1 > 6.2831853) _phase1 -= 6.2831853;
+						if (_phase2 > 6.2831853) _phase2 -= 6.2831853;
+						float tone = (float)(0.65 * Math.Sin(_phase1) + 0.35 * Math.Sin(_phase2));
+						float dyn = band * _dynBandGain * w + tone * Math.Min(1f, _broadEnv * _dynRumbleGain) * (1f - w);
+						_block[i] = dyn * gain;
+						float da = Math.Abs(_block[i]); if (da > _peakOut) _peakOut = da;
+						continue;
+					}
 
 					float bandPart = band / Math.Max(_bandEnv, 0.0015f) * _bandTarget;
 					if (bandPart > 1f) bandPart = 1f; else if (bandPart < -1f) bandPart = -1f;

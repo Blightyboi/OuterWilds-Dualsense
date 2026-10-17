@@ -65,6 +65,19 @@ namespace OuterWildsDualSense
 			var live = Effects.Get("hap.live");
 			live.Preview = () => PlayHum(live);
 
+			Effects.Get("step.base").Preview = FootstepHaptics.PreviewGait;
+			Effects.Get("step.surface").Preview = FootstepHaptics.PreviewSurfaces;
+
+			Effects.Get("char.jump").Preview = () => PlayerHaptics.Jump();
+			Effects.Get("char.landing").Preview = PlayerHaptics.PreviewLanding;
+			Effects.Get("char.hit").Preview = PlayerHaptics.PreviewHit;
+			Effects.Get("char.damage").Preview = PlayerHaptics.PreviewDamage;
+
+			Effects.Get("death.sand").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Crushed);
+			Effects.Get("death.elevator").Preview = () => DeathHaptics.PlaySound(AudioType.Death_CrushedByElevator);
+			Effects.Get("death.instant").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Instant);
+			Effects.Get("death.other").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Energy);
+
 			var rumble = Effects.Get("hap.rumble");
 			rumble.Preview = () => _rumbleUntil = Time.unscaledTime + 1.2f;
 		}
