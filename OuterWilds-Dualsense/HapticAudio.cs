@@ -48,6 +48,66 @@ namespace OuterWildsDualSense
 		}
 	}
 
+	/// <summary>
+	/// The game's own controller rumble, rendered as haptics: the big motor as a low rumble, the small
+	/// motor as a higher buzz, on both actuators.
+	/// </summary>
+	public sealed class HapticRumbleSource : HapticSource
+	{
+		private const double LowHz = 48.0;
+		private const double HighHz = 135.0;
+
+		private double _lowPhase, _highPhase;
+		private float _low, _high;
+		public volatile float TargetLow;
+		public volatile float TargetHigh;
+
+		public HapticRumbleSource()
+		{
+			GainLeft = 1f;
+			GainRight = 1f;
+		}
+
+		public override float Next(double step)
+		{
+			_low += (TargetLow - _low) * 0.002f;   // ~10 ms smoothing at 48 kHz
+			_high += (TargetHigh - _high) * 0.002f;
+			if (_low < 0.0005f && _high < 0.0005f && TargetLow <= 0f && TargetHigh <= 0f) return 0f;
+
+			_lowPhase += 2 * Math.PI * LowHz / 48000.0;
+			_highPhase += 2 * Math.PI * HighHz / 48000.0;
+			if (_lowPhase > 2 * Math.PI) _lowPhase -= 2 * Math.PI;
+			if (_highPhase > 2 * Math.PI) _highPhase -= 2 * Math.PI;
+			return (float)(Math.Sin(_lowPhase) * _low * 0.9 + Math.Sin(_highPhase) * _high * 0.6);
+		}
+	}
+
+	/// <summary>A pre-processed haptic waveform played once (ignition, thruster bursts) and then dropped.</summary>
+	public sealed class HapticOneShotSource : HapticSource
+	{
+		private readonly float[] _data;
+		private readonly float _gain;
+		private double _pos;
+		public volatile bool Finished;
+
+		public HapticOneShotSource(float[] data, int rate, float gain)
+		{
+			_data = data;
+			SourceRate = rate;
+			_gain = gain;
+		}
+
+		public override float Next(double step)
+		{
+			int i0 = (int)_pos;
+			if (i0 >= _data.Length - 1) { Finished = true; return 0f; }
+			float frac = (float)(_pos - i0);
+			float v = _data[i0] + (_data[i0 + 1] - _data[i0]) * frac;
+			_pos += step;
+			return v * _gain;
+		}
+	}
+
 	public sealed class HapticStream : HapticSource
 	{
 		private const int RingSize = 1 << 15; // power of two
@@ -100,11 +160,15 @@ namespace OuterWildsDualSense
 
 		public volatile float MasterGain = 1f;
 
+		/// <summary>The game's controller rumble, rendered as haptics.</summary>
+		public readonly HapticRumbleSource Rumble = new HapticRumbleSource();
+
 		private const int Channels = 4;
 		private const int Rate = 48000;
 
 		private HapticAudio()
 		{
+			AddSource(Rumble);
 		}
 
 		/// <summary>
@@ -206,6 +270,11 @@ namespace OuterWildsDualSense
 				int o = offset + f * frameBytes + 4; // channels 3 and 4
 				WriteSample(buffer, o, left * master);
 				WriteSample(buffer, o + 2, right * master);
+			}
+			for (int s = 0; s < streams.Length; s++)
+			{
+				var shot = streams[s] as HapticOneShotSource;
+				if (shot != null && shot.Finished) RemoveSource(shot);
 			}
 			return frames * frameBytes;
 		}

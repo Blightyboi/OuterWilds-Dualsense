@@ -110,6 +110,7 @@ namespace OuterWildsDualSense
 		private bool _loggedMissing;
 		private bool _lightbarSetupPending;
 		private byte _motorRight, _motorLeft;
+		private bool _rumbleWasOn;
 
 		/// <summary>Receives diagnostic messages (set by the mod).</summary>
 		public Action<string> Log = delegate { };
@@ -154,7 +155,11 @@ namespace OuterWildsDualSense
 
 			var d = new byte[ReportSize];
 			d[0] = 0x02;
-			d[1] = 0x0F;                      // valid flags: compat rumble, haptics select, right + left trigger effect
+			// Valid flags: right + left trigger effect. The rumble bits (compat rumble, haptics select) would
+			// weaken the audio haptics, so they are only set while a motor runs and for one report after it stops.
+			bool rumbling = _motorRight != 0 || _motorLeft != 0;
+			d[1] = (byte)(0x0C | (rumbling || _rumbleWasOn ? 0x03 : 0x00));
+			_rumbleWasOn = rumbling;
 			d[2] = (byte)(_lightbarEnabled ? 0x04 : 0x00);
 			d[3] = _motorRight;
 			d[4] = _motorLeft;

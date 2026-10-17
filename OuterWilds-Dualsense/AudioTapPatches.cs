@@ -43,4 +43,41 @@ namespace OuterWildsDualSense
 			}
 		}
 	}
+
+	/// <summary>
+	/// One-shot sounds (ship ignition, rotational thrusters) played on a tapped source use the haptic
+	/// file extracted from the game instead of the live copy of the sound.
+	/// </summary>
+	internal static class OneShotHook
+	{
+		public static void Play(OWAudioSource source, AudioClip clip, float volume)
+		{
+			var mod = DualSenseMod.Instance;
+			if (mod == null || !mod.Enabled || !mod.AudioHaptics || DualSenseMod.Haptics == null || clip == null) return;
+
+			var tap = source.GetComponent<HapticTap>();
+			if (tap == null) return;
+
+			float[] wave = HapticClipBank.Get(clip);
+			if (wave != null) tap.PlayOneShot(wave, clip.frequency, volume);
+		}
+	}
+
+	[HarmonyPatch(typeof(OWAudioSource), "PlayOneShot", typeof(AudioType), typeof(float))]
+	internal static class PlayOneShotPatch
+	{
+		private static void Postfix(OWAudioSource __instance, AudioClip __result, float volume)
+		{
+			OneShotHook.Play(__instance, __result, volume);
+		}
+	}
+
+	[HarmonyPatch(typeof(OWAudioSource), "PlayOneShot", typeof(AudioType), typeof(int), typeof(float))]
+	internal static class PlayOneShotIndexPatch
+	{
+		private static void Postfix(OWAudioSource __instance, AudioClip __result, float volume)
+		{
+			OneShotHook.Play(__instance, __result, volume);
+		}
+	}
 }

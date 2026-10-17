@@ -16,7 +16,18 @@ namespace OuterWildsDualSense
 			var device = DualSenseMod.Device;
 			if (mod == null || device == null || !mod.Enabled || !device.IsOpen) return true;
 
-			device.SetMotors(hiPower, lowPower);
+			var haptics = DualSenseMod.Haptics;
+			if (haptics != null)
+			{
+				// Rumble as audio haptics: the motors stay off, so no rumble flags disturb the haptic audio.
+				haptics.Rumble.TargetLow = lowPower;
+				haptics.Rumble.TargetHigh = hiPower;
+				device.SetMotors(0f, 0f);
+			}
+			else
+			{
+				device.SetMotors(hiPower, lowPower);
+			}
 			return false;
 		}
 	}

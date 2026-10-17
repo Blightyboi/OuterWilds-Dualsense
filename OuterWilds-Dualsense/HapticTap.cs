@@ -20,6 +20,8 @@ namespace OuterWildsDualSense
 
 		// Clip mode: how strongly the source volume drives the looped haptic (square-root curve).
 		private const float LoopDrive = 2f;
+		private const float LoopFloor = 0.5f;
+		private const float LoopMinVolume = 0.01f;
 
 		private OWAudioSource _owSource;
 		private AudioSource _source;
@@ -41,6 +43,9 @@ namespace OuterWildsDualSense
 
 		private float _peakOut, _logTimer;
 
+		/// <summary>Set once an extracted one-shot has played through this source, so the live copy stays quiet.</summary>
+		private volatile bool _suppressLiveTap;
+
 		/// <summary>Adds a tap to the source's GameObject (once). forcedPan: -1 left, +1 right, NaN = follow the source's pan.</summary>
 		public static void Attach(OWAudioSource source, float forcedPan)
 		{
@@ -49,6 +54,22 @@ namespace OuterWildsDualSense
 			tap._owSource = source;
 			tap._source = source.GetAudioSource();
 			tap._forcedPan = forcedPan;
+		}
+
+		/// <summary>Plays an extracted one-shot haptic for a PlayOneShot on this source.</summary>
+		public void PlayOneShot(float[] wave, int rate, float volume)
+		{
+			var haptics = DualSenseMod.Haptics;
+			if (haptics == null || wave == null || _source == null) return;
+
+			float pan = float.IsNaN(_forcedPan) ? _source.panStereo : _forcedPan;
+			float angle = (Mathf.Clamp(pan, -1f, 1f) + 1f) * 0.25f * Mathf.PI;
+			var shot = new HapticOneShotSource(wave, rate, Mathf.Clamp01(volume * 1.2f));
+			shot.GainLeft = Mathf.Cos(angle);
+			shot.GainRight = Mathf.Sin(angle);
+			haptics.AddSource(shot);
+			_suppressLiveTap = true;
+			DualSenseMod.Log(string.Format("Haptic one-shot on '{0}' ({1} samples, volume {2:F2})", name, wave.Length, volume));
 		}
 
 		private void Start()
@@ -117,7 +138,11 @@ namespace OuterWildsDualSense
 
 			if (_loop != null)
 			{
-				float gain = _source.isPlaying ? Mathf.Min(1f, Mathf.Sqrt(_volume) * LoopDrive) : 0f;
+				// Quiet engine sounds (volume 0.03-0.15) must still be felt, so the hum has a floor
+				// while the source is audible and grows with its volume above that.
+				float gain = 0f;
+				if (_source.isPlaying && _volume > LoopMinVolume)
+					gain = Mathf.Clamp01(LoopFloor + Mathf.Sqrt(_volume) * LoopDrive * 0.6f);
 				bool on = gain > 0.01f;
 				if (on != _loopOn)
 				{
@@ -144,7 +169,7 @@ namespace OuterWildsDualSense
 		private void OnAudioFilterRead(float[] data, int channels)
 		{
 			var stream = _tapStream;
-			if (stream == null || channels < 1) return;
+			if (stream == null || channels < 1 || _suppressLiveTap) return;
 
 			int frames = data.Length / channels;
 			if (_block.Length < frames) _block = new float[frames];

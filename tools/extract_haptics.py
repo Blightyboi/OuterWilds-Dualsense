@@ -24,16 +24,47 @@ DEFAULT_OUT = r"D:\OWML\Mods\Blightyboi.OuterWilds-Dualsense\haptic-clips"
 LOW_PASS_HZ = 350.0
 HIGH_PASS_HZ = 25.0
 TARGET_RMS = 0.5
+MIN_BAND_PEAK = 0.01
 MIN_BAND_RMS = 0.01  # quieter than this has nothing to feel, normalising would only amplify noise
 
-# Clips used by the ship and jetpack thruster audio.
-WANTED = [
+# RULE: every sound that drives haptics gets a file here. Add the clip name, run this script.
+# Looping engine sounds: loudness is normalised (RMS) because the mod follows the real thrust with its own gain.
+LOOPS = [
     "OW_SP_ThrustTranslational",
     "OW_SP_ThrustTranslationalUnderwater",
+    "OW_SP_ThrustAfterburn",
     "OW_PR_ThrustTranslational_v2_01",
     "OW_PR_ThrustAfterburn_v2_01",
     "OW_PR_ThrustUnderwater",
+    "Jetpack_O2_loop_01",  # jetpack on oxygen: almost pure hiss, handled by envelope_rumble
+    "OW_TH_ModelRocketThrustTranslational_01",
+    "OW_TH_ModelRocketThrustTranslational_02",
 ]
+
+# One-shot sounds (ignition, rotational thrusters): normalised by peak so their dynamics survive.
+ONE_SHOTS = [
+    "Engine_Start_V2",  # ship ignition
+    "RotationalThruster01",
+    "RotationalThruster02",
+    "RotationalThruster03",
+    "RotationalThruster04",
+    "OW_SP_ThrustRotationalUnderwater_01",
+    "OW_SP_ThrustRotationalUnderwater_02",
+    "OW_SP_ThrustRotationalUnderwater_03",
+    "OW_SP_ThrustRotationalUnderwater_04",
+    "OW_SP_ThrustRotationalUnderwater_05",
+    "OW_SP_ThrustRotationalUnderwater_06",
+    "OW_PR_ThrustRotationalUnderwater_01",
+    "OW_PR_ThrustRotationalUnderwater_02",
+    "OW_PR_ThrustRotationalUnderwater_03",
+    "OW_PR_ThrustRotationalUnderwater_04",
+    "OW_PR_ThrustRotationalUnderwater_05",
+    "OW_TH_ModelRocketThrustRotational_01",
+    "OW_TH_ModelRocketThrustRotational_02",
+    "OW_TH_ModelRocketThrustRotational_03",
+    "OW_TH_ModelRocketThrustRotational_04",
+]
+TARGET_PEAK = 0.9
 
 
 def read_wav(data):
@@ -47,7 +78,7 @@ def read_wav(data):
     return mono, rate
 
 
-def haptic_wave(mono, rate):
+def haptic_wave(mono, rate, one_shot=False):
     """Band-pass (two low-pass poles, one high-pass), run twice so the loop seam matches, then normalise."""
     lp = 1.0 - math.exp(-2.0 * math.pi * LOW_PASS_HZ / rate)
     hp = 1.0 - math.exp(-2.0 * math.pi * HIGH_PASS_HZ / rate)
@@ -60,10 +91,38 @@ def haptic_wave(mono, rate):
             h += hp * (l2 - h)
             out[i] = l2 - h
     rms = math.sqrt(sum(v * v for v in out) / len(out))
+    if one_shot:
+        peak = max(abs(v) for v in out)
+        if peak < MIN_BAND_PEAK:
+            return None, rms
+        scale = TARGET_PEAK / peak
+        return [max(-1.0, min(1.0, v * scale)) for v in out], rms
     if rms < MIN_BAND_RMS:
         return None, rms
     scale = TARGET_RMS / rms
     return [max(-1.0, min(1.0, v * scale)) for v in out], rms
+
+
+def envelope_rumble(mono, rate):
+    """For clips without energy below 350 Hz (hiss): a low rumble whose loudness follows the sound's envelope."""
+    smooth = 1.0 - math.exp(-2.0 * math.pi * 12.0 / rate)
+    env = 0.0
+    envelope = [0.0] * len(mono)
+    for _ in range(2):
+        for i, x in enumerate(mono):
+            env += smooth * (abs(x) - env)
+            envelope[i] = env
+    mean = sum(envelope) / len(envelope)
+    if mean < 1e-6:
+        return None
+    out = []
+    for i, e in enumerate(envelope):
+        t = i / rate
+        carrier = 0.65 * math.sin(2 * math.pi * 62.0 * t) + 0.35 * math.sin(2 * math.pi * 97.0 * t)
+        out.append(carrier * min(2.0, e / mean))
+    rms = math.sqrt(sum(v * v for v in out) / len(out))
+    scale = TARGET_RMS / rms
+    return [max(-1.0, min(1.0, v * scale)) for v in out]
 
 
 def write_wav(path, samples, rate):
@@ -97,24 +156,32 @@ def main():
         return
 
     os.makedirs(args.out, exist_ok=True)
-    for name in WANTED:
-        clip = clips.get(name)
-        if clip is None:
-            print("missing in game files:", name)
-            continue
-        try:
-            samples = clip.samples  # {file name: wav bytes}
-            wav_bytes = next(iter(samples.values()))
-            mono, rate = read_wav(wav_bytes)
-        except Exception as e:  # noqa: BLE001
-            print("could not decode %s: %s" % (name, e))
-            continue
-        shaped, rms = haptic_wave(mono, rate)
+    for one_shot, names in ((False, LOOPS), (True, ONE_SHOTS)):
+        for name in names:
+            extract(clips, name, args.out, one_shot)
+
+
+def extract(clips, name, out_dir, one_shot):
+    clip = clips.get(name)
+    if clip is None:
+        print("missing in game files:", name)
+        return
+    try:
+        samples = clip.samples  # {file name: wav bytes}
+        mono, rate = read_wav(next(iter(samples.values())))
+    except Exception as e:  # noqa: BLE001
+        print("could not decode %s: %s" % (name, e))
+        return
+    shaped, rms = haptic_wave(mono, rate, one_shot)
+    note = "scaled" if shaped else ""
+    if shaped is None:
+        shaped = envelope_rumble(mono, rate)
         if shaped is None:
-            print("%s: no energy in the haptic band (rms %.2e)" % (name, rms))
-            continue
-        write_wav(os.path.join(args.out, name + ".wav"), shaped, rate)
-        print("%s: %.1f s, %d Hz, band rms %.4f -> scaled x%.1f" % (name, len(mono) / rate, rate, rms, TARGET_RMS / rms))
+            print("%s: silent, skipped" % name)
+            return
+        note = "no energy below %d Hz, envelope rumble" % LOW_PASS_HZ
+    write_wav(os.path.join(out_dir, name + ".wav"), shaped, rate)
+    print("%s [%s]: %.1f s, %d Hz, band rms %.4f (%s)" % (name, "one-shot" if one_shot else "loop", len(mono) / rate, rate, rms, note))
 
 
 if __name__ == "__main__":
