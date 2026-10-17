@@ -12,6 +12,39 @@ namespace OuterWildsDualSense
 	[HarmonyPatch(typeof(ThrusterAudio), "Start")]
 	internal static class ThrusterAudioPatch
 	{
+		/// <summary>
+		/// The real thrust (0-1) behind a thruster sound, or null for sounds that are not continuous thrust.
+		/// Names are the serialized field names of ThrusterAudio and its subclasses, in lower case.
+		/// </summary>
+		private static Func<float> ThrustFor(ThrusterModel model, string field)
+		{
+			var jetpack = model as JetpackThrusterModel;
+			if (jetpack != null)
+			{
+				if (field.Contains("boost")) return () => jetpack.IsBoosterFiring() ? 1f : 0f;
+				if (field.Contains("translational") || field.Contains("underwater") || field.Contains("oxygen"))
+					return () => jetpack.IsBoosterFiring() ? 0f : jetpack.GetThrustFraction();
+				return null;
+			}
+
+			var ship = model as ShipThrusterModel;
+			if (ship != null && (field.Contains("left") || field.Contains("right")))
+			{
+				bool leftBank = field.Contains("left");
+				return () => BankThrust(ship, leftBank);
+			}
+			return null;
+		}
+
+		/// <summary>Thrust of the left or right engine bank, the same split the ship's own audio uses.</summary>
+		private static float BankThrust(ShipThrusterModel ship, bool leftBank)
+		{
+			if (!ship.IsThrusterBankEnabled(leftBank ? ThrusterBank.Left : ThrusterBank.Right)) return 0f;
+			Vector3 accel = ship.GetLocalAcceleration();
+			accel.x = leftBank ? Mathf.Max(0f, accel.x) : Mathf.Min(0f, accel.x);
+			return Mathf.Clamp01(accel.magnitude / ship.GetMaxTranslationalThrust());
+		}
+
 		private static void Postfix(ThrusterAudio __instance)
 		{
 			var mod = DualSenseMod.Instance;
@@ -21,6 +54,7 @@ namespace OuterWildsDualSense
 			try
 			{
 				int count = 0;
+				var model = AccessTools.Field(typeof(ThrusterAudio), "_thrusterModel").GetValue(__instance) as ThrusterModel;
 				for (Type type = __instance.GetType(); type != null && type != typeof(MonoBehaviour); type = type.BaseType)
 				{
 					foreach (FieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
@@ -31,7 +65,7 @@ namespace OuterWildsDualSense
 
 						string lower = field.Name.ToLowerInvariant();
 						float pan = lower.Contains("left") ? -1f : lower.Contains("right") ? 1f : float.NaN;
-						HapticTap.Attach(source, pan);
+						HapticTap.Attach(source, pan, ThrustFor(model, lower));
 						count++;
 					}
 				}

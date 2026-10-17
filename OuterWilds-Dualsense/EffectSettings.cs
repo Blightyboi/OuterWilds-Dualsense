@@ -93,9 +93,11 @@ namespace OuterWildsDualSense
 				.Add("zone", "Start zone", 1, 0, 9, true);
 
 			const string hap = "Haptics";
-			Define("hap.live", hap, "Engine sounds (live audio)", "How the game's own engine sounds become haptics.")
+			Define("hap.live", hap, "Engine sounds (live audio)", "How the engine sounds become haptics. Strength follows the real thrust of the jetpack and ship thrusters.")
 				.Add("gain", "Master gain", 1, 0, 4)
-				.Add("gainFloor", "Strength at light thrust", 0.25f, 0, 1)
+				.Add("startThrust", "Thrust needed to start (0-1)", 0.05f, 0, 0.5f)
+				.Add("gainFloor", "Strength just after start", 0.15f, 0, 1)
+				.Add("curve", "Response curve (1 = linear)", 1f, 0.3f, 2.5f)
 				.Add("refVolume", "Volume counted as full thrust", 0.25f, 0.05f, 1)
 				.Add("bandTarget", "Loudness of the hum", 0.45f, 0.05f, 1)
 				.Add("lowPass", "Low-pass Hz", 350, 100, 1000)

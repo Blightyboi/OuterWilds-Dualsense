@@ -18,9 +18,17 @@ namespace OuterWildsDualSense
 		private const float PeakDecayPerSecond = 0.97f;
 
 		// Tunable through the F1 menu (effect "hap.live"), refreshed every frame on the main thread.
-		private float _gainFloor = 0.25f;
+		private float _gainFloor = 0.15f;
+		private float _startThrust = 0.05f;        // below this thrust (0-1) there is no haptic
+		private float _curve = 1f;
 		private float _referenceVolume = 0.25f;     // volume counted as full thrust
 		private float _bandTarget = 0.45f;          // level of the normalised low-frequency part
+
+		/// <summary>
+		/// Real thrust (0-1) of the thruster that makes this sound, read from the game's thruster model. When set, the
+		/// haptic strength follows it instead of the source volume, so it starts and stops with the actual thrust.
+		/// </summary>
+		private Func<float> _thrust;
 
 		private OWAudioSource _owSource;
 		private AudioSource _source;
@@ -47,13 +55,14 @@ namespace OuterWildsDualSense
 		private float _peakOut, _logTimer;
 
 		/// <summary>Adds a tap to the source's GameObject (once). forcedPan: -1 left, +1 right, NaN = follow the source's pan.</summary>
-		public static void Attach(OWAudioSource source, float forcedPan)
+		public static void Attach(OWAudioSource source, float forcedPan, Func<float> thrust = null)
 		{
 			if (source == null || source.GetComponent<HapticTap>() != null) return;
 			var tap = source.gameObject.AddComponent<HapticTap>();
 			tap._owSource = source;
 			tap._source = source.GetAudioSource();
 			tap._forcedPan = forcedPan;
+			tap._thrust = thrust;
 		}
 
 		/// <summary>Plays an extracted one-shot haptic for a PlayOneShot on this source.</summary>
@@ -84,6 +93,8 @@ namespace OuterWildsDualSense
 			var live = Effects.Get("hap.live");
 			int rate = AudioSettings.outputSampleRate;
 			_gainFloor = live["gainFloor"];
+			_startThrust = live["startThrust"];
+			_curve = live["curve"];
 			_referenceVolume = live["refVolume"];
 			_bandTarget = live["bandTarget"];
 			_lpCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * live["lowPass"] / rate);
@@ -147,10 +158,27 @@ namespace OuterWildsDualSense
 			if (_active == null) return;
 
 			_volume = _source.mute ? 0f : _source.volume;
-			_peakVolume = Mathf.Max(_referenceVolume, Mathf.Max(_volume, _peakVolume * Mathf.Pow(PeakDecayPerSecond, Time.unscaledDeltaTime)));
 			float gain = 0f;
-			if (_source.isPlaying && _volume > MinVolume)
-				gain = Mathf.Lerp(_gainFloor, 1f, Mathf.Clamp01(_volume / _peakVolume));
+			if (_source.isPlaying)
+			{
+				if (_thrust != null)
+				{
+					// Real thrust from the game's thruster model: starts and stops with the thrust itself.
+					float t = Mathf.Clamp01(_thrust());
+					if (t > _startThrust)
+					{
+						float onset = _startThrust > 0.0001f ? Mathf.Clamp01((t - _startThrust) / _startThrust) : 1f;
+						float ratio = Mathf.Clamp01((t - _startThrust) / Mathf.Max(1f - _startThrust, 0.01f));
+						gain = onset * Mathf.Lerp(_gainFloor, 1f, Mathf.Pow(ratio, _curve));
+					}
+				}
+				else if (_volume > MinVolume)
+				{
+					// Sounds without a thruster behind them (ignition, rotation): follow the source volume.
+					_peakVolume = Mathf.Max(_referenceVolume, Mathf.Max(_volume, _peakVolume * Mathf.Pow(PeakDecayPerSecond, Time.unscaledDeltaTime)));
+					gain = Mathf.Lerp(_gainFloor, 1f, Mathf.Clamp01(_volume / _peakVolume));
+				}
+			}
 			_liveGain = gain;
 
 			float pan = float.IsNaN(_forcedPan) ? _source.panStereo : _forcedPan;
