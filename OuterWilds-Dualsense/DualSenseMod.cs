@@ -19,6 +19,7 @@ namespace OuterWildsDualSense
 		public bool AudioHaptics = true;
 		public float HapticGain = 1f;
 		public bool UseExtractedClips;
+		public string WatchClip = "";
 		public bool DebugLog;
 
 		private void Awake()
@@ -29,7 +30,9 @@ namespace OuterWildsDualSense
 
 		private void Start()
 		{
-			new Harmony("Blightyboi.OuterWilds-Dualsense").PatchAll(typeof(DualSenseMod).Assembly);
+			var harmony = new Harmony("Blightyboi.OuterWilds-Dualsense");
+			harmony.PatchAll(typeof(DualSenseMod).Assembly);
+			WorldSounds.Install(harmony);
 			Application.quitting += ResetController;
 			Effects.Load();
 			EffectPreview.Wire();
@@ -58,6 +61,7 @@ namespace OuterWildsDualSense
 			Lightbar = config.GetSettingsValue<bool>("lightbar");
 			AudioHaptics = config.GetSettingsValue<bool>("audioHaptics");
 			UseExtractedClips = config.GetSettingsValue<bool>("useExtractedClips");
+			WatchClip = config.GetSettingsValue<string>("watchClip") ?? "";
 			HapticGain = Mathf.Clamp(config.GetSettingsValue<float>("hapticGain"), 0f, 4f);
 			if (Haptics != null) Haptics.MasterGain = HapticGain;
 			DebugLog = config.GetSettingsValue<bool>("debugLog");

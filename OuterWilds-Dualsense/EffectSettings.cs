@@ -203,6 +203,19 @@ namespace OuterWildsDualSense
 			Define("hazard.heat", hazard, "Heat and other damage", "Heat_Damage_Loop_01, a soft hiss in hot places. Also used for the hazards that have no loop of their own.")
 				.Add("gain", "Strength", 3f, 0, 5);
 
+			const string splash = "Splashes near you";
+			Define("splash.world", splash, "Reach of splashes", "Splash sounds around you are felt whenever the game plays them, whoever causes them (the player, a probe, a rock thrown by a character). Strength falls off with the distance to the sound and the haptic leans toward its side.")
+				.Add("range", "Reach (m)", 25f, 2, 100)
+				.Add("curve", "Falloff curve (1 = linear)", 1.5f, 0.5f, 4f);
+			Define("splash.ghost", splash, "Splash in ghost matter", "GhostMatter_Splash_v4_*, 1.8 s, hits at once. The child Arkose on Timber Hearth throws a rock into ghost matter every four to eight seconds.")
+				.Add("gain", "Strength", 1.5f, 0, 5);
+			Define("splash.lava", splash, "Splash in lava", "Lava_Splash_01/02, 2.7 s.")
+				.Add("gain", "Strength", 1.2f, 0, 5);
+			Define("splash.water", splash, "Splash in water", "SmallSplash, MediumSplash and the raft and large splashes.")
+				.Add("gain", "Strength", 1f, 0, 5);
+			Define("splash.other", splash, "Other splashes")
+				.Add("gain", "Strength", 1f, 0, 5);
+
 			const string light = "Lightbar";
 			Define("light.settings", light, "Lightbar behaviour", "The colour follows the planet or place where the character is.")
 				.Add("fadeSeconds", "Blend time between places (s)", 1f, 0, 5)

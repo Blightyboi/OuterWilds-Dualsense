@@ -96,6 +96,10 @@ namespace OuterWildsDualSense
 			Effects.Get("hazard.fire").Preview = () => HazardHaptics.Preview(HazardVolume.HazardType.FIRE);
 			Effects.Get("hazard.heat").Preview = () => HazardHaptics.Preview(HazardVolume.HazardType.HEAT);
 
+			Effects.Get("splash.ghost").Preview = () => WorldSounds.Preview(AudioType.Splash_GhostMatter);
+			Effects.Get("splash.lava").Preview = () => WorldSounds.Preview(AudioType.Splash_Lava);
+			Effects.Get("splash.water").Preview = () => WorldSounds.Preview(AudioType.Splash_Water_Player);
+
 			var rumble = Effects.Get("hap.rumble");
 			rumble.Preview = () => _rumbleUntil = Time.unscaledTime + 0.4f;
 
@@ -124,6 +128,9 @@ namespace OuterWildsDualSense
 				Effects.Get(id).PreviewStop = HazardHaptics.StopPreview;
 
 			Effects.Get("hap.live").PreviewPeriod = 2.2f;
+			Effects.Get("splash.ghost").PreviewPeriod = 2.4f;
+			Effects.Get("splash.lava").PreviewPeriod = 3.2f;
+			Effects.Get("splash.water").PreviewPeriod = 2.0f;
 			Effects.Get("step.base").PreviewPeriod = 4.0f;
 			Effects.Get("step.surface").PreviewPeriod = 3.2f;
 			Effects.Get("char.jump").PreviewPeriod = 0.7f;

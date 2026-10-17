@@ -86,6 +86,24 @@ namespace OuterWildsDualSense
 			tap._dynamic = dynamic;
 		}
 
+		/// <summary>
+		/// Dynamic tap on any Unity AudioSource (for sounds the game plays without an OWAudioSource). Reuses the tap if
+		/// the source already has one. Returns null if the haptic output is not available.
+		/// </summary>
+		public static HapticTap AttachTo(AudioSource source, float pan)
+		{
+			if (source == null || DualSenseMod.Haptics == null) return null;
+			var tap = source.GetComponent<HapticTap>();
+			if (tap == null)
+			{
+				tap = source.gameObject.AddComponent<HapticTap>();
+				tap._source = source;
+				tap._dynamic = true;
+			}
+			tap._forcedPan = pan;
+			return tap;
+		}
+
 		/// <summary>Plays an extracted one-shot haptic for a PlayOneShot on this source.</summary>
 		public void PlayOneShot(float[] wave, int rate, float volume)
 		{

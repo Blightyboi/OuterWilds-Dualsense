@@ -7,6 +7,7 @@
     "audioHaptics": true,
     "hapticGain": 1.0,
     "useExtractedClips": false,
+    "watchClip": "",
     "debugLog": false
   }
 }
