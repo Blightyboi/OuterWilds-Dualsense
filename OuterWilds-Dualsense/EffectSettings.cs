@@ -216,6 +216,16 @@ namespace OuterWildsDualSense
 			Define("splash.other", splash, "Other splashes")
 				.Add("gain", "Strength", 1f, 0, 5);
 
+			const string memories = "Memories (flashback, memory uplink)";
+			Define("mem.base", memories, "Base loop", "OW NM Flashback 082818_3 AP base (flashback after death, 30 s) and 082818 AP loop (memory uplink). The game fades it in and out and the haptic follows that.")
+				.Add("gain", "Strength", 1.5f, 0, 5);
+			Define("mem.overlay", memories, "Overlay loop", "OW NM Flashback 082818 AP overlay1 / loop overlay AP. Quiet, builds up with the scene.")
+				.Add("gain", "Strength", 2.5f, 0, 6);
+			Define("mem.slam", memories, "Memory uplink start (slam)", "OW NM Flashback 081718 AP slam: a heavy blow that rings out for about four seconds.")
+				.Add("gain", "Strength", 1.2f, 0, 5);
+			Define("mem.end", memories, "End stinger", "OW NM Flashback 082818_2 AP stinger, 3.4 s: swells until the very end.")
+				.Add("gain", "Strength", 1.2f, 0, 5);
+
 			const string light = "Lightbar";
 			Define("light.settings", light, "Lightbar behaviour", "The colour follows the planet or place where the character is.")
 				.Add("fadeSeconds", "Blend time between places (s)", 1f, 0, 5)

@@ -47,6 +47,9 @@ namespace OuterWildsDualSense
 		/// <summary>Dynamic mode, optional: asks for the strength every frame instead of using OneShotGain.</summary>
 		public Func<float> GainOverride;
 
+		/// <summary>Dynamic mode: scale the strength by the source's current volume (loops the game fades in and out).</summary>
+		public bool FollowVolume;
+
 		/// <summary>Dynamic mode: only sounds that set OneShotGain are felt (the source also plays unrelated sounds).</summary>
 		public bool Strict;
 
@@ -205,7 +208,7 @@ namespace OuterWildsDualSense
 			{
 				if (_dynamic)
 				{
-					gain = GainOverride != null ? GainOverride() : OneShotGain;
+					gain = (GainOverride != null ? GainOverride() : OneShotGain) * (FollowVolume ? _volume : 1f);
 				}
 				else if (_thrust != null)
 				{

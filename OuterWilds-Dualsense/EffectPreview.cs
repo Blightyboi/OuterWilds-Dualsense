@@ -100,6 +100,11 @@ namespace OuterWildsDualSense
 			Effects.Get("splash.lava").Preview = () => WorldSounds.Preview(AudioType.Splash_Lava);
 			Effects.Get("splash.water").Preview = () => WorldSounds.Preview(AudioType.Splash_Water_Player);
 
+			Effects.Get("mem.base").Preview = () => MemoryHaptics.HoldLoop(false, AudioType.Flashback_Base_LP);
+			Effects.Get("mem.overlay").Preview = () => MemoryHaptics.HoldLoop(true, AudioType.MemoryUplink_Overlay_LP);
+			Effects.Get("mem.slam").Preview = () => MemoryHaptics.PlayOneShot(AudioType.MemoryUplink_Start);
+			Effects.Get("mem.end").Preview = () => MemoryHaptics.PlayOneShot(AudioType.Flashback_End);
+
 			var rumble = Effects.Get("hap.rumble");
 			rumble.Preview = () => _rumbleUntil = Time.unscaledTime + 0.4f;
 
@@ -128,6 +133,10 @@ namespace OuterWildsDualSense
 				Effects.Get(id).PreviewStop = HazardHaptics.StopPreview;
 
 			Effects.Get("hap.live").PreviewPeriod = 2.2f;
+			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
+			Effects.Get("mem.end").PreviewPeriod = 4.0f;
+			Effects.Get("mem.base").PreviewStop = () => MemoryHaptics.StopLoop(false);
+			Effects.Get("mem.overlay").PreviewStop = () => MemoryHaptics.StopLoop(true);
 			Effects.Get("splash.ghost").PreviewPeriod = 2.4f;
 			Effects.Get("splash.lava").PreviewPeriod = 3.2f;
 			Effects.Get("splash.water").PreviewPeriod = 2.0f;

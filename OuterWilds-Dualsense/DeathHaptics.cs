@@ -126,7 +126,7 @@ namespace OuterWildsDualSense
 		{
 			var tap = source.GetComponent<HapticTap>();
 			if (tap == null) return;
-			float? gain = GainFor(type);
+			float? gain = GainFor(type) ?? MemoryHaptics.OneShotGain(type);
 			if (gain.HasValue)
 			{
 				tap.OneShotGain = gain.Value;

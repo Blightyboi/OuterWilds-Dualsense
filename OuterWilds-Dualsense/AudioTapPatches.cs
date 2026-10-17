@@ -52,6 +52,7 @@ namespace OuterWildsDualSense
 			if (!DualSenseMod.EnsureHaptics()) return;
 			DeathHaptics.EnsureTaps();
 			HazardHaptics.EnsureTaps();
+			MemoryHaptics.EnsureTaps();
 
 			try
 			{
