@@ -105,6 +105,13 @@ namespace OuterWildsDualSense
 			Effects.Get("mem.slam").Preview = () => MemoryHaptics.PlayOneShot(AudioType.MemoryUplink_Start);
 			Effects.Get("mem.end").Preview = () => MemoryHaptics.PlayOneShot(AudioType.Flashback_End);
 
+			Effects.Get("grav.crystal").Preview = () => WorldSounds.HoldLoop("grav.crystal", AudioType.NomaiGravCrystalAmbient_LP);
+			Effects.Get("grav.flicker").Preview = () => WorldSounds.HoldLoop("grav.flicker", AudioType.NomaiGravCrystalFlickerAmbient_LP);
+			Effects.Get("grav.beam").Preview = () => WorldSounds.HoldLoop("grav.beam", AudioType.NomaiTractorBeamAmbient_LP);
+			Effects.Get("grav.beamswitch").Preview = () => WorldSounds.Preview(AudioType.NomaiTractorBeamActivate);
+			Effects.Get("grav.cannon").Preview = () => WorldSounds.HoldLoop("grav.cannon", AudioType.NomaiGravityCannonAmbient_LP);
+			Effects.Get("grav.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiGravityCannonActivate);
+
 			var rumble = Effects.Get("hap.rumble");
 			rumble.Preview = () => _rumbleUntil = Time.unscaledTime + 0.4f;
 
@@ -133,6 +140,10 @@ namespace OuterWildsDualSense
 				Effects.Get(id).PreviewStop = HazardHaptics.StopPreview;
 
 			Effects.Get("hap.live").PreviewPeriod = 2.2f;
+			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
+			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam" })
+				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;
 			Effects.Get("mem.base").PreviewStop = () => MemoryHaptics.StopLoop(false);

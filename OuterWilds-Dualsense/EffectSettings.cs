@@ -203,8 +203,8 @@ namespace OuterWildsDualSense
 			Define("hazard.heat", hazard, "Heat and other damage", "Heat_Damage_Loop_01, a soft hiss in hot places. Also used for the hazards that have no loop of their own.")
 				.Add("gain", "Strength", 3f, 0, 5);
 
-			const string splash = "Splashes near you";
-			Define("splash.world", splash, "Reach of splashes", "Splash sounds around you are felt whenever the game plays them, whoever causes them (the player, a probe, a rock thrown by a character). Strength falls off with the distance to the sound and the haptic leans toward its side.")
+			const string splash = "Sounds around you";
+			Define("splash.world", splash, "Reach of sounds around you", "Splashes, the gravity cannon and similar sounds are felt whenever the game plays them, whoever causes them. Strength falls off with the distance to the sound; one-shots also lean toward the side they come from.")
 				.Add("range", "Reach (m)", 25f, 2, 100)
 				.Add("curve", "Falloff curve (1 = linear)", 1.5f, 0.5f, 4f);
 			Define("splash.ghost", splash, "Splash in ghost matter", "GhostMatter_Splash_v4_*, 1.8 s, hits at once. The child Arkose on Timber Hearth throws a rock into ghost matter every four to eight seconds.")
@@ -225,6 +225,20 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1.2f, 0, 5);
 			Define("mem.end", memories, "End stinger", "OW NM Flashback 082818_2 AP stinger, 3.4 s: swells until the very end.")
 				.Add("gain", "Strength", 1.2f, 0, 5);
+
+			const string gravity = "Gravity (crystals, beam, cannon)";
+			Define("grav.crystal", gravity, "Gravity crystal", "OW_NM_GravityCrystalAmbience_Louder, a steady hum with plenty of low end. The game fades it in when you enter the crystal's area, and by distance.")
+				.Add("gain", "Strength", 1.5f, 0, 6);
+			Define("grav.flicker", gravity, "Gravity crystal (flickering)", "OW_NM_FlickeryGravityCrystalAmbience: almost nothing in the low band, so only a faint tremble comes out of it. Turn it up if you want it felt.")
+				.Add("gain", "Strength", 4f, 0, 10);
+			Define("grav.beam", gravity, "Gravity beam (tractor beam) hum", "OW_NM_TractorBeamLP, a steady 34 s loop with plenty of low end. Felt by distance: strongest inside the beam.")
+				.Add("gain", "Strength", 1.5f, 0, 6);
+			Define("grav.beamswitch", gravity, "Gravity beam power up and down", "OW_NM_TractorBeamPowerUp (6.6 s, a surge at the start, then fading) and PowerDown (4.3 s, a soft rising hum). The power-up clip is also used by other Nomai devices switching on.")
+				.Add("gain", "Strength", 1.5f, 0, 6);
+			Define("grav.cannon", gravity, "Gravity cannon hum", "OW_NM_GravityCannonAmbience, a steady 56 s loop that the game fades in while the cannon is active. Also used for the Vessel's ambience.")
+				.Add("gain", "Strength", 1.5f, 0, 6);
+			Define("grav.shot", gravity, "Gravity cannon start and stop", "OW_NM_GravityCannonActivated / Deactivated, 8 s: build-up and a heavy blow at about 5.3 s.")
+				.Add("gain", "Strength", 1.2f, 0, 6);
 
 			const string light = "Lightbar";
 			Define("light.settings", light, "Lightbar behaviour", "The colour follows the planet or place where the character is.")

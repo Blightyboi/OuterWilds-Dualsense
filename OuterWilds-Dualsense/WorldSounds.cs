@@ -17,15 +17,34 @@ namespace OuterWildsDualSense
 		{
 			public string ClipPrefix;
 			public string EffectId;
+			/// <summary>A loop the game fades in and out: the haptic follows the source volume (and the distance if Distance).</summary>
+			public bool Loop;
+			/// <summary>The strength falls off with the distance to the sound. Off when the game does the fading by distance itself.</summary>
+			public bool Distance;
 		}
 
 		private static readonly Rule[] Rules =
 		{
-			new Rule { ClipPrefix = "GhostMatter_Splash", EffectId = "splash.ghost" },
-			new Rule { ClipPrefix = "Lava_Splash", EffectId = "splash.lava" },
-			new Rule { ClipPrefix = "SmallSplash", EffectId = "splash.water" },
-			new Rule { ClipPrefix = "MediumSplash", EffectId = "splash.water" },
-			new Rule { ClipPrefix = "Huge Splash", EffectId = "splash.water" },
+			// Splashes: one-shots, strength fixed when they start.
+			new Rule { ClipPrefix = "GhostMatter_Splash", EffectId = "splash.ghost", Distance = true },
+			new Rule { ClipPrefix = "Lava_Splash", EffectId = "splash.lava", Distance = true },
+			new Rule { ClipPrefix = "SmallSplash", EffectId = "splash.water", Distance = true },
+			new Rule { ClipPrefix = "MediumSplash", EffectId = "splash.water", Distance = true },
+			new Rule { ClipPrefix = "Huge Splash", EffectId = "splash.water", Distance = true },
+
+			// Gravity crystals: the game fades the loop by the player's distance itself.
+			new Rule { ClipPrefix = "OW_NM_GravityCrystalAmbience", EffectId = "grav.crystal", Loop = true },
+			new Rule { ClipPrefix = "OW_NM_FlickeryGravityCrystalAmbience", EffectId = "grav.flicker", Loop = true },
+
+			// Tractor beam (the gravity beam): its hum, and the power-up and power-down.
+			new Rule { ClipPrefix = "OW_NM_TractorBeamLP", EffectId = "grav.beam", Loop = true, Distance = true },
+			new Rule { ClipPrefix = "OW_NM_TractorBeamPowerUp", EffectId = "grav.beamswitch", Distance = true },
+			new Rule { ClipPrefix = "OW_NM_TractorBeamPowerDown", EffectId = "grav.beamswitch", Distance = true },
+
+			// Gravity cannon: ambient loop faded by the game when it is active, plus its start and stop.
+			new Rule { ClipPrefix = "OW_NM_GravityCannonAmbience", EffectId = "grav.cannon", Loop = true, Distance = true },
+			new Rule { ClipPrefix = "OW_NM_GravityCannonActivated", EffectId = "grav.shot", Distance = true },
+			new Rule { ClipPrefix = "OW_NM_GravityCannonDeactivated", EffectId = "grav.shot", Distance = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>
@@ -72,16 +91,23 @@ namespace OuterWildsDualSense
 				SoundWatch.Report(source, clip);
 				if (!mod.Enabled || !mod.AudioHaptics || DualSenseMod.Haptics == null) return;
 
-				string effectId = null;
+				Rule? found = null;
 				foreach (var rule in Rules)
-					if (clip.name.StartsWith(rule.ClipPrefix, StringComparison.Ordinal)) { effectId = rule.EffectId; break; }
-				if (effectId == null) return;
+					if (clip.name.StartsWith(rule.ClipPrefix, StringComparison.Ordinal)) { found = rule; break; }
+				if (found == null) return;
+				var match = found.Value;
 
 				var camera = Locator.GetPlayerCamera();
 				if (camera == null) return;
 
+				if (match.Loop)
+				{
+					AttachLoop(source, match);
+					return;
+				}
+
 				Vector3 toSound = source.transform.position - camera.transform.position;
-				float strength = Falloff(toSound.magnitude);
+				float strength = match.Distance ? Falloff(toSound.magnitude) : 1f;
 				if (strength < 0.02f)
 				{
 					DualSenseMod.Debug(string.Format("World sound {0} ignored: {1:F1} m away", clip.name, toSound.magnitude));
@@ -91,7 +117,7 @@ namespace OuterWildsDualSense
 				float pan = toSound.sqrMagnitude > 0.01f ? Vector3.Dot(toSound.normalized, camera.transform.right) : 0f;
 				var tap = HapticTap.AttachTo(source, pan);
 				if (tap == null) return;
-				tap.OneShotGain = Effects.Get(effectId)["gain"] * strength;
+				tap.OneShotGain = Effects.Get(match.EffectId)["gain"] * strength;
 				DualSenseMod.Log(string.Format("World sound '{0}' on {1}: {2:F1} m, haptic strength {3:F2}, pan {4:F2}",
 					clip.name, source.name, toSound.magnitude, tap.OneShotGain, pan));
 			}
@@ -99,6 +125,28 @@ namespace OuterWildsDualSense
 			{
 				DualSenseMod.Debug("World sound haptic failed: " + e.Message);
 			}
+		}
+
+		/// <summary>
+		/// A loop the game fades in and out: strength = setting x the source's volume (x distance falloff, evaluated every
+		/// frame, if the game does not fade by distance itself).
+		/// </summary>
+		private static void AttachLoop(AudioSource source, Rule rule)
+		{
+			var tap = HapticTap.AttachTo(source, float.NaN);
+			if (tap == null || tap.GainOverride != null) return; // already set up
+			string id = rule.EffectId;
+			bool distance = rule.Distance;
+			tap.FollowVolume = true;
+			tap.GainOverride = () =>
+			{
+				float gain = Effects.Get(id)["gain"];
+				var camera = Locator.GetPlayerCamera();
+				if (distance && camera != null && source != null)
+					gain *= Falloff((source.transform.position - camera.transform.position).magnitude);
+				return gain;
+			};
+			DualSenseMod.Log("World loop '" + source.clip.name + "' on " + source.name + " is tapped");
 		}
 
 		/// <summary>0 when the sound is out of reach, 1 right at the player.</summary>
@@ -126,6 +174,33 @@ namespace OuterWildsDualSense
 			var source = holder.AddComponent<OWAudioSource>();
 			source.PlayOneShot(type); // the AudioSource hook above does the rest, like for any other sound
 			UnityEngine.Object.Destroy(holder, 5f);
+		}
+
+		private static GameObject _loopHolder;
+		private static string _loopKey;
+
+		/// <summary>F1 menu: holds a game loop next to the player while called every frame.</summary>
+		public static void HoldLoop(string key, AudioType type)
+		{
+			if (_loopHolder != null && _loopKey == key) return;
+			StopLoop();
+			var camera = Locator.GetPlayerCamera();
+			if (camera == null || DualSenseMod.Haptics == null) return;
+
+			_loopKey = key;
+			_loopHolder = new GameObject("DualSense loop preview");
+			_loopHolder.transform.position = camera.transform.position + camera.transform.forward * 2f;
+			var source = _loopHolder.AddComponent<OWAudioSource>();
+			source.AssignAudioLibraryClip(type);
+			source.loop = true;
+			source.Play(); // the AudioSource hook sets up the haptic like for any other loop
+		}
+
+		public static void StopLoop()
+		{
+			if (_loopHolder != null) UnityEngine.Object.Destroy(_loopHolder);
+			_loopHolder = null;
+			_loopKey = null;
 		}
 	}
 }
