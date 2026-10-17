@@ -78,7 +78,7 @@ namespace OuterWildsDualSense
 				.Add("start", "Strength at top", 2, 1, 8, true)
 				.Add("end", "Strength at bottom", 5, 1, 8, true);
 			Define("jp.boost", jp, "R2 boost (push-out pulses)", "Held while the booster fires.")
-				.Add("freq", "Frequency Hz", 8, 1, 40, true)
+				.Add("freq", "Frequency Hz", 12, 1, 40, true)
 				.Add("amp", "Amplitude", 8, 1, 8, true)
 				.Add("zone", "Start zone", 0, 0, 9, true);
 			Define("jp.lowfuel", jp, "R2 low fuel warning", "Buzz while thrusting with little fuel left.")
@@ -104,7 +104,7 @@ namespace OuterWildsDualSense
 			const string hap = "Haptics";
 			Define("hap.live", hap, "Engine sounds (live audio)", "How the engine sounds become haptics. Strength follows the real thrust of the jetpack and ship thrusters.")
 				.Add("gain", "Master gain", 1, 0, 4)
-				.Add("startThrust", "Thrust needed to start (0-1)", 0.05f, 0, 0.5f)
+				.Add("startThrust", "Thrust needed to start (0-1)", 0f, 0, 0.5f)
 				.Add("gainFloor", "Strength just after start", 0.15f, 0, 1)
 				.Add("curve", "Response curve (1 = linear)", 1f, 0.3f, 2.5f)
 				.Add("refVolume", "Volume counted as full thrust", 0.25f, 0.05f, 1)
@@ -188,53 +188,53 @@ namespace OuterWildsDualSense
 				.Add("g", "Green", 110, 0, 255, true)
 				.Add("b", "Blue", 20, 0, 255, true);
 			Define("light.timber", light, "Timber Hearth")
-				.Add("r", "Red", 60, 0, 255, true)
-				.Add("g", "Green", 200, 0, 255, true)
-				.Add("b", "Blue", 60, 0, 255, true);
+				.Add("r", "Red", 6, 0, 255, true)
+				.Add("g", "Green", 255, 0, 255, true)
+				.Add("b", "Blue", 6, 0, 255, true);
 			Define("light.attlerock", light, "Attlerock")
-				.Add("r", "Red", 140, 0, 255, true)
-				.Add("g", "Green", 150, 0, 255, true)
-				.Add("b", "Blue", 175, 0, 255, true);
+				.Add("r", "Red", 50, 0, 255, true)
+				.Add("g", "Green", 54, 0, 255, true)
+				.Add("b", "Blue", 65, 0, 255, true);
 			Define("light.hollow", light, "Brittle Hollow")
-				.Add("r", "Red", 170, 0, 255, true)
-				.Add("g", "Green", 70, 0, 255, true)
-				.Add("b", "Blue", 220, 0, 255, true);
+				.Add("r", "Red", 132, 0, 255, true)
+				.Add("g", "Green", 23, 0, 255, true)
+				.Add("b", "Blue", 186, 0, 255, true);
 			Define("light.lantern", light, "Hollow's Lantern")
 				.Add("r", "Red", 255, 0, 255, true)
 				.Add("g", "Green", 40, 0, 255, true)
 				.Add("b", "Blue", 0, 0, 255, true);
 			Define("light.deep", light, "Giant's Deep")
-				.Add("r", "Red", 0, 0, 255, true)
-				.Add("g", "Green", 110, 0, 255, true)
-				.Add("b", "Blue", 255, 0, 255, true);
+				.Add("r", "Red", 78, 0, 255, true)
+				.Add("g", "Green", 83, 0, 255, true)
+				.Add("b", "Blue", 48, 0, 255, true);
 			Define("light.bramble", light, "Dark Bramble")
-				.Add("r", "Red", 20, 0, 255, true)
-				.Add("g", "Green", 160, 0, 255, true)
-				.Add("b", "Blue", 90, 0, 255, true);
+				.Add("r", "Red", 82, 0, 255, true)
+				.Add("g", "Green", 255, 0, 255, true)
+				.Add("b", "Blue", 169, 0, 255, true);
 			Define("light.comet", light, "The Interloper")
-				.Add("r", "Red", 160, 0, 255, true)
-				.Add("g", "Green", 220, 0, 255, true)
+				.Add("r", "Red", 0, 0, 255, true)
+				.Add("g", "Green", 230, 0, 255, true)
 				.Add("b", "Blue", 255, 0, 255, true);
 			Define("light.twinA", light, "Ash Twin")
 				.Add("r", "Red", 255, 0, 255, true)
 				.Add("g", "Green", 175, 0, 255, true)
 				.Add("b", "Blue", 40, 0, 255, true);
 			Define("light.twinB", light, "Ember Twin")
-				.Add("r", "Red", 255, 0, 255, true)
-				.Add("g", "Green", 70, 0, 255, true)
-				.Add("b", "Blue", 10, 0, 255, true);
+				.Add("r", "Red", 237, 0, 255, true)
+				.Add("g", "Green", 58, 0, 255, true)
+				.Add("b", "Blue", 0, 0, 255, true);
 			Define("light.quantum", light, "Quantum Moon")
-				.Add("r", "Red", 255, 0, 255, true)
-				.Add("g", "Green", 80, 0, 255, true)
-				.Add("b", "Blue", 170, 0, 255, true);
+				.Add("r", "Red", 117, 0, 255, true)
+				.Add("g", "Green", 20, 0, 255, true)
+				.Add("b", "Blue", 173, 0, 255, true);
 			Define("light.whitehole", light, "White Hole Station")
 				.Add("r", "Red", 230, 0, 255, true)
 				.Add("g", "Green", 230, 0, 255, true)
 				.Add("b", "Blue", 255, 0, 255, true);
 			Define("light.cannon", light, "Orbital Probe Cannon")
-				.Add("r", "Red", 0, 0, 255, true)
-				.Add("g", "Green", 200, 0, 255, true)
-				.Add("b", "Blue", 200, 0, 255, true);
+				.Add("r", "Red", 243, 0, 255, true)
+				.Add("g", "Green", 239, 0, 255, true)
+				.Add("b", "Blue", 103, 0, 255, true);
 			Define("light.sunstation", light, "Sun Station")
 				.Add("r", "Red", 255, 0, 255, true)
 				.Add("g", "Green", 210, 0, 255, true)
