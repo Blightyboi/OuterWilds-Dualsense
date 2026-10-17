@@ -61,11 +61,7 @@ namespace OuterWildsDualSense
 				if (EffectPreview.TriggersActive) EffectPreview.GetTriggers(out left, out right);
 
 				device.SetTriggers(left, right);
-				if (mod.Lightbar)
-				{
-					var color = Effects.Get("light.color");
-					device.SetLightbar((byte)color.Int("r"), (byte)color.Int("g"), (byte)color.Int("b"));
-				}
+				if (mod.Lightbar) PlanetLight.Update(device, Time.unscaledDeltaTime);
 				device.Flush(Time.unscaledDeltaTime);
 			}
 			catch (Exception e)

@@ -26,6 +26,15 @@ namespace OuterWildsDualSense
 		/// <summary>Plays the effect once so it can be felt from the menu. Null if there is nothing to play.</summary>
 		public Action Preview;
 
+		/// <summary>
+		/// Seconds between repeats while the Play button is on. 0 = refresh every frame (for effects that hold while
+		/// refreshed, such as triggers and colours); otherwise the length of the effect plus a short pause.
+		/// </summary>
+		public float PreviewPeriod;
+
+		/// <summary>Called when the preview is stopped, to release anything that was being held.</summary>
+		public Action PreviewStop;
+
 		public EffectDef Add(string key, string label, float def, float min, float max, bool integer = false)
 		{
 			Params.Add(new Param { Key = key, Label = label, Default = def, Value = def, Min = min, Max = max, Integer = integer });
@@ -171,10 +180,69 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1f, 0, 3);
 
 			const string light = "Lightbar";
-			Define("light.color", light, "Lightbar colour")
+			Define("light.settings", light, "Lightbar behaviour", "The colour follows the planet or place where the character is.")
+				.Add("fadeSeconds", "Blend time between places (s)", 1f, 0, 5)
+				.Add("brightness", "Brightness", 1f, 0, 1);
+			Define("light.color", light, "Default (menu and open space)")
 				.Add("r", "Red", 255, 0, 255, true)
 				.Add("g", "Green", 110, 0, 255, true)
 				.Add("b", "Blue", 20, 0, 255, true);
+			Define("light.timber", light, "Timber Hearth")
+				.Add("r", "Red", 60, 0, 255, true)
+				.Add("g", "Green", 200, 0, 255, true)
+				.Add("b", "Blue", 60, 0, 255, true);
+			Define("light.attlerock", light, "Attlerock")
+				.Add("r", "Red", 140, 0, 255, true)
+				.Add("g", "Green", 150, 0, 255, true)
+				.Add("b", "Blue", 175, 0, 255, true);
+			Define("light.hollow", light, "Brittle Hollow")
+				.Add("r", "Red", 170, 0, 255, true)
+				.Add("g", "Green", 70, 0, 255, true)
+				.Add("b", "Blue", 220, 0, 255, true);
+			Define("light.lantern", light, "Hollow's Lantern")
+				.Add("r", "Red", 255, 0, 255, true)
+				.Add("g", "Green", 40, 0, 255, true)
+				.Add("b", "Blue", 0, 0, 255, true);
+			Define("light.deep", light, "Giant's Deep")
+				.Add("r", "Red", 0, 0, 255, true)
+				.Add("g", "Green", 110, 0, 255, true)
+				.Add("b", "Blue", 255, 0, 255, true);
+			Define("light.bramble", light, "Dark Bramble")
+				.Add("r", "Red", 20, 0, 255, true)
+				.Add("g", "Green", 160, 0, 255, true)
+				.Add("b", "Blue", 90, 0, 255, true);
+			Define("light.comet", light, "The Interloper")
+				.Add("r", "Red", 160, 0, 255, true)
+				.Add("g", "Green", 220, 0, 255, true)
+				.Add("b", "Blue", 255, 0, 255, true);
+			Define("light.twinA", light, "Ash Twin")
+				.Add("r", "Red", 255, 0, 255, true)
+				.Add("g", "Green", 175, 0, 255, true)
+				.Add("b", "Blue", 40, 0, 255, true);
+			Define("light.twinB", light, "Ember Twin")
+				.Add("r", "Red", 255, 0, 255, true)
+				.Add("g", "Green", 70, 0, 255, true)
+				.Add("b", "Blue", 10, 0, 255, true);
+			Define("light.quantum", light, "Quantum Moon")
+				.Add("r", "Red", 255, 0, 255, true)
+				.Add("g", "Green", 80, 0, 255, true)
+				.Add("b", "Blue", 170, 0, 255, true);
+			Define("light.whitehole", light, "White Hole Station")
+				.Add("r", "Red", 230, 0, 255, true)
+				.Add("g", "Green", 230, 0, 255, true)
+				.Add("b", "Blue", 255, 0, 255, true);
+			Define("light.cannon", light, "Orbital Probe Cannon")
+				.Add("r", "Red", 0, 0, 255, true)
+				.Add("g", "Green", 200, 0, 255, true)
+				.Add("b", "Blue", 200, 0, 255, true);
+			Define("light.sunstation", light, "Sun Station")
+				.Add("r", "Red", 255, 0, 255, true)
+				.Add("g", "Green", 210, 0, 255, true)
+				.Add("b", "Blue", 60, 0, 255, true);
+			Define("light.eye", light, "Eye of the Universe")
+				.Add("r", "Red", 120, 0, 255, true)
+				.Add("g", "Green", 80, 0, 255, true)
+				.Add("b", "Blue", 255, 0, 255, true);
 		}
 
 		private static string FilePath

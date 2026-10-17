@@ -21,7 +21,7 @@ namespace OuterWildsDualSense
 			right = _right;
 		}
 
-		public static void Triggers(TriggerEffect left, TriggerEffect right, float seconds = 3f)
+		public static void Triggers(TriggerEffect left, TriggerEffect right, float seconds = 0.4f)
 		{
 			_left = left;
 			_right = right;
@@ -78,8 +78,49 @@ namespace OuterWildsDualSense
 			Effects.Get("death.instant").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Instant);
 			Effects.Get("death.other").Preview = () => DeathHaptics.PlaySound(AudioType.Death_Energy);
 
+			foreach (var def in Effects.All)
+			{
+				if (!def.Id.StartsWith("light.") || def.Id == "light.settings") continue;
+				string id = def.Id;
+				def.Preview = () => PlanetLight.Show(id);
+			}
+
 			var rumble = Effects.Get("hap.rumble");
-			rumble.Preview = () => _rumbleUntil = Time.unscaledTime + 1.2f;
+			rumble.Preview = () => _rumbleUntil = Time.unscaledTime + 0.4f;
+
+			ConfigureLooping();
+		}
+
+		/// <summary>
+		/// In the menu Play repeats the effect until Stop is pressed. Held effects (triggers, colours, rumble) are
+		/// refreshed every frame and released on stop, one-shot effects are repeated after their own length.
+		/// </summary>
+		private static void ConfigureLooping()
+		{
+			foreach (var def in Effects.All)
+			{
+				if (def.Id.StartsWith("jp.") || def.Id.StartsWith("ship."))
+				{
+					def.PreviewStop = StopTriggers;
+				}
+				else if (def.Id.StartsWith("light."))
+				{
+					def.PreviewStop = PlanetLight.StopShow;
+				}
+			}
+			Effects.Get("hap.rumble").PreviewStop = () => _rumbleUntil = 0f;
+
+			Effects.Get("hap.live").PreviewPeriod = 2.2f;
+			Effects.Get("step.base").PreviewPeriod = 4.0f;
+			Effects.Get("step.surface").PreviewPeriod = 3.2f;
+			Effects.Get("char.jump").PreviewPeriod = 0.7f;
+			Effects.Get("char.landing").PreviewPeriod = 2.0f;
+			Effects.Get("char.hit").PreviewPeriod = 2.2f;
+			Effects.Get("char.damage").PreviewPeriod = 2.2f;
+			Effects.Get("death.sand").PreviewPeriod = 6.2f;
+			Effects.Get("death.elevator").PreviewPeriod = 1.7f;
+			Effects.Get("death.instant").PreviewPeriod = 5.5f;
+			Effects.Get("death.other").PreviewPeriod = 6.0f;
 		}
 
 		/// <summary>Rumble values for the preview: both motors at full level.</summary>

@@ -152,7 +152,8 @@ namespace OuterWildsDualSense
 		public void SetLightbar(byte r, byte g, byte b)
 		{
 			if (_lightbarEnabled && _r == r && _g == g && _b == b) return;
-			_lightbarEnabled = true; _lightbarSetupPending = true; _r = r; _g = g; _b = b; _dirty = true;
+			if (!_lightbarEnabled) _lightbarSetupPending = true;
+			_lightbarEnabled = true; _r = r; _g = g; _b = b; _dirty = true;
 		}
 
 		/// <summary>Sends the report if anything changed. Call once per frame; reconnects on its own.</summary>
