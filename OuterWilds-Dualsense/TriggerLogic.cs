@@ -20,14 +20,12 @@ namespace OuterWildsDualSense
 
 			if (PlayerState.IsDead() || PlayerState.InMapView() || PlayerState.UsingShipComputer()) return;
 
-			if (PlayerState.IsInsideShip() || PlayerState.AtFlightConsole())
-			{
-				if (PlayerState.AtFlightConsole()) ShipEffects(strength, ref left, ref right);
-			}
+			// At the flight console the triggers fly the ship. Anywhere else with the suit on (also inside the
+			// cabin) the jetpack is what R2 and L2 control.
+			if (PlayerState.AtFlightConsole())
+				ShipEffects(strength, ref left, ref right);
 			else if (PlayerState.IsWearingSuit())
-			{
 				JetpackEffects(strength, ref left, ref right);
-			}
 		}
 
 		private static void JetpackEffects(float strength, ref TriggerEffect left, ref TriggerEffect right)
