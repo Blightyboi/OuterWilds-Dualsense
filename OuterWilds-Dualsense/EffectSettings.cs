@@ -73,7 +73,7 @@ namespace OuterWildsDualSense
 
 		static Effects()
 		{
-			const string jp = "Jetpack triggers";
+			const string jp = "Triggers/Jetpack";
 			Define("jp.rest", jp, "R2 thrust (spring)", "Resistance of R2 during normal jetpack use. Grows from start to end strength along the travel.")
 				.Add("start", "Strength at top", 2, 1, 8, true)
 				.Add("end", "Strength at bottom", 5, 1, 8, true);
@@ -90,7 +90,7 @@ namespace OuterWildsDualSense
 				.Add("strength", "Strength", 2, 1, 8, true)
 				.Add("zone", "Start zone", 0, 0, 9, true);
 
-			const string ship = "Ship triggers";
+			const string ship = "Triggers/Ship";
 			Define("ship.rest", ship, "R2/L2 resting", "Resistance of both triggers while at the flight console and not thrusting.")
 				.Add("strength", "Strength", 3, 1, 8, true)
 				.Add("zone", "Start zone", 1, 0, 9, true);
@@ -101,7 +101,7 @@ namespace OuterWildsDualSense
 				.Add("ampMax", "Amplitude at full thrust", 5, 1, 8, true)
 				.Add("zone", "Start zone", 1, 0, 9, true);
 
-			const string hap = "Haptics";
+			const string hap = "Player/Engine sounds";
 			Define("hap.live", hap, "Engine sounds (live audio)", "How the engine sounds become haptics. Strength follows the real thrust of the jetpack and ship thrusters.")
 				.Add("gain", "Master gain", 1, 0, 4)
 				.Add("startThrust", "Thrust needed to start (0-1)", 0f, 0, 0.5f)
@@ -119,7 +119,7 @@ namespace OuterWildsDualSense
 				.Add("lowLevel", "Big motor level", 0.9f, 0, 1.5f)
 				.Add("highLevel", "Small motor level", 0.6f, 0, 1.5f);
 
-			const string steps = "Footsteps";
+			const string steps = "Player/Footsteps";
 			Define("step.base", steps, "Step thump", "A haptic thump on every footstep, at the moment the foot lands. Faster movement is stronger.")
 				.Add("strength", "Strength", 0.7f, 0, 1.5f)
 				.Add("freq", "Tone Hz", 55, 20, 150)
@@ -133,7 +133,7 @@ namespace OuterWildsDualSense
 				.Add("softFreqSub", "Soft ground: tone lower by Hz", 15, 0, 40)
 				.Add("hardFreqAdd", "Hard ground: tone higher by Hz", 35, 0, 100);
 
-			const string chr = "Character";
+			const string chr = "Player/Character";
 			Define("char.jump", chr, "Jump", "A push-off thump when the character jumps.")
 				.Add("strength", "Strength", 0.6f, 0, 1.5f)
 				.Add("freq", "Tone Hz", 70, 20, 150)
@@ -166,7 +166,7 @@ namespace OuterWildsDualSense
 				.Add("electricMs", "Electrical: length ms", 350, 50, 1000)
 				.Add("electricChop", "Electrical: chop Hz", 28, 0, 80);
 
-			const string fatal = "Deaths (the game's own death sounds)";
+			const string fatal = "Player/Deaths (the game's own sounds)";
 			Define("death.live", fatal, "Death sounds as haptics", "The death sounds are played as haptics with their own loudness. Raise the gains if they are too weak.")
 				.Add("bandGain", "Low-frequency part gain", 3f, 0.5f, 10)
 				.Add("rumbleGain", "Creak/hiss rumble gain", 2.5f, 0, 10);
@@ -193,7 +193,7 @@ namespace OuterWildsDualSense
 			Define("death.shipexplosion", fatal, "Ship explosion", "OW_SP_ShipExploding, 4 s: very strong at the start, gone after three seconds. Only when the player is close enough to be hit.")
 				.Add("gain", "Strength", 1f, 0, 3);
 
-			const string hazard = "Hazards (while they hurt)";
+			const string hazard = "Player/Hazards (while they hurt)";
 			Define("hazard.live", hazard, "Hazard damage", "The sound of a hazard is felt with a strength that follows the damage per second the game computes for it.")
 				.Add("fullDamage", "Damage per second counted as full strength", 20f, 1, 100);
 			Define("hazard.ghost", hazard, "Ghost matter", "OW_NM_BlackHole_Lp, a steady low drone that plays while ghost matter hurts. Dying of it uses the sudden death sound.")
@@ -203,8 +203,10 @@ namespace OuterWildsDualSense
 			Define("hazard.heat", hazard, "Heat and other damage", "Heat_Damage_Loop_01, a soft hiss in hot places. Also used for the hazards that have no loop of their own.")
 				.Add("gain", "Strength", 3f, 0, 5);
 
-			const string splash = "Sounds around you";
-			Define("splash.world", splash, "Reach of sounds around you", "Splashes, the gravity cannon and similar sounds are felt whenever the game plays them, whoever causes them. Strength falls off with the distance to the sound; one-shots also lean toward the side they come from.")
+			const string world = "World sounds";
+			const string splash = "World sounds/Splashes";
+			const string fire = "World sounds/Campfire";
+			Define("splash.world", world, "Reach of sounds around you", "Splashes, the gravity cannon and similar sounds are felt whenever the game plays them, whoever causes them. Strength falls off with the distance to the sound; one-shots also lean toward the side they come from.")
 				.Add("range", "Reach (m)", 25f, 2, 100)
 				.Add("curve", "Falloff curve (1 = linear)", 1.5f, 0.5f, 4f);
 			Define("splash.ghost", splash, "Splash in ghost matter", "GhostMatter_Splash_v4_*, 1.8 s, hits at once. The child Arkose on Timber Hearth throws a rock into ghost matter every four to eight seconds.")
@@ -216,7 +218,7 @@ namespace OuterWildsDualSense
 			Define("splash.other", splash, "Other splashes")
 				.Add("gain", "Strength", 1f, 0, 5);
 
-			const string memories = "Memories (flashback, memory uplink)";
+			const string memories = "World sounds/Memories (flashback, memory uplink)";
 			Define("mem.base", memories, "Base loop", "OW NM Flashback 082818_3 AP base (flashback after death, 30 s) and 082818 AP loop (memory uplink). The game fades it in and out and the haptic follows that.")
 				.Add("gain", "Strength", 1.5f, 0, 5);
 			Define("mem.overlay", memories, "Overlay loop", "OW NM Flashback 082818 AP overlay1 / loop overlay AP. Quiet, builds up with the scene.")
@@ -226,7 +228,7 @@ namespace OuterWildsDualSense
 			Define("mem.end", memories, "End stinger", "OW NM Flashback 082818_2 AP stinger, 3.4 s: swells until the very end.")
 				.Add("gain", "Strength", 1.2f, 0, 5);
 
-			const string gravity = "Gravity (crystals, beam, cannon)";
+			const string gravity = "World sounds/Gravity (crystals, beam, cannon)";
 			Define("grav.crystal", gravity, "Gravity crystal", "OW_NM_GravityCrystalAmbience_Louder, a steady hum with plenty of low end. The game fades it in when you enter the crystal's area, and by distance.")
 				.Add("gain", "Strength", 1.5f, 0, 6);
 			Define("grav.flicker", gravity, "Gravity crystal (flickering)", "OW_NM_FlickeryGravityCrystalAmbience: almost nothing in the low band, so only a faint tremble comes out of it. Turn it up if you want it felt.")
@@ -237,10 +239,18 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1.5f, 0, 6);
 			Define("grav.cannon", gravity, "Gravity cannon hum", "OW_NM_GravityCannonAmbience, a steady 56 s loop that the game fades in while the cannon is active. Also used for the Vessel's ambience.")
 				.Add("gain", "Strength", 1.5f, 0, 6);
+			Define("fire.crackle", fire, "Campfire crackle", "OW_TH_Campfire_loop_01 (also the dream fire and the lodge fire): a quiet 20 s hiss with pops and nothing in the low band, so every pop becomes a short tick. Felt by the fire's own sound range; half strength while the fire smolders.")
+				.Add("gain", "Strength", 6f, 0, 8)
+				.Add("tone", "Tick tone Hz", 140f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 40f, 3, 200);
+			Define("fire.sleep", fire, "Campfire crackle while dozing off", "The same clip on the player's own source while sleeping at a fire (fades in over 3 s). The fires around are silent in the haptics meanwhile.")
+				.Add("gain", "Strength", 1.5f, 0, 8)
+				.Add("tone", "Tick tone Hz", 120f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 25f, 3, 200);
 			Define("grav.shot", gravity, "Gravity cannon start and stop", "OW_NM_GravityCannonActivated / Deactivated, 8 s: build-up and a heavy blow at about 5.3 s.")
 				.Add("gain", "Strength", 1.2f, 0, 6);
 
-			const string uiShared = "Menus and ship log: shared";
+			const string uiShared = "Menus and ship log/Shared";
 			Define("ui.live", uiShared, "Feel of interface sounds", "Almost all menu and ship log sounds are clicks and chimes with nothing in the low band, so each one becomes a short tick with the sound's own length and loudness. These are the defaults; every sound below can override its tone and tick length.")
 				.Add("toneLow", "Tick tone, low Hz", 120f, 40, 300)
 				.Add("toneHigh", "Tick tone, high Hz", 190f, 40, 300)
@@ -253,7 +263,7 @@ namespace OuterWildsDualSense
 			// One entry for every interface sound, in two groups.
 			foreach (var sound in UiSounds.All)
 			{
-				string group = sound.ShipLog ? "Ship log sounds" : "Menu sounds";
+				string group = sound.ShipLog ? "Menus and ship log/Ship log sounds" : "Menus and ship log/Menu sounds";
 				string hint = string.Format("{0}, {1:0.##} s, the game plays it at volume {2:0.##}.", sound.Clip, sound.Seconds, sound.Volume);
 				string names = sound.Alias != AudioType.None ? sound.Type + " / " + sound.Alias : sound.Type.ToString();
 				Define(sound.Id, group, names + " (" + sound.Clip + ")", hint)
@@ -262,7 +272,7 @@ namespace OuterWildsDualSense
 					.Add("release", "Tick decay speed Hz (0 = shared setting)", 0f, 0, 200);
 			}
 
-			Define("ui.textreveal", "Ship log sounds", "Text appearing on the screen (ShipLogTextReveal_LP)", "OW_SP_ConsoleReadoutLP, a 3 s loop like typing. The game plays it while the text of an entry or a rumour is being revealed and stops it when the text is complete.")
+			Define("ui.textreveal", "Menus and ship log/Ship log sounds", "Text appearing on the screen (ShipLogTextReveal_LP)", "OW_SP_ConsoleReadoutLP, a 3 s loop like typing. The game plays it while the text of an entry or a rumour is being revealed and stops it when the text is complete.")
 				.Add("gain", "Strength", 3f, 0, 30)
 				.Add("tone", "Tick tone Hz (0 = shared setting)", 0f, 0, 300)
 				.Add("release", "Tick decay speed Hz (0 = shared setting)", 0f, 0, 200);
@@ -331,6 +341,46 @@ namespace OuterWildsDualSense
 				.Add("r", "Red", 120, 0, 255, true)
 				.Add("g", "Green", 80, 0, 255, true)
 				.Add("b", "Blue", 255, 0, 255, true);
+
+			Arrange();
+		}
+
+		/// <summary>
+		/// Groups are paths ("World sounds/Campfire"). Puts every group's effects together, in the order the groups first
+		/// appear, with a parent's own effects before its sub-groups, so the menu can draw them as a tree.
+		/// </summary>
+		private static void Arrange()
+		{
+			var first = new Dictionary<string, int>();
+			for (int i = 0; i < All.Count; i++)
+			{
+				string path = "";
+				foreach (var part in All[i].Group.Split('/'))
+				{
+					path = path.Length == 0 ? part : path + "/" + part;
+					if (!first.ContainsKey(path)) first[path] = i;
+				}
+			}
+			var order = new Dictionary<EffectDef, int>();
+			for (int i = 0; i < All.Count; i++) order[All[i]] = i;
+			All.Sort((a, b) =>
+			{
+				var pa = a.Group.Split('/');
+				var pb = b.Group.Split('/');
+				string path = "";
+				for (int i = 0; i < Math.Min(pa.Length, pb.Length); i++)
+				{
+					path = path.Length == 0 ? pa[i] : path + "/" + pa[i];
+					if (pa[i] != pb[i])
+					{
+						string other = path.Substring(0, path.Length - pa[i].Length) + pb[i];
+						int c = first[path].CompareTo(first[other]);
+						if (c != 0) return c;
+					}
+				}
+				if (pa.Length != pb.Length) return pa.Length.CompareTo(pb.Length);
+				return order[a].CompareTo(order[b]);
+			});
 		}
 
 		private static string FilePath
@@ -391,7 +441,7 @@ namespace OuterWildsDualSense
 
 		public static void ResetGroup(string group)
 		{
-			foreach (var def in All) if (def.Group == group) Reset(def);
+			foreach (var def in All) if (def.Group == group || def.Group.StartsWith(group + "/")) Reset(def);
 		}
 
 		public static void ResetAll()

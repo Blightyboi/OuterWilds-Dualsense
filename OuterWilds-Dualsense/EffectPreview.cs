@@ -110,6 +110,8 @@ namespace OuterWildsDualSense
 			Effects.Get("grav.beam").Preview = () => WorldSounds.HoldLoop("grav.beam", AudioType.NomaiTractorBeamAmbient_LP);
 			Effects.Get("grav.beamswitch").Preview = () => WorldSounds.Preview(AudioType.NomaiTractorBeamActivate);
 			Effects.Get("grav.cannon").Preview = () => WorldSounds.HoldLoop("grav.cannon", AudioType.NomaiGravityCannonAmbient_LP);
+			Effects.Get("fire.crackle").Preview = () => WorldSounds.HoldLoop("fire.crackle", AudioType.TH_Campfire_LP);
+			Effects.Get("fire.sleep").Preview = () => WorldSounds.HoldLoop("fire.sleep", AudioType.TH_Campfire_LP, WorldSounds.SleepPreviewName);
 			Effects.Get("grav.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiGravityCannonActivate);
 
 			foreach (var sound in UiSounds.All)
@@ -155,7 +157,7 @@ namespace OuterWildsDualSense
 			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;

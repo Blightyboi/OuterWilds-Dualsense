@@ -142,15 +142,20 @@ namespace OuterWildsDualSense
 		{
 			_scroll = GUILayout.BeginScrollView(_scroll, GUILayout.Height(_window.height - 130f));
 
-			string lastGroup = null;
+			// Groups are paths ("World sounds/Campfire"): draw a header for every level that starts here, and the effects
+			// only while all the levels above them are open.
+			string[] last = new string[0];
 			foreach (var def in Effects.All)
 			{
-				if (def.Group != lastGroup)
+				var parts = def.Group.Split('/');
+				int same = 0;
+				while (same < parts.Length && same < last.Length && parts[same] == last[same]) same++;
+				for (int level = same; level < parts.Length; level++)
 				{
-					lastGroup = def.Group;
-					DrawGroupHeader(def.Group);
+					if (AncestorsOpen(parts, level)) DrawGroupHeader(string.Join("/", parts, 0, level + 1), parts[level], level);
 				}
-				if (_openGroups.Contains(def.Group)) DrawEffect(def);
+				last = parts;
+				if (AncestorsOpen(parts, parts.Length)) DrawEffect(def, parts.Length);
 			}
 
 			GUILayout.EndScrollView();
@@ -158,11 +163,20 @@ namespace OuterWildsDualSense
 			GUI.DragWindow(new Rect(0, 0, 10000, 22));
 		}
 
-		private void DrawGroupHeader(string group)
+		/// <summary>True when the first <paramref name="count"/> levels of the path are all open.</summary>
+		private bool AncestorsOpen(string[] parts, int count)
+		{
+			for (int i = 0; i < count; i++)
+				if (!_openGroups.Contains(string.Join("/", parts, 0, i + 1))) return false;
+			return true;
+		}
+
+		private void DrawGroupHeader(string group, string title, int level)
 		{
 			bool open = _openGroups.Contains(group);
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button((open ? "[-]  " : "[+]  ") + group, GUILayout.Height(26)))
+			GUILayout.Space(16 * level);
+			if (GUILayout.Button((open ? "[-]  " : "[+]  ") + title, GUILayout.Height(26)))
 			{
 				if (open) _openGroups.Remove(group); else _openGroups.Add(group);
 			}
@@ -174,11 +188,14 @@ namespace OuterWildsDualSense
 			GUILayout.EndHorizontal();
 		}
 
-		private void DrawEffect(EffectDef def)
+		private int _depth;
+
+		private void DrawEffect(EffectDef def, int depth)
 		{
+			_depth = depth;
 			bool open = _openEffects.Contains(def.Id);
 			GUILayout.BeginHorizontal();
-			GUILayout.Space(16);
+			GUILayout.Space(16 * depth);
 			if (GUILayout.Button((open ? "- " : "+ ") + def.Label, GUILayout.Height(22)))
 			{
 				if (open) _openEffects.Remove(def.Id); else _openEffects.Add(def.Id);
@@ -203,7 +220,7 @@ namespace OuterWildsDualSense
 			if (!string.IsNullOrEmpty(def.Hint))
 			{
 				GUILayout.BeginHorizontal();
-				GUILayout.Space(32);
+				GUILayout.Space(16 * depth + 16);
 				GUILayout.Label(def.Hint);
 				GUILayout.EndHorizontal();
 			}
@@ -215,7 +232,7 @@ namespace OuterWildsDualSense
 		private void DrawParam(EffectDef def, Param p)
 		{
 			GUILayout.BeginHorizontal();
-			GUILayout.Space(32);
+			GUILayout.Space(16 * _depth + 16);
 
 			var previous = GUI.color;
 			if (Math.Abs(p.Value - p.Default) > 1e-6f) GUI.color = new Color(1f, 0.9f, 0.4f); // edited
@@ -289,7 +306,7 @@ namespace OuterWildsDualSense
 
 			Event e = Event.current;
 			GUILayout.BeginHorizontal();
-			GUILayout.Space(32);
+			GUILayout.Space(16 * _depth + 16);
 			GUILayout.BeginVertical(GUILayout.Width(180));
 
 			Rect sv = GUILayoutUtility.GetRect(180, 130, GUILayout.Width(180), GUILayout.Height(130));

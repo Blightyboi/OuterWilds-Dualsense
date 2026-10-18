@@ -23,6 +23,8 @@ namespace OuterWildsDualSense
 			public bool Distance;
 			/// <summary>The strength follows the source's own 3D rolloff (what the player actually hears), not the shared reach setting.</summary>
 			public bool GameRolloff;
+			/// <summary>Crackling: the tap makes a short tick for every pop instead of following a steady level.</summary>
+			public bool Crackle;
 		}
 
 		private static readonly Rule[] Rules =
@@ -47,6 +49,12 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_NM_GravityCannonAmbience", EffectId = "grav.cannon", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_GravityCannonActivated", EffectId = "grav.shot", Distance = true },
 			new Rule { ClipPrefix = "OW_NM_GravityCannonDeactivated", EffectId = "grav.shot", Distance = true },
+
+			// Campfires: the crackle of a lit fire (Campfire fades it in and out, half volume while smoldering). The same
+			// clip also plays on the player's own source while dozing off at a fire, which AttachLoop tells apart.
+			new Rule { ClipPrefix = "OW_TH_Campfire_loop", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "Dreamfire Crackling", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "OW_PR_CampfireAmbience", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>
@@ -137,21 +145,56 @@ namespace OuterWildsDualSense
 		{
 			var tap = HapticTap.AttachTo(source, float.NaN);
 			if (tap == null || tap.GainOverride != null) return; // already set up
-			string id = rule.EffectId;
+
+			// The crackle also plays on the player's own source while dozing off at a fire: that one has its own strength and
+			// silences the fires in the world meanwhile, so the two are not felt on top of each other.
+			bool sleeping = rule.Crackle && IsPlayerSource(source);
+			string id = sleeping ? "fire.sleep" : rule.EffectId;
+			if (sleeping) _sleepSource = source;
 			bool distance = rule.Distance;
-			bool rolloff = rule.GameRolloff;
+			bool rolloff = rule.GameRolloff && !sleeping;
+			bool crackle = rule.Crackle;
 			tap.FollowVolume = true;
+			if (crackle)
+			{
+				// Pops, not a steady level: a short tick for every pop (the interface profile with its own tone and length).
+				tap.UiProfile = true;
+				var fx = Effects.Get(id);
+				tap.ToneHz = fx["tone"];
+				tap.ReleaseHz = fx["release"];
+			}
 			tap.GainOverride = () =>
 			{
-				float gain = Effects.Get(id)["gain"];
+				var fx = Effects.Get(id);
+				if (crackle)
+				{
+					tap.ToneHz = fx["tone"];
+					tap.ReleaseHz = fx["release"];
+				}
+				float gain = fx["gain"];
 				var camera = Locator.GetPlayerCamera();
-				if (distance && camera != null && source != null)
-					gain *= Falloff((source.transform.position - camera.transform.position).magnitude);
+				if (source == null || camera == null) return gain;
+				float meters = (source.transform.position - camera.transform.position).magnitude;
+				if (distance) gain *= Falloff(meters);
+				else if (rolloff) gain *= GameRolloffAt(source, meters);
+				if (crackle && !sleeping && _sleepSource != null && _sleepSource.isPlaying && _sleepSource.volume > 0.01f) gain = 0f;
 				return gain;
 			};
-			DualSenseMod.Log(string.Format("World loop '{0}' on {1} is tapped (3D blend {2:F2}, {3:F0}-{4:F0} m, rolloff {5})",
-				source.clip.name, source.name, source.spatialBlend, source.minDistance, source.maxDistance, source.rolloffMode));
+			DualSenseMod.Log(string.Format("World loop '{0}' on {1} is tapped as {2} (3D blend {3:F2}, {4:F0}-{5:F0} m, rolloff {6})",
+				source.clip.name, source.name, id, source.spatialBlend, source.minDistance, source.maxDistance, source.rolloffMode));
 		}
+
+		private static AudioSource _sleepSource;
+
+		/// <summary>True for a source that belongs to the player (the one that plays the fire while dozing off) or the F1 sleep preview.</summary>
+		private static bool IsPlayerSource(AudioSource source)
+		{
+			if (source.name == SleepPreviewName) return true;
+			var player = Locator.GetPlayerTransform();
+			return source.GetComponentInParent<PlayerAudioController>() != null || (player != null && source.transform.IsChildOf(player));
+		}
+
+		public const string SleepPreviewName = "DualSense sleep preview";
 
 		/// <summary>How loud the source is at this distance by its own Unity rolloff settings (1 = right at it, 0 = out of earshot).</summary>
 		private static float GameRolloffAt(AudioSource source, float distance)
@@ -203,7 +246,7 @@ namespace OuterWildsDualSense
 		private static string _loopKey;
 
 		/// <summary>F1 menu: holds a game loop next to the player while called every frame.</summary>
-		public static void HoldLoop(string key, AudioType type)
+		public static void HoldLoop(string key, AudioType type, string holderName = "DualSense loop preview")
 		{
 			if (_loopHolder != null && _loopKey == key) return;
 			StopLoop();
@@ -211,7 +254,7 @@ namespace OuterWildsDualSense
 			if (camera == null || DualSenseMod.Haptics == null) return;
 
 			_loopKey = key;
-			_loopHolder = new GameObject("DualSense loop preview");
+			_loopHolder = new GameObject(holderName);
 			_loopHolder.transform.position = camera.transform.position + camera.transform.forward * 2f;
 			var source = _loopHolder.AddComponent<OWAudioSource>();
 			source.AssignAudioLibraryClip(type);
