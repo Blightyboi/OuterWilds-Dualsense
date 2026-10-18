@@ -112,6 +112,16 @@ namespace OuterWildsDualSense
 			Effects.Get("grav.cannon").Preview = () => WorldSounds.HoldLoop("grav.cannon", AudioType.NomaiGravityCannonAmbient_LP);
 			Effects.Get("grav.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiGravityCannonActivate);
 
+			foreach (var sound in UiSounds.All)
+			{
+				var captured = sound;
+				var def = Effects.Get(sound.Id);
+				def.Preview = () => { if (captured.ShipLog) UiHaptics.PlayShipLog(captured.Type); else UiHaptics.PlayMenu(captured.Type); };
+			}
+			Effects.Get("ui.live").Preview = () => UiHaptics.PlayMenu(AudioType.Menu_UpDown);
+			Effects.Get("ui.textreveal").Preview = UiHaptics.HoldTextReveal;
+			Effects.Get("ui.textreveal").PreviewStop = UiHaptics.StopTextReveal;
+
 			var rumble = Effects.Get("hap.rumble");
 			rumble.Preview = () => _rumbleUntil = Time.unscaledTime + 0.4f;
 
@@ -140,6 +150,9 @@ namespace OuterWildsDualSense
 				Effects.Get(id).PreviewStop = HazardHaptics.StopPreview;
 
 			Effects.Get("hap.live").PreviewPeriod = 2.2f;
+			foreach (var sound in UiSounds.All)
+				Effects.Get(sound.Id).PreviewPeriod = sound.Seconds + 0.35f;
+			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
 			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam" })

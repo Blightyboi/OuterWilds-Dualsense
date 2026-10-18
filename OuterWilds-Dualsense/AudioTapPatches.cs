@@ -53,6 +53,7 @@ namespace OuterWildsDualSense
 			DeathHaptics.EnsureTaps();
 			HazardHaptics.EnsureTaps();
 			MemoryHaptics.EnsureTaps();
+			UiHaptics.EnsureShipLogTaps();
 
 			try
 			{

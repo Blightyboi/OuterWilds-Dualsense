@@ -240,6 +240,33 @@ namespace OuterWildsDualSense
 			Define("grav.shot", gravity, "Gravity cannon start and stop", "OW_NM_GravityCannonActivated / Deactivated, 8 s: build-up and a heavy blow at about 5.3 s.")
 				.Add("gain", "Strength", 1.2f, 0, 6);
 
+			const string uiShared = "Menus and ship log: shared";
+			Define("ui.live", uiShared, "Feel of interface sounds", "Almost all menu and ship log sounds are clicks and chimes with nothing in the low band, so each one becomes a short tick with the sound's own length and loudness. These are the defaults; every sound below can override its tone and tick length.")
+				.Add("toneLow", "Tick tone, low Hz", 120f, 40, 300)
+				.Add("toneHigh", "Tick tone, high Hz", 190f, 40, 300)
+				.Add("rumbleGain", "Loudness to strength", 8f, 0.5f, 30)
+				.Add("bandGain", "Low-band part gain", 3f, 0, 10)
+				.Add("reactionHz", "Reaction speed Hz", 80f, 10, 200)
+				.Add("releaseHz", "Tick decay speed Hz (lower = longer tick)", 15f, 3, 200)
+				.Add("volumeCurve", "How much the game's quiet volume counts (1 = fully)", 0.25f, 0.05f, 1f);
+
+			// One entry for every interface sound, in two groups.
+			foreach (var sound in UiSounds.All)
+			{
+				string group = sound.ShipLog ? "Ship log sounds" : "Menu sounds";
+				string hint = string.Format("{0}, {1:0.##} s, the game plays it at volume {2:0.##}.", sound.Clip, sound.Seconds, sound.Volume);
+				string names = sound.Alias != AudioType.None ? sound.Type + " / " + sound.Alias : sound.Type.ToString();
+				Define(sound.Id, group, names + " (" + sound.Clip + ")", hint)
+					.Add("gain", "Strength", sound.DefaultGain, 0, 30)
+					.Add("tone", "Tick tone Hz (0 = shared setting)", 0f, 0, 300)
+					.Add("release", "Tick decay speed Hz (0 = shared setting)", 0f, 0, 200);
+			}
+
+			Define("ui.textreveal", "Ship log sounds", "Text appearing on the screen (ShipLogTextReveal_LP)", "OW_SP_ConsoleReadoutLP, a 3 s loop like typing. The game plays it while the text of an entry or a rumour is being revealed and stops it when the text is complete.")
+				.Add("gain", "Strength", 3f, 0, 30)
+				.Add("tone", "Tick tone Hz (0 = shared setting)", 0f, 0, 300)
+				.Add("release", "Tick decay speed Hz (0 = shared setting)", 0f, 0, 200);
+
 			const string light = "Lightbar";
 			Define("light.settings", light, "Lightbar behaviour", "The colour follows the planet or place where the character is.")
 				.Add("fadeSeconds", "Blend time between places (s)", 1f, 0, 5)

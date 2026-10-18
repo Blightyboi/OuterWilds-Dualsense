@@ -47,6 +47,18 @@ namespace OuterWildsDualSense
 		/// <summary>Dynamic mode, optional: asks for the strength every frame instead of using OneShotGain.</summary>
 		public Func<float> GainOverride;
 
+		/// <summary>
+		/// Dynamic mode for interface sounds (clicks and chimes with nothing in the low band): higher tones for the
+		/// envelope-following tick and a faster reaction, set in the "ui.live" effect.
+		/// </summary>
+		public bool UiProfile;
+
+		/// <summary>Interface sounds: this sound's own tick tone (0 = the shared setting); the second tone follows at 1.58 times.</summary>
+		public volatile float ToneHz;
+
+		/// <summary>Interface sounds: this sound's own tick decay speed in Hz (0 = the shared setting).</summary>
+		public volatile float ReleaseHz;
+
 		/// <summary>Dynamic mode: scale the strength by the source's current volume (loops the game fades in and out).</summary>
 		public bool FollowVolume;
 
@@ -68,7 +80,7 @@ namespace OuterWildsDualSense
 		private volatile float _liveGain;
 		private float _peakVolume = 0.25f;
 		private volatile bool _suppressLiveTap;  // an extracted one-shot played on this source
-		private float _lpCoeff, _hpCoeff, _broadCoeff, _bandCoeff, _refDecay, _phaseStep1, _phaseStep2;
+		private float _lpCoeff, _hpCoeff, _broadCoeff, _releaseCoeff, _bandCoeff, _refDecay, _phaseStep1, _phaseStep2;
 
 		// Live filter state (audio thread only).
 		private float _lp1, _lp2, _hpState, _broadEnv, _bandEnv, _refEnv;
@@ -145,10 +157,26 @@ namespace OuterWildsDualSense
 			_lpCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * live["lowPass"] / rate);
 			_hpCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * live["highPass"] / rate);
 			_broadCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * 20f / rate);
+			_releaseCoeff = _broadCoeff;
 			_bandCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * 10f / rate);
 			_refDecay = Mathf.Exp(-1f / (5f * rate));
 			_phaseStep1 = 2f * Mathf.PI * live["rumbleLow"] / rate;
 			_phaseStep2 = 2f * Mathf.PI * live["rumbleHigh"] / rate;
+
+			// The interface profile overrides the general values above, so it comes last.
+			if (UiProfile)
+			{
+				var ui = Effects.Get("ui.live");
+				_dynBandGain = ui["bandGain"];
+				_dynRumbleGain = ui["rumbleGain"];
+				float low = ToneHz > 0f ? ToneHz : ui["toneLow"];
+				float high = ToneHz > 0f ? ToneHz * 1.58f : ui["toneHigh"];
+				float release = ReleaseHz > 0f ? ReleaseHz : ui["releaseHz"];
+				_phaseStep1 = 2f * Mathf.PI * low / rate;
+				_phaseStep2 = 2f * Mathf.PI * high / rate;
+				_broadCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * ui["reactionHz"] / rate);
+				_releaseCoeff = 1f - Mathf.Exp(-2f * Mathf.PI * release / rate);
+			}
 		}
 
 		private void OnDestroy()
@@ -288,7 +316,7 @@ namespace OuterWildsDualSense
 				_hpState += _hpCoeff * (_lp2 - _hpState);
 				float band = _lp2 - _hpState;
 
-				_broadEnv += _broadCoeff * (Math.Abs(mono) - _broadEnv);
+				_broadEnv += (Math.Abs(mono) > _broadEnv ? _broadCoeff : _releaseCoeff) * (Math.Abs(mono) - _broadEnv);
 				_bandEnv += _bandCoeff * (Math.Abs(band) - _bandEnv);
 				_refEnv = Math.Max(_broadEnv, _refEnv * _refDecay);
 

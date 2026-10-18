@@ -127,9 +127,10 @@ namespace OuterWildsDualSense
 			var tap = source.GetComponent<HapticTap>();
 			if (tap == null) return;
 			float? gain = GainFor(type) ?? MemoryHaptics.OneShotGain(type);
+			if (gain.HasValue) tap.OneShotGain = gain.Value;
+			else gain = UiHaptics.Apply(tap, type);
 			if (gain.HasValue)
 			{
-				tap.OneShotGain = gain.Value;
 				DualSenseMod.Log(string.Format("Death sound {0}: clip '{1}', {2:F2} s, strength {3:F2}",
 					type, clip != null ? clip.name : "?", clip != null ? clip.length : 0f, gain.Value));
 			}

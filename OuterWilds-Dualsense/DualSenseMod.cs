@@ -1,3 +1,4 @@
+using System;
 using HarmonyLib;
 using OWML.Common;
 using OWML.ModHelper;
@@ -36,6 +37,7 @@ namespace OuterWildsDualSense
 			Application.quitting += ResetController;
 			Effects.Load();
 			EffectPreview.Wire();
+			try { UiHaptics.TapMenu(Locator.GetMenuAudioController()); } catch (Exception) { } // the menu may already exist
 			gameObject.AddComponent<DebugMenu>();
 			Log("DualSense mod loaded.");
 		}
