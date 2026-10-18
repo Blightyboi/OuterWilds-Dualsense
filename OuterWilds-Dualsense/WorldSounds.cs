@@ -27,6 +27,8 @@ namespace OuterWildsDualSense
 			public bool Crackle;
 			/// <summary>An elevator ride: the strength follows the cab's real speed (the game's smooth-step lift), not just the fade of the loop.</summary>
 			public bool Lift;
+			/// <summary>The rule only applies to sources with this text in the name of the object or one of its parents (a clip the game also plays elsewhere).</summary>
+			public string UnderName;
 		}
 
 		private static readonly Rule[] Rules =
@@ -69,6 +71,25 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_NM_OrbMoveGlass_lp", EffectId = "orb.roll", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "Orb_End_v3", EffectId = "orb.grab", Crackle = true },
 			new Rule { ClipPrefix = "OW_NM_OrbDeSelect_Energy", EffectId = "orb.slot", GameRolloff = true, Crackle = true },
+
+			// The Nomai signal dish ("planet locator", Attlerock): SignalDishRingController turns three rings with a loop whose
+			// volume is the real ring speed (0-60 degrees a second); when all rings point at the chosen target and the player
+			// stands at the dish, SignalDishController fades in that target's sound (Sun, Giant's Deep, Brittle Hollow) on its
+			// own source. The three target clips are also played elsewhere, so they only count under the dish.
+			new Rule { ClipPrefix = "OW_NM_DoorSlide_Big_LP_01", EffectId = "mech.big", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_SUN_Ambience", EffectId = "dish.sun", Loop = true, GameRolloff = true, UnderName = "SignalDish" },
+			new Rule { ClipPrefix = "OW_GD_Tornado", EffectId = "dish.giants", Loop = true, GameRolloff = true, UnderName = "SignalDish" },
+			new Rule { ClipPrefix = "OW_NM_WHAmbience2", EffectId = "dish.hollow", Loop = true, GameRolloff = true, UnderName = "SignalDish" },
+
+			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
+			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
+			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.
+			// Brittle Hollow's southern observatory: the simulation of Giant's Deep tornadoes (Audio_Observatory, two AudioRail
+			// sources, UpTornado and DownTornado, that slide along a rail to the point nearest the player). The same clip is
+			// the real tornadoes of Giant's Deep, which are not covered yet, so it only counts under the observatory's audio.
+			new Rule { ClipPrefix = "OW_GD_Tornado", EffectId = "obs.tornado", Loop = true, GameRolloff = true, UnderName = "Audio_Observatory" },
+			new Rule { ClipPrefix = "Hologram_Enter_v2", EffectId = "hologram.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Hologram_Exit_v2", EffectId = "hologram.shot", GameRolloff = true },
 
 			// Timber Hearth: the elevator (Elevator: start and arrival one-shots, a loop it fades in while it runs), geysers
 			// (GeyserAudioController), the water wheel, the waterfall and the rush under water. Strength follows the
@@ -130,7 +151,7 @@ namespace OuterWildsDualSense
 
 				Rule? found = null;
 				foreach (var rule in Rules)
-					if (clip.name.StartsWith(rule.ClipPrefix, StringComparison.Ordinal)) { found = rule; break; }
+					if (clip.name.StartsWith(rule.ClipPrefix, StringComparison.Ordinal) && (rule.UnderName == null || IsUnder(source, rule.UnderName))) { found = rule; break; }
 				if (found == null) return;
 				var match = found.Value;
 
@@ -220,6 +241,13 @@ namespace OuterWildsDualSense
 			for (Transform up = source.transform.parent; up != null && path.Length < 160; up = up.parent) path.Append(" < ").Append(up.name);
 			DualSenseMod.Log(string.Format("World loop '{0}' on {1} is tapped as {2} (3D blend {3:F2}, {4:F0}-{5:F0} m, rolloff {6}, zone volume {7})",
 				source.clip.name, path, id, source.spatialBlend, source.minDistance, source.maxDistance, source.rolloffMode, source.GetComponent<AudioVolume>() != null));
+		}
+
+		private static bool IsUnder(AudioSource source, string text)
+		{
+			for (Transform t = source.transform; t != null; t = t.parent)
+				if (t.name.IndexOf(text, StringComparison.Ordinal) >= 0) return true;
+			return false;
 		}
 
 		private static AudioSource _sleepSource;

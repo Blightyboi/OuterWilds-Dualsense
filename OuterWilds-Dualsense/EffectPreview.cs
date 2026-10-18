@@ -125,6 +125,12 @@ namespace OuterWildsDualSense
 			Effects.Get("orb.roll").Preview = () => WorldSounds.HoldLoop("orb.roll", AudioType.NomaiOrbRolling_LP);
 			Effects.Get("orb.grab").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbStartDrag);
 			Effects.Get("orb.slot").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbSlotActivated);
+			Effects.Get("hologram.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiHologramActivate);
+			Effects.Get("obs.tornado").Preview = () => WorldSounds.HoldLoop("obs.tornado", AudioType.GD_Tornado_LP, "Audio_Observatory preview");
+			Effects.Get("mech.big").Preview = () => WorldSounds.HoldLoop("mech.big", AudioType.NomaiAirlockSlide_LP);
+			Effects.Get("dish.sun").Preview = () => WorldSounds.HoldLoop("dish.sun", AudioType.Sun_Ambience_LP, "SignalDish preview");
+			Effects.Get("dish.giants").Preview = () => WorldSounds.HoldLoop("dish.giants", AudioType.GD_Tornado_LP, "SignalDish preview");
+			Effects.Get("dish.hollow").Preview = () => WorldSounds.HoldLoop("dish.hollow", AudioType.BlackHoleAmbience_LP, "SignalDish preview");
 			Effects.Get("grav.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiGravityCannonActivate);
 
 			foreach (var sound in UiSounds.All)
@@ -170,13 +176,14 @@ namespace OuterWildsDualSense
 			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
 			Effects.Get("lift.shot").PreviewPeriod = 1.7f;
+			Effects.Get("hologram.shot").PreviewPeriod = 7.8f;
 			Effects.Get("orb.grab").PreviewPeriod = 1.4f;
 			Effects.Get("orb.slot").PreviewPeriod = 1.2f;
 			Effects.Get("fire.ignite").PreviewPeriod = 2.2f;
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;

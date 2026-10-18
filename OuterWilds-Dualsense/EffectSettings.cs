@@ -288,6 +288,20 @@ namespace OuterWildsDualSense
 				.Add("tone", "Tick tone Hz", 170f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 
+			const string mech = "World sounds/Nomai mechanisms";
+			Define("mech.big", mech, "Big Nomai parts turning (dish rings, airlocks)", "OW_NM_DoorSlide_Big_LP_01 (NomaiAirlockSlide_LP), a 7 s loop with a lot of low end. On Attlerock SignalDishRingController plays it on each of the three rings of the signal dish and sets its volume to the ring's speed. Also the Nomai airlocks on other planets.")
+				.Add("gain", "Strength", 3f, 0, 15);
+			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
+				.Add("gain", "Strength", 1f, 0, 10);
+			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
+				.Add("gain", "Strength", 1.5f, 0, 10);
+			Define("dish.sun", mech, "Signal dish: Sun found", "All three rings point at the Sun and the player stands at the dish: OW_SUN_Ambience_v4, 106 s, low end 0.12 (the weakest of the three, so the default is higher). Counted only on the dish's own source.")
+				.Add("gain", "Strength", 4f, 0, 15);
+			Define("dish.giants", mech, "Signal dish: Giant's Deep found", "OW_GD_Tornado_v2 (the tornado), 27 s, low end 0.25.")
+				.Add("gain", "Strength", 2f, 0, 15);
+			Define("dish.hollow", mech, "Signal dish: Brittle Hollow found", "OW_NM_WHAmbience2_v2 (the white hole), 34 s, low end 0.31 (the strongest, so the default is lower). The Eye has no sound: only the rings turn.")
+				.Add("gain", "Strength", 1.6f, 0, 15);
+
 			const string uiShared = "Menus and ship log/Shared";
 			Define("ui.live", uiShared, "Feel of interface sounds", "Almost all menu and ship log sounds are clicks and chimes with nothing in the low band, so each one becomes a short tick with the sound's own length and loudness. These are the defaults; every sound below can override its tone and tick length.")
 				.Add("toneLow", "Tick tone, low Hz", 120f, 40, 300)
