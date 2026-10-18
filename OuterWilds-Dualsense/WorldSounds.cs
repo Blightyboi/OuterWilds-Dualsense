@@ -57,6 +57,10 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_TH_Campfire_loop", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
 			new Rule { ClipPrefix = "Dreamfire Crackling", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
 			new Rule { ClipPrefix = "OW_PR_CampfireAmbience", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
+			// Lighting a fire (Campfire.SetState, burning a slide reel, the post-credits scene): a blow with real low end.
+			new Rule { ClipPrefix = "Ignite_CampFire", EffectId = "fire.ignite", GameRolloff = true },
+			// The miner's pickaxe on Timber Hearth: a short sharp hit with nothing in the low band, so a tick.
+			new Rule { ClipPrefix = "pickaxe_", EffectId = "pick.hit", GameRolloff = true, Crackle = true },
 
 			// Timber Hearth: the elevator (Elevator: start and arrival one-shots, a loop it fades in while it runs), geysers
 			// (GeyserAudioController), the water wheel, the waterfall and the rush under water. Strength follows the
@@ -142,7 +146,14 @@ namespace OuterWildsDualSense
 				float pan = toSound.sqrMagnitude > 0.01f ? Vector3.Dot(toSound.normalized, camera.transform.right) : 0f;
 				var tap = HapticTap.AttachTo(source, pan);
 				if (tap == null) return;
-				tap.OneShotGain = Effects.Get(match.EffectId)["gain"] * strength;
+				var fx = Effects.Get(match.EffectId);
+				if (match.Crackle)
+				{
+					tap.UiProfile = true;
+					tap.ToneHz = fx["tone"];
+					tap.ReleaseHz = fx["release"];
+				}
+				tap.OneShotGain = fx["gain"] * strength;
 				DualSenseMod.Log(string.Format("World sound '{0}' on {1}: {2:F1} m, haptic strength {3:F2}, pan {4:F2}",
 					clip.name, source.name, toSound.magnitude, tap.OneShotGain, pan));
 			}
