@@ -121,6 +121,10 @@ namespace OuterWildsDualSense
 			Effects.Get("water.wheel").Preview = () => WorldSounds.HoldLoop("water.wheel", AudioType.TH_WaterWheel_LP);
 			Effects.Get("water.fall").Preview = () => WorldSounds.HoldLoop("water.fall", AudioType.TH_Waterfall_LP);
 			Effects.Get("water.under").Preview = () => WorldSounds.HoldLoop("water.under", AudioType.TH_UnderwaterAmbience_LP);
+			Effects.Get("orb.drag").Preview = () => WorldSounds.HoldLoop("orb.drag", AudioType.NomaiOrbDragging_LP);
+			Effects.Get("orb.roll").Preview = () => WorldSounds.HoldLoop("orb.roll", AudioType.NomaiOrbRolling_LP);
+			Effects.Get("orb.grab").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbStartDrag);
+			Effects.Get("orb.slot").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbSlotActivated);
 			Effects.Get("grav.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiGravityCannonActivate);
 
 			foreach (var sound in UiSounds.All)
@@ -166,11 +170,13 @@ namespace OuterWildsDualSense
 			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
 			Effects.Get("lift.shot").PreviewPeriod = 1.7f;
+			Effects.Get("orb.grab").PreviewPeriod = 1.4f;
+			Effects.Get("orb.slot").PreviewPeriod = 1.2f;
 			Effects.Get("fire.ignite").PreviewPeriod = 2.2f;
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;

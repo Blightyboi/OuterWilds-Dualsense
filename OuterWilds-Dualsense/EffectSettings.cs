@@ -274,6 +274,20 @@ namespace OuterWildsDualSense
 			Define("water.under", geyser, "Under water", "OW_TH_Underwater / UnderwaterRushing, 32 s loops with a lot of low end, heard while the player is under water. Follows the game's own volume.")
 				.Add("gain", "Strength", 1.7f, 0, 10);
 
+			const string orb = "World sounds/Nomai orbs";
+			Define("orb.drag", orb, "Dragging an orb with the gaze", "Orb_Roll_Energy_Loop_v2_01 (7.7 s, hissy energy sound, little low end, so a rumble that follows the sound's level). NomaiOrbAudio fades it with the orb's speed while the player drags and plays it at half volume at most, so the strength is high here.")
+				.Add("gain", "Strength", 4f, 0, 20);
+			Define("orb.roll", orb, "Orb rolling on its own", "OW_NM_OrbMoveGlass_lp_01, a quiet glassy loop (volume at most 0.2) that plays while an orb moves, dragged or not.")
+				.Add("gain", "Strength", 10f, 0, 30);
+			Define("orb.grab", orb, "Grabbing an orb", "Orb_End_v3_01, 1 s with a short blow at the start: a tick.")
+				.Add("gain", "Strength", 1.5f, 0, 10)
+				.Add("tone", "Tick tone Hz", 130f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 25f, 3, 200);
+			Define("orb.slot", orb, "Orb settling in a slot", "OW_NM_OrbDeSelect_Energy_02, 0.8 s and very quiet: a tick. Opens a door or sets the planet locator.")
+				.Add("gain", "Strength", 2.5f, 0, 10)
+				.Add("tone", "Tick tone Hz", 170f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+
 			const string uiShared = "Menus and ship log/Shared";
 			Define("ui.live", uiShared, "Feel of interface sounds", "Almost all menu and ship log sounds are clicks and chimes with nothing in the low band, so each one becomes a short tick with the sound's own length and loudness. These are the defaults; every sound below can override its tone and tick length.")
 				.Add("toneLow", "Tick tone, low Hz", 120f, 40, 300)

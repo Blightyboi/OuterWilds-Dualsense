@@ -62,6 +62,14 @@ namespace OuterWildsDualSense
 			// The miner's pickaxe on Timber Hearth: a short sharp hit with nothing in the low band, so a tick.
 			new Rule { ClipPrefix = "pickaxe_", EffectId = "pick.hit", GameRolloff = true, Crackle = true },
 
+			// Nomai interface orbs (door and planet locator orbs, light switches...), NomaiOrbAudio. The player moves them with
+			// the gaze: the drag loop and the grab tick are the player's own action, so no distance; the loop's volume is the
+			// game's own speed-based fade. Rolling (an orb moving on its own) and the slot click follow the sound's range.
+			new Rule { ClipPrefix = "Orb_Roll_Energy_Loop", EffectId = "orb.drag", Loop = true },
+			new Rule { ClipPrefix = "OW_NM_OrbMoveGlass_lp", EffectId = "orb.roll", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Orb_End_v3", EffectId = "orb.grab", Crackle = true },
+			new Rule { ClipPrefix = "OW_NM_OrbDeSelect_Energy", EffectId = "orb.slot", GameRolloff = true, Crackle = true },
+
 			// Timber Hearth: the elevator (Elevator: start and arrival one-shots, a loop it fades in while it runs), geysers
 			// (GeyserAudioController), the water wheel, the waterfall and the rush under water. Strength follows the
 			// source's own 3D rolloff, what the player actually hears.
