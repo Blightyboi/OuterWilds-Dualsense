@@ -21,6 +21,8 @@ namespace OuterWildsDualSense
 			public bool Loop;
 			/// <summary>The strength falls off with the distance to the sound. Off when the game does the fading by distance itself.</summary>
 			public bool Distance;
+			/// <summary>The strength follows the source's own 3D rolloff (what the player actually hears), not the shared reach setting.</summary>
+			public bool GameRolloff;
 		}
 
 		private static readonly Rule[] Rules =
@@ -42,7 +44,7 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_NM_TractorBeamPowerDown", EffectId = "grav.beamswitch", Distance = true },
 
 			// Gravity cannon: ambient loop faded by the game when it is active, plus its start and stop.
-			new Rule { ClipPrefix = "OW_NM_GravityCannonAmbience", EffectId = "grav.cannon", Loop = true, Distance = true },
+			new Rule { ClipPrefix = "OW_NM_GravityCannonAmbience", EffectId = "grav.cannon", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_GravityCannonActivated", EffectId = "grav.shot", Distance = true },
 			new Rule { ClipPrefix = "OW_NM_GravityCannonDeactivated", EffectId = "grav.shot", Distance = true },
 		};
@@ -137,6 +139,7 @@ namespace OuterWildsDualSense
 			if (tap == null || tap.GainOverride != null) return; // already set up
 			string id = rule.EffectId;
 			bool distance = rule.Distance;
+			bool rolloff = rule.GameRolloff;
 			tap.FollowVolume = true;
 			tap.GainOverride = () =>
 			{
@@ -146,7 +149,27 @@ namespace OuterWildsDualSense
 					gain *= Falloff((source.transform.position - camera.transform.position).magnitude);
 				return gain;
 			};
-			DualSenseMod.Log("World loop '" + source.clip.name + "' on " + source.name + " is tapped");
+			DualSenseMod.Log(string.Format("World loop '{0}' on {1} is tapped (3D blend {2:F2}, {3:F0}-{4:F0} m, rolloff {5})",
+				source.clip.name, source.name, source.spatialBlend, source.minDistance, source.maxDistance, source.rolloffMode));
+		}
+
+		/// <summary>How loud the source is at this distance by its own Unity rolloff settings (1 = right at it, 0 = out of earshot).</summary>
+		private static float GameRolloffAt(AudioSource source, float distance)
+		{
+			float min = source.minDistance, max = Mathf.Max(source.maxDistance, min + 0.01f);
+			float level;
+			if (distance <= min) level = 1f;
+			else if (distance >= max) level = 0f;
+			else
+			{
+				switch (source.rolloffMode)
+				{
+					case AudioRolloffMode.Linear: level = 1f - (distance - min) / (max - min); break;
+					case AudioRolloffMode.Custom: level = Mathf.Clamp01(source.GetCustomCurve(AudioSourceCurveType.CustomRolloff).Evaluate((distance - min) / (max - min))); break;
+					default: level = Mathf.Clamp01(min / distance); break;
+				}
+			}
+			return Mathf.Lerp(1f, level, source.spatialBlend);
 		}
 
 		/// <summary>0 when the sound is out of reach, 1 right at the player.</summary>
