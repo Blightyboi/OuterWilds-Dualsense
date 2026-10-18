@@ -250,6 +250,24 @@ namespace OuterWildsDualSense
 			Define("grav.shot", gravity, "Gravity cannon start and stop", "OW_NM_GravityCannonActivated / Deactivated, 8 s: build-up and a heavy blow at about 5.3 s.")
 				.Add("gain", "Strength", 1.2f, 0, 6);
 
+			const string lift = "World sounds/Elevator";
+			Define("lift.shot", lift, "Elevator start and arrival", "elevatorstart (1.3 s, a blow at the start) and elevatorstop (1.8 s). Played by Elevator for every elevator on Timber Hearth.")
+				.Add("gain", "Strength", 2.2f, 0, 8);
+			Define("lift.loop", lift, "Elevator ride", "elevatorloop, a 5 s loop with a lot of low end that Elevator fades in while the cab moves.")
+				.Add("gain", "Strength", 6f, 0, 8);
+
+			const string geyser = "World sounds/Geysers and water";
+			Define("geyser.shot", geyser, "Geyser start and end", "OW_TH_GeyserStart (4.3 s, a blow) and OW_TH_GeyserEnd (3.4 s). A geyser is active 10 s and quiet 10 s.")
+				.Add("gain", "Strength", 3f, 0, 10);
+			Define("geyser.loop", geyser, "Geyser roar", "TH_Geyser_Loop_v3, a 15 s loop the geyser fades in while it is active.")
+				.Add("gain", "Strength", 2f, 0, 10);
+			Define("water.wheel", geyser, "Water wheel", "OW_TH_Waterwheel_loop, a steady 27 s loop with low end. Felt by the sound's own range.")
+				.Add("gain", "Strength", 1.7f, 0, 10);
+			Define("water.fall", geyser, "Waterfall", "OW_TH_Waterfall_loop_01, a 57 s wide rush with moderate low end.")
+				.Add("gain", "Strength", 2.5f, 0, 10);
+			Define("water.under", geyser, "Under water", "OW_TH_Underwater / UnderwaterRushing, 32 s loops with a lot of low end, heard while the player is under water. Follows the game's own volume.")
+				.Add("gain", "Strength", 1.7f, 0, 10);
+
 			const string uiShared = "Menus and ship log/Shared";
 			Define("ui.live", uiShared, "Feel of interface sounds", "Almost all menu and ship log sounds are clicks and chimes with nothing in the low band, so each one becomes a short tick with the sound's own length and loudness. These are the defaults; every sound below can override its tone and tick length.")
 				.Add("toneLow", "Tick tone, low Hz", 120f, 40, 300)

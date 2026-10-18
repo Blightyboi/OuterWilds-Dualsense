@@ -25,6 +25,8 @@ namespace OuterWildsDualSense
 			public bool GameRolloff;
 			/// <summary>Crackling: the tap makes a short tick for every pop instead of following a steady level.</summary>
 			public bool Crackle;
+			/// <summary>An elevator ride: the strength follows the cab's real speed (the game's smooth-step lift), not just the fade of the loop.</summary>
+			public bool Lift;
 		}
 
 		private static readonly Rule[] Rules =
@@ -55,6 +57,19 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_TH_Campfire_loop", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
 			new Rule { ClipPrefix = "Dreamfire Crackling", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
 			new Rule { ClipPrefix = "OW_PR_CampfireAmbience", EffectId = "fire.crackle", Loop = true, GameRolloff = true, Crackle = true },
+
+			// Timber Hearth: the elevator (Elevator: start and arrival one-shots, a loop it fades in while it runs), geysers
+			// (GeyserAudioController), the water wheel, the waterfall and the rush under water. Strength follows the
+			// source's own 3D rolloff, what the player actually hears.
+			new Rule { ClipPrefix = "elevatorstart", EffectId = "lift.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "elevatorstop", EffectId = "lift.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "elevatorloop", EffectId = "lift.loop", Loop = true, GameRolloff = true, Lift = true },
+			new Rule { ClipPrefix = "OW_TH_GeyserStart", EffectId = "geyser.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "OW_TH_GeyserEnd", EffectId = "geyser.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "TH_Geyser_Loop", EffectId = "geyser.loop", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_TH_Waterwheel_loop", EffectId = "water.wheel", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_TH_Waterfall_loop", EffectId = "water.fall", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_TH_Underwater", EffectId = "water.under", Loop = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>
@@ -117,7 +132,7 @@ namespace OuterWildsDualSense
 				}
 
 				Vector3 toSound = source.transform.position - camera.transform.position;
-				float strength = match.Distance ? Falloff(toSound.magnitude) : 1f;
+				float strength = match.Distance ? Falloff(toSound.magnitude) : match.GameRolloff ? GameRolloffAt(source, toSound.magnitude) : 1f;
 				if (strength < 0.02f)
 				{
 					DualSenseMod.Debug(string.Format("World sound {0} ignored: {1:F1} m away", clip.name, toSound.magnitude));
@@ -154,6 +169,7 @@ namespace OuterWildsDualSense
 			bool distance = rule.Distance;
 			bool rolloff = rule.GameRolloff && !sleeping;
 			bool crackle = rule.Crackle;
+			Func<float> ride = rule.Lift ? LiftSpeed(source) : null;
 			tap.FollowVolume = true;
 			if (crackle)
 			{
@@ -177,14 +193,51 @@ namespace OuterWildsDualSense
 				float meters = (source.transform.position - camera.transform.position).magnitude;
 				if (distance) gain *= Falloff(meters);
 				else if (rolloff) gain *= GameRolloffAt(source, meters);
+				if (ride != null) gain *= ride();
 				if (crackle && !sleeping && _sleepSource != null && _sleepSource.isPlaying && _sleepSource.volume > 0.01f) gain = 0f;
 				return gain;
 			};
-			DualSenseMod.Log(string.Format("World loop '{0}' on {1} is tapped as {2} (3D blend {3:F2}, {4:F0}-{5:F0} m, rolloff {6})",
-				source.clip.name, source.name, id, source.spatialBlend, source.minDistance, source.maxDistance, source.rolloffMode));
+			var path = new System.Text.StringBuilder(source.name);
+			for (Transform up = source.transform.parent; up != null && path.Length < 160; up = up.parent) path.Append(" < ").Append(up.name);
+			DualSenseMod.Log(string.Format("World loop '{0}' on {1} is tapped as {2} (3D blend {3:F2}, {4:F0}-{5:F0} m, rolloff {6}, zone volume {7})",
+				source.clip.name, path, id, source.spatialBlend, source.minDistance, source.maxDistance, source.rolloffMode, source.GetComponent<AudioVolume>() != null));
 		}
 
 		private static AudioSource _sleepSource;
+
+		private static readonly System.Reflection.FieldInfo LiftStart = typeof(Elevator).GetField("_initLiftTime", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+		private static readonly System.Reflection.FieldInfo LiftLength = typeof(Elevator).GetField("_liftDuration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+		/// <summary>
+		/// The share of the top speed the elevator has right now. Elevator.Update moves the cab with a smooth step over
+		/// _liftDuration, so its speed is 6t(1-t) of the way per duration; divided by its peak (1.5) that is 4t(1-t).
+		/// Returns null when the elevator or its fields cannot be found (the loop then just follows its fade).
+		/// </summary>
+		private static Func<float> LiftSpeed(AudioSource source)
+		{
+			var lift = source.GetComponentInParent<Elevator>();
+			if (lift == null)
+			{
+				float best = 5f;
+				foreach (var other in UnityEngine.Object.FindObjectsOfType<Elevator>())
+				{
+					float d = (other.transform.position - source.transform.position).magnitude;
+					if (d < best) { best = d; lift = other; }
+				}
+			}
+			if (lift == null || LiftStart == null || LiftLength == null)
+			{
+				DualSenseMod.Log("Elevator loop on " + source.name + ": no Elevator found, the ride follows the loop's fade only");
+				return null;
+			}
+			DualSenseMod.Log("Elevator loop on " + source.name + " follows " + lift.name);
+			return () =>
+			{
+				if (lift == null) return 0f;
+				float t = Mathf.Clamp01((Time.time - (float)LiftStart.GetValue(lift)) / Mathf.Max((float)LiftLength.GetValue(lift), 0.1f));
+				return 4f * t * (1f - t);
+			};
+		}
 
 		/// <summary>True for a source that belongs to the player (the one that plays the fire while dozing off) or the F1 sleep preview.</summary>
 		private static bool IsPlayerSource(AudioSource source)

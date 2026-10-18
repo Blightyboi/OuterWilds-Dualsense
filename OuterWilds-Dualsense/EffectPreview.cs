@@ -112,6 +112,13 @@ namespace OuterWildsDualSense
 			Effects.Get("grav.cannon").Preview = () => WorldSounds.HoldLoop("grav.cannon", AudioType.NomaiGravityCannonAmbient_LP);
 			Effects.Get("fire.crackle").Preview = () => WorldSounds.HoldLoop("fire.crackle", AudioType.TH_Campfire_LP);
 			Effects.Get("fire.sleep").Preview = () => WorldSounds.HoldLoop("fire.sleep", AudioType.TH_Campfire_LP, WorldSounds.SleepPreviewName);
+			Effects.Get("lift.shot").Preview = () => WorldSounds.Preview(AudioType.TH_LiftActivate);
+			Effects.Get("lift.loop").Preview = () => WorldSounds.HoldLoop("lift.loop", AudioType.TH_Lift_LP);
+			Effects.Get("geyser.shot").Preview = () => WorldSounds.Preview(AudioType.TH_GeyserStart);
+			Effects.Get("geyser.loop").Preview = () => WorldSounds.HoldLoop("geyser.loop", AudioType.TH_Geyser_LP);
+			Effects.Get("water.wheel").Preview = () => WorldSounds.HoldLoop("water.wheel", AudioType.TH_WaterWheel_LP);
+			Effects.Get("water.fall").Preview = () => WorldSounds.HoldLoop("water.fall", AudioType.TH_Waterfall_LP);
+			Effects.Get("water.under").Preview = () => WorldSounds.HoldLoop("water.under", AudioType.TH_UnderwaterAmbience_LP);
 			Effects.Get("grav.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiGravityCannonActivate);
 
 			foreach (var sound in UiSounds.All)
@@ -156,8 +163,10 @@ namespace OuterWildsDualSense
 				Effects.Get(sound.Id).PreviewPeriod = sound.Seconds + 0.35f;
 			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
+			Effects.Get("lift.shot").PreviewPeriod = 1.7f;
+			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;
