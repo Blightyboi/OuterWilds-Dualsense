@@ -169,9 +169,61 @@ namespace OuterWildsDualSense
 		private const int Channels = 4;
 		private const int Rate = 48000;
 
+		private Action<string> _log = delegate { };
+		private int _nextReopen;
+		private bool _lostLogged;
+		private int _device = -1;
+		private int _nextPoll;
+
 		private HapticAudio()
 		{
 			AddSource(Rumble);
+		}
+
+		/// <summary>Opens the waveOut player on the controller's audio device. Returns false if the device is not there.</summary>
+		private bool Open()
+		{
+			int device = FindDevice();
+			if (device < 0) return false;
+			_out = new WaveOutPlayer(device, Rate, Channels, Read);
+			_device = device;
+			_log("Haptic audio started on waveOut device " + device + " (" + Channels + " ch, " + Rate + " Hz).");
+			return true;
+		}
+
+		/// <summary>
+		/// Call every frame. When the controller was unplugged (or reconnected) its waveOut handle goes dead: buffers stop
+		/// completing and nothing is played any more, while the HID connection reopens by itself. Drops the dead player and
+		/// opens a new one as soon as the audio device is back. The sources (taps) stay registered, so every haptic resumes.
+		/// </summary>
+		public void Maintain()
+		{
+			var player = _out;
+			bool gone = false;
+			if (player != null && unchecked(Environment.TickCount - _nextPoll) >= 0)
+			{
+				// The audio device may vanish or come back under another number without the old handle ever failing.
+				_nextPoll = Environment.TickCount + 1000;
+				gone = FindDevice() != _device;
+			}
+			if (player != null && (gone || player.IsDead))
+			{
+				_out = null;
+				if (!_lostLogged) { _lostLogged = true; _log("Haptic audio output lost (controller disconnected?), waiting for the device."); }
+				// Closing a handle of a removed device can block: keep that off the game thread.
+				new Thread(() => { try { player.Dispose(); } catch (Exception) { } }) { IsBackground = true }.Start();
+				_nextReopen = Environment.TickCount + 1000;
+			}
+			if (_out != null || unchecked(Environment.TickCount - _nextReopen) < 0) return;
+			_nextReopen = Environment.TickCount + 2000;
+			try
+			{
+				if (Open()) { _lostLogged = false; _log("Haptic audio output restored."); }
+			}
+			catch (Exception e)
+			{
+				_log("Haptic audio could not reopen yet: " + e.Message);
+			}
 		}
 
 		/// <summary>
@@ -182,12 +234,9 @@ namespace OuterWildsDualSense
 		{
 			try
 			{
-				int device = FindDevice();
-				if (device < 0) { log("DualSense audio device not found."); return null; }
-
 				var haptics = new HapticAudio();
-				haptics._out = new WaveOutPlayer(device, Rate, Channels, haptics.Read);
-				log("Haptic audio started on waveOut device " + device + " (" + Channels + " ch, " + Rate + " Hz).");
+				haptics._log = log;
+				if (!haptics.Open()) { log("DualSense audio device not found."); return null; }
 				return haptics;
 			}
 			catch (Exception e)
@@ -344,6 +393,14 @@ namespace OuterWildsDualSense
 		private readonly Thread _thread;
 		private IntPtr _handle;
 		private volatile bool _stop;
+		private volatile bool _failed;
+		private int _lastDone = Environment.TickCount;
+
+		/// <summary>True when the device stopped taking audio: a write failed or no buffer finished for 1.5 seconds.</summary>
+		public bool IsDead
+		{
+			get { return _failed || unchecked(Environment.TickCount - _lastDone) > 1500; }
+		}
 
 		public WaveOutPlayer(int device, int rate, int channels, Func<byte[], int, int, int> fill)
 		{
@@ -383,7 +440,7 @@ namespace OuterWildsDualSense
 			Array.Clear(_managed, 0, _managed.Length);
 			_fill(_managed, 0, _bufferBytes);
 			Marshal.Copy(_managed, 0, _data[i], _bufferBytes);
-			waveOutWrite(_handle, _headers[i], Marshal.SizeOf(typeof(WAVEHDR)));
+			if (waveOutWrite(_handle, _headers[i], Marshal.SizeOf(typeof(WAVEHDR))) != 0) _failed = true;
 		}
 
 		private void Run()
@@ -394,7 +451,7 @@ namespace OuterWildsDualSense
 				for (int i = 0; i < BufferCount && !_stop; i++)
 				{
 					var hdr = (WAVEHDR)Marshal.PtrToStructure(_headers[i], typeof(WAVEHDR));
-					if ((hdr.dwFlags & WHDR_DONE) != 0) Queue(i);
+					if ((hdr.dwFlags & WHDR_DONE) != 0) { _lastDone = Environment.TickCount; Queue(i); }
 				}
 			}
 		}
