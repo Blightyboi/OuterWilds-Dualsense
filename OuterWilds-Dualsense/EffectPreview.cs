@@ -143,6 +143,11 @@ namespace OuterWildsDualSense
 			Effects.Get("gd.ambience").Preview = () => WorldSounds.HoldLoop("gd.ambience", AudioType.GD_OceanSurface_LP);
 			Effects.Get("gd.barrier").Preview = () => WorldSounds.HoldLoop("gd.barrier", AudioType.GD_ElectricBarrier_LP);
 			Effects.Get("shock.hit").Preview = () => ShockHaptics.Preview();
+			Effects.Get("bh.meteor").Preview = () => WorldSounds.Preview(AudioType.BH_MeteorImpact);
+			Effects.Get("bh.fragment").Preview = () => WorldSounds.Preview(AudioType.BH_BreakawayFragment);
+			Effects.Get("bh.hole.approach").Preview = () => WorldSounds.HoldLoop("bh.hole.approach", AudioType.BlackHoleAmbience_LP);
+			Effects.Get("bh.hole.transit").Preview = () => WorldSounds.Preview(AudioType.SingularityOnPlayerEnterExit);
+			Effects.Get("bh.hole.emission").Preview = () => WorldSounds.Preview(AudioType.BH_BlackHoleEmission);
 			Effects.Get("mech.big").Preview = () => WorldSounds.HoldLoop("mech.big", AudioType.NomaiAirlockSlide_LP);
 			Effects.Get("dish.sun").Preview = () => WorldSounds.HoldLoop("dish.sun", AudioType.Sun_Ambience_LP, "SignalDish preview");
 			Effects.Get("dish.giants").Preview = () => WorldSounds.HoldLoop("dish.giants", AudioType.GD_Tornado_LP, "SignalDish preview");
@@ -192,6 +197,10 @@ namespace OuterWildsDualSense
 			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
 			Effects.Get("lift.shot").PreviewPeriod = 1.7f;
+			Effects.Get("bh.hole.transit").PreviewPeriod = 1.8f;
+			Effects.Get("bh.hole.emission").PreviewPeriod = 2.3f;
+			Effects.Get("bh.meteor").PreviewPeriod = 4.2f;
+			Effects.Get("bh.fragment").PreviewPeriod = 9.0f;
 			Effects.Get("shock.hit").PreviewPeriod = 2.2f;
 			Effects.Get("island.lift").PreviewPeriod = 3.2f;
 			Effects.Get("island.splash").PreviewPeriod = 12.5f;
@@ -203,7 +212,7 @@ namespace OuterWildsDualSense
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;

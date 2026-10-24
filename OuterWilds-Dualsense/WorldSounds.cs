@@ -103,6 +103,23 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_GD_AmbienceUndewater", EffectId = "gd.ambience", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_GD_AmbienceCave", EffectId = "gd.ambience", Loop = true, GameRolloff = true },
 
+			// Brittle Hollow: a meteor hits the planet (MeteorController.Impact plays the blow on its own source and damages the
+			// fragment it hit by 20-80); when the fragment's integrity reaches 0 DetachableFragment.OnTakeDamage calls Detach 0.1 s
+			// later, which plays the long break-away rumble on the fragment's floating source (at most once a second, so several
+			// fragments breaking together give one sound). The game has no camera shake for either, so this is all there is.
+			new Rule { ClipPrefix = "Meteor_Impact", EffectId = "bh.meteor", GameRolloff = true },
+			new Rule { ClipPrefix = "Fragment_Break", EffectId = "bh.fragment", GameRolloff = true },
+
+			// Brittle Hollow's black hole (BlackHole_BH): its ambience (BlackHoleAmbience, the same clip the signal dish plays for
+			// Brittle Hollow, so the dish rule above takes it under the dish) grows as you approach by the source's own rolloff.
+			// Falling in plays nothing (BlackHoleVolume.VanishPlayer: PlayEntryAudio(isPlayer: true) is silent); the player's
+			// transit sound plays when the white hole lets the player out (PlayExitAudio -> SingularityOnPlayerEnterExit on the
+			// player's own source, so no distance). Everything else that vanishes while the player is in the black hole's audio
+			// sector plays the emission blow at the hole (BH_BlackHoleEmission).
+			new Rule { ClipPrefix = "OW_NM_WHAmbience2", EffectId = "bh.hole.approach", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "BlackHole_02", EffectId = "bh.hole.transit" },
+			new Rule { ClipPrefix = "OW_NM_BHEnterExitPlayer", EffectId = "bh.hole.emission", GameRolloff = true },
+
 			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
 			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
 			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.

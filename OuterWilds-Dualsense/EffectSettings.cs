@@ -332,6 +332,17 @@ namespace OuterWildsDualSense
 				.Add("buzzFreq", "Ship buzz: tone Hz", 110, 40, 300)
 				.Add("buzzMs", "Ship buzz: length ms", 350, 50, 1000)
 				.Add("buzzChop", "Ship buzz: chop Hz", 28, 0, 80);
+			const string hollow = "World sounds/Brittle Hollow";
+			Define("bh.meteor", hollow, "Meteor hitting the planet", "Meteor_Impact_01..03_b, 3.8 s, a blow with real low end (up to 0.45). MeteorController.Impact plays it on the meteor's own source where it hits and damages the fragment under it by 20-80; a fragment that runs out of integrity then breaks away 0.1 s later (next effect).")
+				.Add("gain", "Strength", 1.5f, 0, 10);
+			Define("bh.fragment", hollow, "A fragment breaking away", "Fragment_Break, 8.5 s, a long heavy rumble (low end 0.24 on average, up to 0.41). DetachableFragment.Detach plays it on the fragment's floating source, at most once a second. The same fragments also break by themselves on the planet's own schedule, not only from meteors.")
+				.Add("gain", "Strength", 1f, 0, 10);
+			Define("bh.hole.approach", hollow, "Black hole: approaching", "OW_NM_WHAmbience2_v2, 34 s with a lot of low end (0.31, the strongest ambience measured). The BlackHoleAmbience source sits in BlackHole_BH and the game grades it by distance with its own rolloff, so it grows as you fly to the hole. The signal dish plays the same clip for Brittle Hollow (dish.hollow).")
+				.Add("gain", "Strength", 1.6f, 0, 10);
+			Define("bh.hole.transit", hollow, "Black hole: passing through", "BlackHole_02 (SingularityOnPlayerEnterExit), 1.5 s, low end 0.33 with a blow up to 0.57. Falling into the hole is silent in the game; this plays when a white hole lets the player out, on the player's own source. It is also the sound of dying in a black hole.")
+				.Add("gain", "Strength", 1f, 0, 10);
+			Define("bh.hole.emission", hollow, "Black hole: swallowing something", "OW_NM_BHEnterExitPlayer_v2, 2 s, a blow up to 0.55. BlackHoleVolume.Vanish plays it at the hole when a ship, a probe or a meteor vanishes while the player is in the hole's audio sector.")
+				.Add("gain", "Strength", 1f, 0, 10);
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
