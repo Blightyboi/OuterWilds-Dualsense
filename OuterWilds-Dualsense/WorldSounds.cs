@@ -129,6 +129,21 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "BH_Ambience_Surface", EffectId = "bh.ambience", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "BH_Ambience_Below_Crust", EffectId = "bh.ambience", Loop = true, GameRolloff = true },
 
+			// The suit (all on the player's own sources, so no distance). PlayerAudioController plays the suit and helmet sounds
+			// from the "SuitUp" / "RemoveSuit" events and from PlayerSpacesuit.PutOnHelmet / RemoveHelmet (skipped when the game
+			// does it instantly); PlayerRecoveryPoint plays the refuel and the medkit when the player uses the station and
+			// something is actually missing; PlayerBreathingAudio fades the breathing loop in while there is no oxygen around, the
+			// helmet is on and the player is not suffocating, and swaps to the faster one when the suit air is nearly gone.
+			// All of them are quiet and mostly without low end, so they follow the sound's envelope (Crackle) or its level.
+			new Rule { ClipPrefix = "OW_PR_SuitOn", EffectId = "suit.suit", Crackle = true },
+			new Rule { ClipPrefix = "OW_PR_SuitOff", EffectId = "suit.suit", Crackle = true },
+			new Rule { ClipPrefix = "OW_PR_HelmetOn", EffectId = "suit.helmet", Crackle = true },
+			new Rule { ClipPrefix = "OW_PR_HelmetOff", EffectId = "suit.helmet", Crackle = true },
+			new Rule { ClipPrefix = "OW_SP_RefuelJetpack", EffectId = "suit.refuel" },
+			new Rule { ClipPrefix = "medkit", EffectId = "suit.medkit", Crackle = true },
+			new Rule { ClipPrefix = "breathing_suit", EffectId = "suit.breath", Loop = true },
+			new Rule { ClipPrefix = "breathing_lowO2", EffectId = "suit.breath.low", Loop = true },
+
 			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
 			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
 			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.

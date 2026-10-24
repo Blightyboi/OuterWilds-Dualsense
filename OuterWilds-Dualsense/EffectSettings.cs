@@ -349,6 +349,25 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("bh.ambience", hollow, "Surface and under-crust beds", "BH_Ambience_Surface (121 s, low end 0.015) and BH_Ambience_Below_Crust (98 s, 0.03): very quiet AudioVolume zones of Volumes_BH that fade in over 2 s, so a faint steady rumble.")
 				.Add("gain", "Strength", 5f, 0, 20);
+			const string suit = "Player/Suit";
+			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
+				.Add("gain", "Strength", 2.5f, 0, 10)
+				.Add("tone", "Tick tone Hz", 90f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 12f, 3, 200);
+			Define("suit.helmet", suit, "Putting on and taking off the helmet", "OW_PR_HelmetOn (1.4 s, peak 0.1) and OW_PR_HelmetOff (2.0 s): soft clicks, almost silent, so a light tick.")
+				.Add("gain", "Strength", 4f, 0, 15)
+				.Add("tone", "Tick tone Hz", 130f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 25f, 3, 200);
+			Define("suit.refuel", suit, "Refuelling the jetpack", "OW_SP_RefuelJetpack_v2_short, 1.9 s: a quiet start and a burst at 0.8 s with low end up to 0.12. PlayerRecoveryPoint plays it when the player uses a recovery point and the fuel is not full.")
+				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("suit.medkit", suit, "Healing (medkit)", "medkit, 1.2 s, no low end at all (a quiet clank and hiss), so a tick that follows the sound. PlayerRecoveryPoint plays it when the player uses a recovery point and health is not full.")
+				.Add("gain", "Strength", 3f, 0, 15)
+				.Add("tone", "Tick tone Hz", 150f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 20f, 3, 200);
+			Define("suit.breath", suit, "Breathing in the suit", "breathing_suit3, 26 s, low end 0.01-0.02 with a clear in-and-out rhythm. PlayerBreathingAudio fades it in while there is no oxygen around, the helmet is on and the player is not suffocating, so it only plays when the suit's air is being used.")
+				.Add("gain", "Strength", 8f, 0, 30);
+			Define("suit.breath.low", suit, "Breathing, suit air nearly gone", "breathing_lowO2_6, 15 s, a faster and rougher breath (low end up to 0.04). Replaces the normal breathing when the oxygen falls to the game's critical level.")
+				.Add("gain", "Strength", 8f, 0, 30);
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
