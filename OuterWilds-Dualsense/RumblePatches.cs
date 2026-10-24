@@ -57,6 +57,13 @@ namespace OuterWildsDualSense
 					}
 
 					TornadoHaptics.ApplyTriggers(ref left, ref right); // full resistance while a tornado holds the player; last word
+
+					// The ship autopilot is flying: no resistance and no buzz, even the game's own effects and a tornado's.
+					if (TriggerLogic.AutopilotHolds())
+					{
+						left = TriggerEffect.Off;
+						right = TriggerEffect.Off;
+					}
 				}
 
 				// A "Play" button in the F1 menu overrides the triggers for a few seconds, even while paused.

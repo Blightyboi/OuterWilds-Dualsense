@@ -13,6 +13,39 @@ namespace OuterWildsDualSense
 		private static JetpackThrusterModel _jetpack;
 		private static ShipThrusterModel _shipThrusters;
 
+		private static Autopilot _shipAutopilot;
+		private static bool _loggedHold;
+
+		/// <summary>
+		/// True while the ship's autopilot is flying it to a destination (the autopilot button, or the automatic return to the
+		/// solar system) and the player is at the flight console. Then the thrust is not the player's, so the triggers have
+		/// nothing to resist or buzz about and go off, whatever else wanted them. Matching velocity (hold the button) does NOT
+		/// switch them off, nor does the jetpack's own match velocity.
+		/// Read from the game every call, nothing is remembered: it ends by itself on arrival, on every abort (the button,
+		/// a new target, damage, thrusters failing), when the player leaves the console, dies, or the ship is destroyed or
+		/// reloaded with the time loop (the cached component is then gone and is looked up again).
+		/// </summary>
+		public static bool AutopilotHolds()
+		{
+			bool holds = false;
+			if (!PlayerState.IsDead() && PlayerState.AtFlightConsole())
+			{
+				if (_shipAutopilot == null)
+				{
+					var ship = Locator.GetShipBody();
+					if (ship != null) _shipAutopilot = ship.GetComponent<Autopilot>();
+				}
+				holds = _shipAutopilot != null && _shipAutopilot.enabled && _shipAutopilot.IsFlyingToDestination();
+			}
+
+			if (holds != _loggedHold)
+			{
+				_loggedHold = holds;
+				DualSenseMod.Log(holds ? "Ship autopilot is flying: triggers off." : "Ship autopilot is off: triggers back to normal.");
+			}
+			return holds;
+		}
+
 		public static void Compute(float strength, out TriggerEffect left, out TriggerEffect right)
 		{
 			left = TriggerEffect.Off;
