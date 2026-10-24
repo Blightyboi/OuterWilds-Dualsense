@@ -144,6 +144,15 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "breathing_suit", EffectId = "suit.breath", Loop = true },
 			new Rule { ClipPrefix = "breathing_lowO2", EffectId = "suit.breath.low", Loop = true },
 
+			// Quantum Moon: the Nomai shuttle's impact (ImpactAudio on Shuttle_Body: a heavy first blow that dies out), the lightning
+			// QuantumLightningObject flashes at random every 5-15 s (within 40 m the game also pulses its own rumble, which the mod
+			// already renders), and Solanum's cairns and symbols (set in the scene and its animation; the cloth foley and the
+			// footsteps have no low end and are left out). The vortex of the Eye state is the Giant's Deep tornado clip, covered above.
+			new Rule { ClipPrefix = "OW_NM_ShuttleLight", EffectId = "qm.shuttle", GameRolloff = true },
+			new Rule { ClipPrefix = "OW Quantum Lightning", EffectId = "qm.lightning", GameRolloff = true },
+			new Rule { ClipPrefix = "Solanum_RocksForm", EffectId = "qm.cairn", GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "Solanum_IconAppear", EffectId = "qm.symbol", GameRolloff = true, Crackle = true },
+
 			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
 			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
 			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.

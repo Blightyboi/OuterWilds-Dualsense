@@ -157,6 +157,11 @@ namespace OuterWildsDualSense
 			Effects.Get("suit.medkit").Preview = () => WorldSounds.Preview(AudioType.ShipCabinUseMedkit);
 			Effects.Get("suit.breath").Preview = () => WorldSounds.HoldLoop("suit.breath", AudioType.PlayerBreathing_LP);
 			Effects.Get("suit.breath.low").Preview = () => WorldSounds.HoldLoop("suit.breath.low", AudioType.PlayerBreathing_LowOxygen_LP);
+			Effects.Get("qm.shuttle").Preview = () => WorldSounds.Preview(AudioType.NomaiShuttleImpact);
+			Effects.Get("qm.lightning").Preview = () => WorldSounds.Preview(AudioType.EyeLightning);
+			Effects.Get("qm.cairn").Preview = () => WorldSounds.Preview(AudioType.SolanumCairnAssembly);
+			Effects.Get("qm.symbol").Preview = () => WorldSounds.Preview(AudioType.SolanumSymbolReveal);
+			Effects.Get("qm.eye").Preview = () => TornadoHaptics.PreviewEye();
 			Effects.Get("mech.big").Preview = () => WorldSounds.HoldLoop("mech.big", AudioType.NomaiAirlockSlide_LP);
 			Effects.Get("dish.sun").Preview = () => WorldSounds.HoldLoop("dish.sun", AudioType.Sun_Ambience_LP, "SignalDish preview");
 			Effects.Get("dish.giants").Preview = () => WorldSounds.HoldLoop("dish.giants", AudioType.GD_Tornado_LP, "SignalDish preview");
@@ -206,6 +211,11 @@ namespace OuterWildsDualSense
 			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
 			Effects.Get("lift.shot").PreviewPeriod = 1.7f;
+			Effects.Get("qm.shuttle").PreviewPeriod = 8.2f;
+			Effects.Get("qm.lightning").PreviewPeriod = 6.3f;
+			Effects.Get("qm.cairn").PreviewPeriod = 3.5f;
+			Effects.Get("qm.symbol").PreviewPeriod = 7.2f;
+			Effects.Get("qm.eye").PreviewPeriod = 2.3f;
 			Effects.Get("suit.suit").PreviewPeriod = 3.0f;
 			Effects.Get("suit.helmet").PreviewPeriod = 2.4f;
 			Effects.Get("suit.refuel").PreviewPeriod = 2.3f;

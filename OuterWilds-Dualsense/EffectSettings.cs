@@ -368,6 +368,30 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 8f, 0, 30);
 			Define("suit.breath.low", suit, "Breathing, suit air nearly gone", "breathing_lowO2_6, 15 s, a faster and rougher breath (low end up to 0.04). Replaces the normal breathing when the oxygen falls to the game's critical level.")
 				.Add("gain", "Strength", 8f, 0, 30);
+			const string qm = "World sounds/Quantum Moon";
+			Define("qm.shuttle", qm, "Nomai shuttle impact", "OW_NM_ShuttleLight, 8 s: a heavy first blow (low end 0.29) that dies out in about two seconds. ImpactAudio on the shuttle's body.")
+				.Add("gain", "Strength", 2.5f, 0, 10);
+			Define("qm.lightning", qm, "Lightning", "OW Quantum Lightning 091118 AP 01..04, 6 s, low end up to 0.18. QuantumLightningObject flashes at random every 5-15 s in the Eye state. Within 40 m the game also pulses its own rumble, which comes on top of this.")
+				.Add("gain", "Strength", 2.5f, 0, 10);
+			Define("qm.cairn", qm, "Solanum raising a cairn", "Solanum_RocksForm, 3.2 s, rocks forming (low end 0.03), a tick that follows the rustle. Audio_Solanum's AudioSource_Cairns.")
+				.Add("gain", "Strength", 2f, 0, 10)
+				.Add("tone", "Tick tone Hz", 90f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 15f, 3, 200);
+			Define("qm.symbol", qm, "Solanum's symbol appearing", "Solanum_IconAppear_V3, 6.9 s (low end 0.04, up to 0.08): a tick that follows the sound. SolanumAnimController plays it when a symbol is revealed.")
+				.Add("gain", "Strength", 2f, 0, 10)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 12f, 3, 200);
+			Define("qm.eye", qm, "The Eye state pulling you", "QuantumMoonEyeFluidVolume pulls the player's detector (or the ship's, when the player is inside) toward the pole at up to 20 m/s and inward at up to 10 m/s, stronger toward the outer radius. The same ride as the tornado but gentle: a soft rumble that leans toward the pull. Not a sound: the real force.")
+				.Add("gain", "Strength", 0.8f, 0, 4)
+				.Add("floor", "Strength that stays once carried (0-1)", 0.3f, 0, 1)
+				.Add("center", "Strength at the inner radius compared to the outer (0-1)", 0.3f, 0, 1)
+				.Add("jolt", "Blow when it takes hold", 0.2f, 0, 3)
+				.Add("lurch", "Soft lurch when leaving", 0.15f, 0, 2)
+				.Add("release", "Fade after leaving (s)", 0.8f, 0.1f, 3)
+				.Add("lean", "Lean toward the pull (0-1)", 0.8f, 0, 1)
+				.Add("lowHz", "Low tone Hz", 34f, 20, 120)
+				.Add("highHz", "High tone Hz", 66f, 40, 220)
+				.Add("wobbleHz", "Turbulence Hz", 2.5f, 0.5f, 12);
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")

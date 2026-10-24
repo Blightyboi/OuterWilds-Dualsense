@@ -33,6 +33,7 @@ namespace OuterWildsDualSense
 		private static float _seen = -10f;  // time of the last call
 		private static bool _entered;       // set on the first call after being out
 		private static string _who = "";    // what the tornado holds (player or ship) and which one, for the log
+		private static bool _eye;           // the last ride was the Quantum Moon's Eye state, not a tornado (gentler, no triggers)
 		private static bool _logged;
 		private static float _loggedAt;
 
@@ -77,6 +78,7 @@ namespace OuterWildsDualSense
 				}
 
 				if (Time.unscaledTime - _seen > 0.25f) _entered = true; // first call after being out
+				_eye = false;
 				_who = (player ? "player" : "ship") + " in " + __instance.name;
 				_level = level;
 				_edge = edge;
@@ -89,9 +91,66 @@ namespace OuterWildsDualSense
 			}
 		}
 
+		private static readonly FieldInfo EyeLower = typeof(QuantumMoonEyeFluidVolume).GetField("_lowerRadius", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static readonly FieldInfo EyeUpper = typeof(QuantumMoonEyeFluidVolume).GetField("_upperRadius", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static readonly FieldInfo EyePole = typeof(QuantumMoonEyeFluidVolume).GetField("_poleAttractSpeed", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static readonly FieldInfo EyeInward = typeof(QuantumMoonEyeFluidVolume).GetField("_inwardSpeed", BindingFlags.Instance | BindingFlags.NonPublic);
+
+		/// <summary>
+		/// The Quantum Moon in its Eye state: the same kind of ride as a tornado, much gentler. The volume pulls the body toward
+		/// the pole (up to _poleAttractSpeed) and inward (up to _inwardSpeed), both growing with the square of how far out between
+		/// the lower and the upper radius the body is. So the strength is the push relative to those two speeds added, and the
+		/// "edge" is that squared fraction, so it is calm at the inner radius and strongest at the outer one.
+		/// </summary>
+		internal static void ReportEye(QuantumMoonEyeFluidVolume volume, FluidDetector detector, Vector3 fluidVelocity)
+		{
+			try
+			{
+				if (detector == null) return;
+				bool player = detector.CompareTag("PlayerDetector");
+				bool ship = !player && detector.CompareTag("ShipDetector") && PlayerState.IsInsideShip();
+				if (!player && !ship) return;
+				var body = detector.GetAttachedOWRigidbody();
+				if (body == null) return;
+
+				float lower = EyeLower != null ? (float)EyeLower.GetValue(volume) : 0f;
+				float upper = EyeUpper != null ? (float)EyeUpper.GetValue(volume) : 1f;
+				float full = (EyePole != null ? (float)EyePole.GetValue(volume) : 20f) + (EyeInward != null ? (float)EyeInward.GetValue(volume) : 10f);
+				Vector3 push = fluidVelocity - body.GetVelocity();
+				float level = Mathf.Clamp01(push.magnitude / Mathf.Max(full, 1f));
+				float outward = Mathf.InverseLerp(lower, upper, (detector.transform.position - volume.transform.position).magnitude);
+				float edge = outward * outward;
+
+				float pan = 0f;
+				var camera = Locator.GetPlayerCamera();
+				if (camera != null && push.sqrMagnitude > 0.0001f)
+					pan = Mathf.Clamp(Vector3.Dot(push.normalized, camera.transform.right) * Mathf.Max(edge, 0.3f), -1f, 1f);
+
+				if (Time.unscaledTime - _seen > 0.25f) _entered = true;
+				_eye = true;
+				_who = (player ? "player" : "ship") + " in the Quantum Moon's Eye state";
+				_level = level;
+				_edge = edge;
+				_pan = pan;
+				_seen = Time.unscaledTime;
+			}
+			catch (Exception e)
+			{
+				DualSenseMod.Debug("Eye state haptic failed: " + e.Message);
+			}
+		}
+
+		/// <summary>F1 menu: feels the Eye state's pull for about two seconds.</summary>
+		public static void PreviewEye()
+		{
+			Preview();
+			_eye = true;
+		}
+
 		/// <summary>F1 menu: feels the ride for about two seconds without a tornado.</summary>
 		public static void Preview()
 		{
+			_eye = false;
 			_level = 0.8f;
 			_edge = 0.8f;
 			_pan = 0.5f;
@@ -109,8 +168,8 @@ namespace OuterWildsDualSense
 			// One line when a tornado takes hold of the player and one when it lets go: shows what is held, for how long,
 			// and whether the triggers were set back (the ride ends 0.25 s after the game stops asking).
 			bool riding = Riding;
-			if (riding && !_logged) { _logged = true; _loggedAt = Time.unscaledTime; DualSenseMod.Log("Tornado holds the " + _who + "; triggers at full resistance."); }
-			else if (!riding && _logged) { _logged = false; DualSenseMod.Log("Tornado let go after " + (Time.unscaledTime - _loggedAt).ToString("F1") + " s; triggers back to normal."); }
+			if (riding && !_logged) { _logged = true; _loggedAt = Time.unscaledTime; DualSenseMod.Log((_eye ? "Eye state pulls the " : "Tornado holds the ") + _who + (_eye ? "." : "; triggers at full resistance.")); }
+			else if (!riding && _logged) { _logged = false; DualSenseMod.Log((_eye ? "Eye state let go after " : "Tornado let go after ") + (Time.unscaledTime - _loggedAt).ToString("F1") + " s" + (_eye ? "." : "; triggers back to normal.")); }
 
 			bool previewing = Time.unscaledTime < _previewUntil;
 			bool on = mod.Enabled && mod.AudioHaptics && (previewing || Riding);
@@ -121,7 +180,7 @@ namespace OuterWildsDualSense
 				_owner = haptics;
 			}
 
-			var fx = Effects.Get("tornado.ride");
+			var fx = Effects.Get(_eye ? "qm.eye" : "tornado.ride");
 			float master = fx["gain"];
 			float floor = fx["floor"];
 			float release = Mathf.Max(fx["release"], 0.05f);
@@ -169,11 +228,22 @@ namespace OuterWildsDualSense
 		/// </summary>
 		public static void ApplyTriggers(ref TriggerEffect left, ref TriggerEffect right)
 		{
-			if (!Riding || PlayerState.IsDead()) return;
+			if (!Riding || _eye || PlayerState.IsDead()) return; // only a tornado holds the triggers
 			var fx = Effects.Get("tornado.triggers");
 			var effect = TriggerEffect.Resistance(fx.Int("zone"), fx.Int("strength"));
 			left = effect;
 			right = effect;
+		}
+	}
+
+	/// <summary>The Quantum Moon's Eye-state fluid reports to the same ride (TornadoHaptics.ReportEye).</summary>
+	[HarmonyPatch(typeof(QuantumMoonEyeFluidVolume), "GetPointFluidVelocity")]
+	internal static class EyeFluidHaptics
+	{
+		[HarmonyPostfix]
+		private static void After(QuantumMoonEyeFluidVolume __instance, FluidDetector detector, Vector3 __result)
+		{
+			TornadoHaptics.ReportEye(__instance, detector, __result);
 		}
 	}
 }
