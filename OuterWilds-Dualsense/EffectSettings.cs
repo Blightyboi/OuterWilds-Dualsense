@@ -316,6 +316,22 @@ namespace OuterWildsDualSense
 			Define("island.waves", isl, "Waves on the shore", "OW_GD_WavesAgainstBeach and OW_GD_WavesAgainstRock, 51 s and 39 s, almost no low end (0.02), so this is a faint rumble that follows the sound's level. ShoreAudioRail sources the game fades in while the player is on the island and the island is not in the air.")
 				.Add("gain", "Strength", 5f, 0, 20);
 			
+			const string sea = "World sounds/Giant's Deep/Ocean";
+			Define("gd.current", sea, "Underwater current", "OW_GD_UnderwaterCurrent, 26 s, low end 0.12: an even rush under the surface. The AudioShell_UnderwaterCurrent source in Audio_GDInterior; the game fades it, so the strength follows that.")
+				.Add("gain", "Strength", 2f, 0, 10);
+			Define("gd.ambience", sea, "Ocean, underwater and cave beds", "OW_GD_AmbienceOcean (the surface), OW_GD_AmbienceUndewater (under water and the core) and OW_GD_AmbienceCave: 95-120 s, very quiet (low end 0.035). AudioVolume zones that fade in over 2 s, so a faint steady rumble.")
+				.Add("gain", "Strength", 3.5f, 0, 15);
+			const string spark = "World sounds/Giant's Deep/Electricity";
+			Define("gd.barrier", spark, "Electric barrier", "OW_GD_ElectricBarrier_Idle_Loop, 11.5 s, low end 0.10: the hum of the barrier around the core (AudioShell_ElectricBarrier in Audio_GDInterior).")
+				.Add("gain", "Strength", 2f, 0, 10);
+			Define("shock.hit", spark, "Electric shock", "ElectricityVolume.ApplyShock (the barrier and the jellyfish): when a detector that is not insulated is hit, and again every second while it stays. The player gets the blow of the 10 m/s kick (the damage buzz is separate); the ship, with the player inside, gets the blow and the electrical buzz. The shock sounds themselves have no low end (0.01), so this follows the event.")
+				.Add("strength", "Blow: strength", 1f, 0, 1.5f)
+				.Add("freq", "Blow: tone Hz", 55, 20, 200)
+				.Add("ms", "Blow: length ms", 220, 30, 800)
+				.Add("buzzStrength", "Ship buzz: strength", 0.9f, 0, 1.5f)
+				.Add("buzzFreq", "Ship buzz: tone Hz", 110, 40, 300)
+				.Add("buzzMs", "Ship buzz: length ms", 350, 50, 1000)
+				.Add("buzzChop", "Ship buzz: chop Hz", 28, 0, 80);
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")

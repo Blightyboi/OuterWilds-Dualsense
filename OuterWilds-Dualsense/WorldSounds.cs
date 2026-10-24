@@ -94,6 +94,15 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_GD_WavesAgainstBeach", EffectId = "island.waves", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_GD_WavesAgainstRock", EffectId = "island.waves", Loop = true, GameRolloff = true },
 
+			// Giant's Deep water and electricity: the underwater current (AudioShell_UnderwaterCurrent), the electric barrier around
+			// the core, and the faint beds of the ocean surface, under water, the core and the caves (AudioVolume zones).
+			// The lightning, rain and music are left out on purpose; the shock sounds have no low end, see ShockHaptics.
+			new Rule { ClipPrefix = "OW_GD_UnderwaterCurrent", EffectId = "gd.current", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_GD_ElectricBarrier_Idle", EffectId = "gd.barrier", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_GD_AmbienceOcean", EffectId = "gd.ambience", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_GD_AmbienceUndewater", EffectId = "gd.ambience", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_GD_AmbienceCave", EffectId = "gd.ambience", Loop = true, GameRolloff = true },
+
 			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
 			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
 			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.
