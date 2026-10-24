@@ -86,6 +86,14 @@ namespace OuterWildsDualSense
 			// Listed after the observatory and dish rules, which take the same clip under their own objects.
 			new Rule { ClipPrefix = "OW_GD_Tornado", EffectId = "tornado.roar", Loop = true, GameRolloff = true },
 
+			// Giant's Deep islands (IslandController, IslandAudioController): the island sucked up by a tornado and its crash back
+			// into the sea are one-shots on the island's own source; the shore waves are loops the game fades by the
+			// player's sector and silences while the island is in the air.
+			new Rule { ClipPrefix = "OW_GD_IslandSuckedInTornado", EffectId = "island.lift", GameRolloff = true },
+			new Rule { ClipPrefix = "OW_GD_IslandCrashingInWater", EffectId = "island.splash", GameRolloff = true },
+			new Rule { ClipPrefix = "OW_GD_WavesAgainstBeach", EffectId = "island.waves", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_GD_WavesAgainstRock", EffectId = "island.waves", Loop = true, GameRolloff = true },
+
 			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
 			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
 			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.

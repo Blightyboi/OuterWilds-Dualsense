@@ -308,6 +308,14 @@ namespace OuterWildsDualSense
 			Define("tornado.triggers", "Triggers/Tornado", "R2 and L2 held by the tornado", "While a tornado pushes the player or the ship the player is in, both triggers are at full resistance, over everything else, until you are out of it.")
 				.Add("strength", "Resistance (8 = the most)", 8, 1, 8, true)
 				.Add("zone", "Start zone", 0, 0, 9, true);
+			const string isl = "World sounds/Giant's Deep/Islands";
+			Define("island.lift", isl, "Island sucked up by a tornado", "OW_GD_IslandSuckedInTornado, 2.8 s with a blow (low end up to 0.25). IslandController.OnIslandEnteredTornadoEvent -> IslandAudioController plays it on the island's source; the rain zones and the shore waves switch off while the island is in the air.")
+				.Add("gain", "Strength", 2.1f, 0, 10);
+			Define("island.splash", isl, "Island crashing into the sea", "OW_GD_IslandCrashingInWater_v2, 11.9 s, a heavy blow with a long tail (low end up to 0.29). IslandController.OnSpawnSplash: the island's fluid detector enters water -> IslandAudioController plays it; the rain and the waves come back.")
+				.Add("gain", "Strength", 2f, 0, 10);
+			Define("island.waves", isl, "Waves on the shore", "OW_GD_WavesAgainstBeach and OW_GD_WavesAgainstRock, 51 s and 39 s, almost no low end (0.02), so this is a faint rumble that follows the sound's level. ShoreAudioRail sources the game fades in while the player is on the island and the island is not in the air.")
+				.Add("gain", "Strength", 5f, 0, 20);
+			
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
