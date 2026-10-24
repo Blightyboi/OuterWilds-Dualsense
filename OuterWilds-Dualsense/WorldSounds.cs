@@ -120,6 +120,15 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "BlackHole_02", EffectId = "bh.hole.transit" },
 			new Rule { ClipPrefix = "OW_NM_BHEnterExitPlayer", EffectId = "bh.hole.emission", GameRolloff = true },
 
+			// Brittle Hollow, the rest: the breakable platforms of the crash site (the break sound is set in the scene, nothing in
+			// the code plays it), the black hole forge's hum (a constant loop on AudioSource_BlackHoleForge: BlackHoleForgeMovement
+			// only moves the forge and never touches the sound) and the two faint ambience beds, on the surface and under the
+			// crust (AudioVolume zones of Volumes_BH).
+			new Rule { ClipPrefix = "Platform_Break_V2", EffectId = "bh.platform", GameRolloff = true },
+			new Rule { ClipPrefix = "Forge_Loop_V3", EffectId = "bh.forge", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "BH_Ambience_Surface", EffectId = "bh.ambience", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "BH_Ambience_Below_Crust", EffectId = "bh.ambience", Loop = true, GameRolloff = true },
+
 			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
 			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
 			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.

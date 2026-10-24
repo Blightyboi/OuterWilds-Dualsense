@@ -343,6 +343,12 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("bh.hole.emission", hollow, "Black hole: swallowing something", "OW_NM_BHEnterExitPlayer_v2, 2 s, a blow up to 0.55. BlackHoleVolume.Vanish plays it at the hole when a ship, a probe or a meteor vanishes while the player is in the hole's audio sector.")
 				.Add("gain", "Strength", 1f, 0, 10);
+			Define("bh.platform", hollow, "A platform breaking", "Platform_Break_V2_01..04, 3.4 s, a crunch with low end (up to 0.18). The breakable platforms of the crash site (Prefab_NOM_BreakablePlatform, 15 sources); the sound is set in the scene.")
+				.Add("gain", "Strength", 2.5f, 0, 10);
+			Define("bh.forge", hollow, "Black hole forge hum", "Forge_Loop_V3_03, 9 s, low end 0.24: a steady hum on AudioSource_BlackHoleForge. The game never changes it: BlackHoleForgeMovement only moves the forge between its three levels (5 s, eased) when a slot is triggered, so this is constant around the forge.")
+				.Add("gain", "Strength", 1f, 0, 10);
+			Define("bh.ambience", hollow, "Surface and under-crust beds", "BH_Ambience_Surface (121 s, low end 0.015) and BH_Ambience_Below_Crust (98 s, 0.03): very quiet AudioVolume zones of Volumes_BH that fade in over 2 s, so a faint steady rumble.")
+				.Add("gain", "Strength", 5f, 0, 20);
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
