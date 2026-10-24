@@ -55,6 +55,8 @@ namespace OuterWildsDualSense
 						right = TriggerEffect.Vibration(boost.Int("zone"), boost.Int("freq"),
 							Mathf.Clamp(Mathf.RoundToInt(boost.Int("amp") * mod.TriggerStrength), 1, 8));
 					}
+
+					TornadoHaptics.ApplyTriggers(ref left, ref right); // full resistance while a tornado holds the player; last word
 				}
 
 				// A "Play" button in the F1 menu overrides the triggers for a few seconds, even while paused.

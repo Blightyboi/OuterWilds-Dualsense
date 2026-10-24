@@ -81,6 +81,11 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_GD_Tornado", EffectId = "dish.giants", Loop = true, GameRolloff = true, UnderName = "SignalDish" },
 			new Rule { ClipPrefix = "OW_NM_WHAmbience2", EffectId = "dish.hollow", Loop = true, GameRolloff = true, UnderName = "SignalDish" },
 
+			// Giant's Deep tornadoes (TornadoController): each has a source on an AudioRail that the game fades in while the player
+			// or the probe is in its sector, over the formation, and out over the collapse or when the player dives under water.
+			// Listed after the observatory and dish rules, which take the same clip under their own objects.
+			new Rule { ClipPrefix = "OW_GD_Tornado", EffectId = "tornado.roar", Loop = true, GameRolloff = true },
+
 			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
 			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
 			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.

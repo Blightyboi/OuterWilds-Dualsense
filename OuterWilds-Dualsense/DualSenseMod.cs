@@ -47,6 +47,7 @@ namespace OuterWildsDualSense
 			// Keep the output in step with the values being edited in the F1 menu.
 			if (Haptics == null) return;
 			Haptics.Maintain(); // reopens the audio output after the controller was unplugged
+			TornadoHaptics.Tick();
 			var live = Effects.Get("hap.live");
 			var rumble = Effects.Get("hap.rumble");
 			Haptics.MasterGain = HapticGain * live["gain"];

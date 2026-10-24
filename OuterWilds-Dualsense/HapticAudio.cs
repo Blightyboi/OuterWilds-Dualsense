@@ -85,6 +85,53 @@ namespace OuterWildsDualSense
 		}
 	}
 
+	/// <summary>
+	/// A continuous rumble for a ride (the Giant's Deep tornado): two low tones with a slow wobble, so it feels like
+	/// turbulence and not a steady buzz. The level follows Target smoothly; Kick adds a short blow on top (being thrown in).
+	/// </summary>
+	public sealed class HapticRideSource : HapticSource
+	{
+		public volatile float Target;
+		public volatile float LowHz = 42f;
+		public volatile float HighHz = 90f;
+		public volatile float WobbleHz = 3.5f;
+
+		/// <summary>Set from the main thread: strength (0-1) of a blow to start now. The audio thread takes it and clears it.</summary>
+		public volatile float KickRequest;
+
+		private float _level;
+		private float _kick;
+		private double _low, _high, _wobble, _kickPhase;
+
+		public HapticRideSource()
+		{
+			GainLeft = 1f;
+			GainRight = 1f;
+		}
+
+		public override float Next(double step)
+		{
+			float request = KickRequest;
+			if (request > 0f) { _kick = Math.Max(_kick, request); KickRequest = 0f; }
+
+			_level += (Target - _level) * 0.0004f; // about 50 ms at 48 kHz
+			_kick *= 0.99986f;                      // a blow dies out in about 150 ms
+			if (_level < 0.0005f && Target <= 0f && _kick < 0.0005f) return 0f;
+
+			_low += 2 * Math.PI * LowHz / 48000.0;
+			_high += 2 * Math.PI * HighHz / 48000.0;
+			_wobble += 2 * Math.PI * WobbleHz / 48000.0;
+			_kickPhase += 2 * Math.PI * 58.0 / 48000.0;
+			if (_low > 2 * Math.PI) _low -= 2 * Math.PI;
+			if (_high > 2 * Math.PI) _high -= 2 * Math.PI;
+			if (_wobble > 2 * Math.PI) _wobble -= 2 * Math.PI;
+			if (_kickPhase > 2 * Math.PI) _kickPhase -= 2 * Math.PI;
+			double swell = 0.75 + 0.25 * Math.Sin(_wobble);
+			double ride = (Math.Sin(_low) * 0.7 + Math.Sin(_high) * 0.45) * swell * _level;
+			return (float)(ride + Math.Sin(_kickPhase) * _kick * 1.3);
+		}
+	}
+
 	/// <summary>A pre-processed haptic waveform played once (ignition, thruster bursts) and then dropped.</summary>
 	public sealed class HapticOneShotSource : HapticSource
 	{

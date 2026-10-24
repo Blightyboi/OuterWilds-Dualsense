@@ -291,6 +291,23 @@ namespace OuterWildsDualSense
 			const string mech = "World sounds/Nomai mechanisms";
 			Define("mech.big", mech, "Big Nomai parts turning (dish rings, airlocks)", "OW_NM_DoorSlide_Big_LP_01 (NomaiAirlockSlide_LP), a 7 s loop with a lot of low end. On Attlerock SignalDishRingController plays it on each of the three rings of the signal dish and sets its volume to the ring's speed. Also the Nomai airlocks on other planets.")
 				.Add("gain", "Strength", 3f, 0, 15);
+			const string gd = "World sounds/Giant's Deep";
+			Define("tornado.roar", gd, "Tornado roar", "OW_GD_Tornado_v2_01..04 (24-30 s, low end 0.25, the strongest natural sound measured). Every TornadoController has a source on an AudioRail that follows the nearest point of the tornado; the game fades it by the player's sector, the formation and collapse, and under water. Strength follows that fade and the sound's range.")
+				.Add("gain", "Strength", 1.5f, 0, 10);
+			Define("tornado.ride", gd, "Being carried by a tornado", "TornadoFluidVolume pushes the player's detector (or the ship's, when the player is inside) toward the air's speed: 300 m/s up and a pull toward the axis (100 m/s from 20 m out, zero on the axis). Strength = floor + (1 - floor) x how far the body still is from the air's speed, calmer near the axis. A blow when you are thrown in, a soft lurch and a fading tail when you leave, and the haptic leans toward the side the pull goes to. Not a sound: the real force.")
+				.Add("gain", "Strength", 1f, 0, 4)
+				.Add("floor", "Strength that stays once carried (0-1)", 0.45f, 0, 1)
+				.Add("center", "Strength on the axis compared to the edge (0-1)", 0.6f, 0, 1)
+				.Add("jolt", "Blow when thrown in", 1f, 0, 3)
+				.Add("lurch", "Soft lurch when leaving", 0.35f, 0, 2)
+				.Add("release", "Fade after leaving (s)", 0.7f, 0.1f, 3)
+				.Add("lean", "Lean toward the pull (0-1)", 0.8f, 0, 1)
+				.Add("lowHz", "Low tone Hz", 42f, 20, 120)
+				.Add("highHz", "High tone Hz", 90f, 40, 220)
+				.Add("wobbleHz", "Turbulence Hz", 3.5f, 0.5f, 12);
+			Define("tornado.triggers", "Triggers/Tornado", "R2 and L2 held by the tornado", "While a tornado pushes the player or the ship the player is in, both triggers are at full resistance, over everything else, until you are out of it.")
+				.Add("strength", "Resistance (8 = the most)", 8, 1, 8, true)
+				.Add("zone", "Start zone", 0, 0, 9, true);
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")

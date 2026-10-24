@@ -62,6 +62,13 @@ namespace OuterWildsDualSense
 				Triggers(lowFx, fullFx);
 			};
 
+			var windFx = Effects.Get("tornado.triggers");
+			windFx.Preview = () =>
+			{
+				var held = TriggerEffect.Resistance(windFx.Int("zone"), windFx.Int("strength"));
+				Triggers(held, held);
+			};
+
 			var live = Effects.Get("hap.live");
 			live.Preview = () => PlayHum(live);
 
@@ -127,6 +134,8 @@ namespace OuterWildsDualSense
 			Effects.Get("orb.slot").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbSlotActivated);
 			Effects.Get("hologram.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiHologramActivate);
 			Effects.Get("obs.tornado").Preview = () => WorldSounds.HoldLoop("obs.tornado", AudioType.GD_Tornado_LP, "Audio_Observatory preview");
+			Effects.Get("tornado.roar").Preview = () => WorldSounds.HoldLoop("tornado.roar", AudioType.GD_Tornado_LP);
+			Effects.Get("tornado.ride").Preview = () => TornadoHaptics.Preview();
 			Effects.Get("mech.big").Preview = () => WorldSounds.HoldLoop("mech.big", AudioType.NomaiAirlockSlide_LP);
 			Effects.Get("dish.sun").Preview = () => WorldSounds.HoldLoop("dish.sun", AudioType.Sun_Ambience_LP, "SignalDish preview");
 			Effects.Get("dish.giants").Preview = () => WorldSounds.HoldLoop("dish.giants", AudioType.GD_Tornado_LP, "SignalDish preview");
@@ -157,7 +166,7 @@ namespace OuterWildsDualSense
 		{
 			foreach (var def in Effects.All)
 			{
-				if (def.Id.StartsWith("jp.") || def.Id.StartsWith("ship."))
+				if (def.Id.StartsWith("jp.") || def.Id.StartsWith("ship.") || def.Id == "tornado.triggers")
 				{
 					def.PreviewStop = StopTriggers;
 				}
@@ -176,6 +185,7 @@ namespace OuterWildsDualSense
 			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
 			Effects.Get("lift.shot").PreviewPeriod = 1.7f;
+			Effects.Get("tornado.ride").PreviewPeriod = 2.3f;
 			Effects.Get("hologram.shot").PreviewPeriod = 7.8f;
 			Effects.Get("orb.grab").PreviewPeriod = 1.4f;
 			Effects.Get("orb.slot").PreviewPeriod = 1.2f;
@@ -183,7 +193,7 @@ namespace OuterWildsDualSense
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;
