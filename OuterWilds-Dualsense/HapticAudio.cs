@@ -210,6 +210,13 @@ namespace OuterWildsDualSense
 
 		public volatile float MasterGain = 1f;
 
+		/// <summary>
+		/// 0 while the game is paused from the menu, 1 otherwise. The game keeps its audio sources playing in the pause menu and
+		/// only fades its own mixer to silence (OWAudioMixer, in-game volume), so everything that plays haptics from them,
+		/// and the synthesised effects, would carry on at full strength. Set from DualSenseMod.Update.
+		/// </summary>
+		public volatile float PauseGain = 1f;
+
 		/// <summary>The game's controller rumble, rendered as haptics.</summary>
 		public readonly HapticRumbleSource Rumble = new HapticRumbleSource();
 
@@ -355,7 +362,7 @@ namespace OuterWildsDualSense
 			Array.Clear(buffer, offset, frames * frameBytes);
 
 			var streams = _streams;
-			float master = MasterGain;
+			float master = MasterGain * PauseGain;
 			for (int f = 0; f < frames; f++)
 			{
 				float left = 0f, right = 0f;

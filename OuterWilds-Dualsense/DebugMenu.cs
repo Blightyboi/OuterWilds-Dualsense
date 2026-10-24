@@ -14,6 +14,9 @@ namespace OuterWildsDualSense
 	public class DebugMenu : MonoBehaviour
 	{
 		private bool _open;
+
+		/// <summary>True while the F1 menu is open (its Play buttons must be felt even if the game is paused).</summary>
+		public static bool IsOpen { get; private set; }
 		private bool _blockInput = true;
 		private bool _inputBlocked;
 		private Rect _window = new Rect(20, 20, 560, 720);
@@ -80,6 +83,7 @@ namespace OuterWildsDualSense
 		private void SetOpen(bool open)
 		{
 			_open = open;
+			IsOpen = open;
 			if (open) ApplyInputBlock();
 			else { StopPicking(); StopPreview(); ReleaseInputBlock(); }
 		}
