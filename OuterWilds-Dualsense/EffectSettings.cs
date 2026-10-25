@@ -121,6 +121,7 @@ namespace OuterWildsDualSense
 
 			Define("touch.pad", "Touchpad", "Touchpad gestures (map, ship log)", "One finger pans the map and scrolls log text, two fingers moving together rotate the map, a pinch zooms. Negative numbers flip a direction. Only works in the map and the ship log, over USB.")
 				.Add("enabled", "On (1) / off (0)", 1, 0, 1, true)
+				.Add("prompts", "On-screen prompt (1) / off (0)", 1, 0, 1, true)
 				.Add("speed", "Finger speed px/s for full stick", 1500, 200, 5000)
 				.Add("pan", "Pan", 1, -3, 3)
 				.Add("rotate", "Rotate", 1, -3, 3)
