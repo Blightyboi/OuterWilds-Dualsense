@@ -162,6 +162,12 @@ namespace OuterWildsDualSense
 			Effects.Get("qm.cairn").Preview = () => WorldSounds.Preview(AudioType.SolanumCairnAssembly);
 			Effects.Get("qm.symbol").Preview = () => WorldSounds.Preview(AudioType.SolanumSymbolReveal);
 			Effects.Get("qm.eye").Preview = () => TornadoHaptics.PreviewEye();
+			Effects.Get("door.small").Preview = () => WorldSounds.HoldLoop("door.small", AudioType.NomaiDoorSlide_LP);
+			Effects.Get("door.small.start").Preview = () => WorldSounds.Preview(AudioType.NomaiDoorStart);
+			Effects.Get("door.small.stop").Preview = () => WorldSounds.Preview(AudioType.NomaiDoorStop);
+			Effects.Get("door.big").Preview = () => WorldSounds.HoldLoop("door.big", AudioType.NomaiDoorSlideBig_LP);
+			Effects.Get("door.big.start").Preview = () => WorldSounds.Preview(AudioType.NomaiDoorStartBig);
+			Effects.Get("door.big.stop").Preview = () => WorldSounds.Preview(AudioType.NomaiDoorStopBig);
 			Effects.Get("mech.big").Preview = () => WorldSounds.HoldLoop("mech.big", AudioType.NomaiAirlockSlide_LP);
 			Effects.Get("dish.sun").Preview = () => WorldSounds.HoldLoop("dish.sun", AudioType.Sun_Ambience_LP, "SignalDish preview");
 			Effects.Get("dish.giants").Preview = () => WorldSounds.HoldLoop("dish.giants", AudioType.GD_Tornado_LP, "SignalDish preview");
@@ -211,6 +217,10 @@ namespace OuterWildsDualSense
 			Effects.Get("ui.live").PreviewPeriod = 0.5f;
 			Effects.Get("grav.shot").PreviewPeriod = 9.0f;
 			Effects.Get("lift.shot").PreviewPeriod = 1.7f;
+			Effects.Get("door.small.start").PreviewPeriod = 1.4f;
+			Effects.Get("door.small.stop").PreviewPeriod = 2.6f;
+			Effects.Get("door.big.start").PreviewPeriod = 2.1f;
+			Effects.Get("door.big.stop").PreviewPeriod = 3.1f;
 			Effects.Get("qm.shuttle").PreviewPeriod = 8.2f;
 			Effects.Get("qm.lightning").PreviewPeriod = 6.3f;
 			Effects.Get("qm.cairn").PreviewPeriod = 3.5f;
@@ -236,7 +246,7 @@ namespace OuterWildsDualSense
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;

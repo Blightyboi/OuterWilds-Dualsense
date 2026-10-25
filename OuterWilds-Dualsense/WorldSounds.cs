@@ -153,6 +153,19 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Solanum_RocksForm", EffectId = "qm.cairn", GameRolloff = true, Crackle = true },
 			new Rule { ClipPrefix = "Solanum_IconAppear", EffectId = "qm.symbol", GameRolloff = true, Crackle = true },
 
+			// Nomai doors. Small doors (NomaiMultiPartDoor, an orb in a slot opens, closes or cycles them): NomaiDoorStart when the
+			// movement begins, the NomaiDoorSlide_LP loop while it lasts, NomaiDoorStop when it ends (the loop is cut at that moment).
+			// Big doors (NomaiGateway: the shrine gates, the city doors): NomaiDoorStartBig, the NomaiDoorSlideBig_LP loop and
+			// NomaiDoorStopBig, which the Nomai airlocks and the Memory Uplink statue also play at their end. The airlocks' own slide
+			// loop is OW_NM_DoorSlide_Big_LP_01 (mech.big above). The Big prefixes stand first: "OW_NM_DoorStart_Big" must not be
+			// taken for a small start.
+			new Rule { ClipPrefix = "OW_NM_DoorStart_Big", EffectId = "door.big.start", GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_DoorStart_0", EffectId = "door.small.start", GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "Nomai_Stone_Door_End_Big", EffectId = "door.big.stop", GameRolloff = true },
+			new Rule { ClipPrefix = "Nomai_Stone_Door_End_V2", EffectId = "door.small.stop", GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_DoorSlide_Big_LP_05", EffectId = "door.big", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_DoorSlide_LP", EffectId = "door.small", Loop = true, GameRolloff = true },
+
 			// Nomai holograms (HologramProjector: Brittle Hollow's observatory with its six orb tracks, Giant's Deep, the
 			// orbital probe cannon): the hologram appearing and fading, a long swell with a lot of low end. The projector's
 			// loop (NomaiHologram_LP) has no clip in the game's sound table, so there is nothing to follow there.

@@ -392,6 +392,21 @@ namespace OuterWildsDualSense
 				.Add("lowHz", "Low tone Hz", 34f, 20, 120)
 				.Add("highHz", "High tone Hz", 66f, 40, 220)
 				.Add("wobbleHz", "Turbulence Hz", 2.5f, 0.5f, 12);
+			const string door = "World sounds/Nomai doors";
+			Define("door.small", door, "Small door sliding", "OW_NM_DoorSlide_LP_02, 5 s, low end 0.10: the loop NomaiMultiPartDoor plays while the door moves (Play on Cycle, cut when it ends). Orb-operated doors of the ruins.")
+				.Add("gain", "Strength", 2f, 0, 10);
+			Define("door.small.start", door, "Small door starting", "OW_NM_DoorStart_01..09, 1 s, almost no low end (0.03): a short tick that follows the sound.")
+				.Add("gain", "Strength", 3f, 0, 15)
+				.Add("tone", "Tick tone Hz", 100f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 25f, 3, 200);
+			Define("door.small.stop", door, "Small door stopping", "Nomai_Stone_Door_End_V2_01..11, 2.2 s: a stone thud at the start (low end up to 0.14).")
+				.Add("gain", "Strength", 3f, 0, 15);
+			Define("door.big", door, "Big door sliding", "OW_NM_DoorSlide_Big_LP_05, 2.4 s loop with a lot of low end (0.25): NomaiGateway's slide (the shrine gates of the Quantum Moon, the city doors of Ember Twin).")
+				.Add("gain", "Strength", 2.5f, 0, 10);
+			Define("door.big.start", door, "Big door starting", "OW_NM_DoorStart_Big_01..07, 1.7 s, low end 0.11 (up to 0.23): the gateway starts to move.")
+				.Add("gain", "Strength", 2.5f, 0, 10);
+			Define("door.big.stop", door, "Big door stopping", "Nomai_Stone_Door_End_Big_V2_01..11, 2.7 s: a heavy stone thud at the start (low end up to 0.13). Also played by the Nomai airlocks and the Memory Uplink statue.")
+				.Add("gain", "Strength", 3.5f, 0, 15);
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
