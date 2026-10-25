@@ -22,6 +22,7 @@ namespace OuterWildsDualSense
 		public bool UseExtractedClips;
 		public string WatchClip = "";
 		public bool DebugLog;
+		public bool Gyro;
 
 		private void Awake()
 		{
@@ -45,6 +46,7 @@ namespace OuterWildsDualSense
 		private void Update()
 		{
 			TouchpadInput.Tick();
+			GyroInput.Tick();
 			// Keep the output in step with the values being edited in the F1 menu.
 			if (Haptics == null) return;
 			Haptics.Maintain(); // reopens the audio output after the controller was unplugged
@@ -75,6 +77,7 @@ namespace OuterWildsDualSense
 			HapticGain = Mathf.Clamp(config.GetSettingsValue<float>("hapticGain"), 0f, 4f);
 			if (Haptics != null) Haptics.MasterGain = HapticGain;
 			DebugLog = config.GetSettingsValue<bool>("debugLog");
+			Gyro = config.GetSettingsValue<bool>("gyro");
 			if (!Enabled) ResetController();
 		}
 

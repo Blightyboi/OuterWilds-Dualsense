@@ -306,7 +306,7 @@ namespace OuterWildsDualSense
 			return _icon;
 		}
 
-		public const int Map = 0, Open = 1;
+		public const int Map = 0, Open = 1, Recalibrate = 2;
 
 		// Texts per prompt, in the order of TextTranslation.Language: English, Spanish (LA), German, French, Italian,
 		// Polish, Portuguese (BR), Japanese, Russian, Chinese (simplified), Korean, Turkish.
@@ -314,9 +314,10 @@ namespace OuterWildsDualSense
 		{
 			new[] { "Pan, rotate, zoom", "Mover, girar, zoom", "Schwenken, drehen, zoomen", "Déplacer, tourner, zoom", "Sposta, ruota, zoom", "Przesuń, obróć, zoom", "Mover, girar, zoom", "移動・回転・ズーム", "Двигать, вращать, зум", "移动、旋转、缩放", "이동, 회전, 확대/축소", "Kaydır, döndür, yakınlaştır" },
 			new[] { "Open entry", "Abrir entrada", "Eintrag öffnen", "Ouvrir l'entrée", "Apri voce", "Otwórz wpis", "Abrir entrada", "記録を開く", "Открыть запись", "打开条目", "항목 열기", "Girişi aç" },
+			new[] { "Recalibrate gyro", "Recalibrar giroscopio", "Gyro neu kalibrieren", "Recalibrer le gyroscope", "Ricalibra giroscopio", "Skalibruj \u017cyroskop", "Recalibrar girosc\u00f3pio", "\u30b8\u30e3\u30a4\u30ed\u3092\u518d\u8abf\u6574", "\u041a\u0430\u043b\u0438\u0431\u0440\u043e\u0432\u043a\u0430 \u0433\u0438\u0440\u043e\u0441\u043a\u043e\u043f\u0430", "\u91cd\u65b0\u6821\u51c6\u9640\u87ba\u4eea", "\uc790\uc774\ub85c \uc7ac\ubcf4\uc815", "Jiroskobu yeniden kalibre et" },
 		};
 
-		private static string Text(int id)
+		internal static string Text(int id)
 		{
 			int lang = 0;
 			try { var t = TextTranslation.Get(); if (t != null) lang = (int)t.GetLanguage(); } catch (System.Exception) { }
@@ -418,7 +419,14 @@ namespace OuterWildsDualSense
 	{
 		private static void Postfix(ScreenPrompt __instance, ref System.Collections.Generic.List<Sprite> __result)
 		{
-			if (!TouchpadPrompts.ScrollPrompts.Contains(__instance) || !TouchpadInput.Available) return;
+			if (!TouchpadInput.Available) return;
+			if (__instance == GyroPrompt.Prompt)
+			{
+				var r3 = GyroPrompt.SecondIcon();
+				if (r3 != null && __result != null && __result.Count == 1) __result.Add(r3);
+				return;
+			}
+			if (!TouchpadPrompts.ScrollPrompts.Contains(__instance)) return;
 			var icon = TouchpadPrompts.Icon();
 			if (icon == null || __result == null) return;
 			if (__result.Count == 1) __result.Add(icon);
@@ -426,17 +434,19 @@ namespace OuterWildsDualSense
 		}
 	}
 
-	/// <summary>Puts a slash between the two images of that prompt.</summary>
+	/// <summary>Puts a separator (slash, or plus for the gyro prompt) between the two images of a prompt.</summary>
 	[HarmonyPatch(typeof(ScreenPromptElement), "BuildInCommandImage")]
 	internal static class ScrollPromptSlash
 	{
 		private static void Postfix(ScreenPromptElement __instance, ref System.Collections.Generic.List<string> stringList)
 		{
 			var data = Traverse.Create(__instance).Field("_promptData").GetValue<ScreenPrompt>();
-			if (data == null || !TouchpadPrompts.ScrollPrompts.Contains(data)) return;
+			if (data == null) return;
+			string separator = TouchpadPrompts.ScrollPrompts.Contains(data) ? "/" : data == GyroPrompt.Prompt ? "+" : null;
+			if (separator == null) return;
 			for (int i = 0; i + 1 < stringList.Count; i++)
 			{
-				if (stringList[i] == "<CMD>" && stringList[i + 1] == "<CMD>") { stringList.Insert(i + 1, "/"); break; }
+				if (stringList[i] == "<CMD>" && stringList[i + 1] == "<CMD>") { stringList.Insert(i + 1, separator); break; }
 			}
 		}
 	}

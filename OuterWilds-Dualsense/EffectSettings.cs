@@ -128,6 +128,14 @@ namespace OuterWildsDualSense
 				.Add("zoom", "Zoom (pinch)", 1, -3, 3)
 				.Add("scroll", "Text scroll", 1, -3, 3);
 
+			Define("gyro.roll", "Gyro", "Gyro roll (ship, jetpack in zero gravity)", "Tilting the controller sideways rolls like the stick. The on/off switch is in the mod settings of the pause menu. Hold L3 and press R3 to set the level. Negative multiplier flips the direction.")
+				.Add("deadzone", "Dead zone degrees", 8, 0, 30)
+				.Add("maxAngle", "Tilt for full roll degrees", 45, 15, 90)
+				.Add("roll", "Roll strength (negative flips)", 1, -3, 3)
+				.Add("pitch", "Pitch strength, tilt forward/back (negative flips)", 1, -3, 3)
+				.Add("yaw", "Yaw strength, turn left/right (negative flips)", 1, -3, 3)
+				.Add("smoothing", "Smoothing Hz (lower = smoother)", 8, 1, 30);
+
 			const string steps = "Player/Footsteps";
 			Define("step.base", steps, "Step thump", "A haptic thump on every footstep, at the moment the foot lands. Faster movement is stronger.")
 				.Add("strength", "Strength", 0.7f, 0, 1.5f)

@@ -114,6 +114,11 @@ namespace OuterWildsDualSense
 	{
 		public bool Down1, Down2, Click;
 		public int X1, Y1, X2, Y2;
+		/// <summary>Raw accelerometer (about 8192 per g) and stick clicks from the same report.</summary>
+		public short AccelX, AccelY, AccelZ;
+		/// <summary>Raw gyroscope, 1024 per degree per second: pitch, yaw, roll rates.</summary>
+		public short GyroX, GyroY, GyroZ;
+		public bool L3, R3;
 	}
 
 	/// <summary>
@@ -330,6 +335,14 @@ namespace OuterWildsDualSense
 						if (buf[0] != 0x01 || n < 41) continue;
 						var t = new TouchState();
 						t.Click = (buf[10] & 0x02) != 0;
+						t.L3 = (buf[9] & 0x40) != 0;
+						t.R3 = (buf[9] & 0x80) != 0;
+						t.GyroX = (short)(buf[16] | (buf[17] << 8));
+						t.GyroY = (short)(buf[18] | (buf[19] << 8));
+						t.GyroZ = (short)(buf[20] | (buf[21] << 8));
+						t.AccelX = (short)(buf[22] | (buf[23] << 8));
+						t.AccelY = (short)(buf[24] | (buf[25] << 8));
+						t.AccelZ = (short)(buf[26] | (buf[27] << 8));
 						// Each finger: bit 7 of the first byte = not touching, then 12-bit X and 12-bit Y in three bytes.
 						t.Down1 = (buf[33] & 0x80) == 0;
 						t.X1 = buf[34] | ((buf[35] & 0x0F) << 8);

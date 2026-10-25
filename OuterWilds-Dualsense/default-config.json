@@ -8,6 +8,12 @@
     "hapticGain": 1.0,
     "useExtractedClips": false,
     "watchClip": "",
-    "debugLog": false
+    "debugLog": false,
+    "gyro": {
+      "type": "toggle",
+      "value": false,
+      "title": "Gyro roll control",
+      "tooltip": "Tilt the controller sideways to roll the ship, and the jetpack in zero gravity. Hold L3 and press R3 to set the current tilt as level."
+    }
   }
 }
