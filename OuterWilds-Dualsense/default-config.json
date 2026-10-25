@@ -9,11 +9,12 @@
     "useExtractedClips": false,
     "watchClip": "",
     "debugLog": false,
-    "gyro": {
-      "type": "toggle",
-      "value": false,
-      "title": "Gyro roll control",
-      "tooltip": "Tilt the controller sideways to roll the ship, and the jetpack in zero gravity. Hold L3 and press R3 to set the current tilt as level."
+    "gyroMode": {
+      "type": "selector",
+      "value": "Off",
+      "options": ["Off", "Full", "Roll only"],
+      "title": "Gyro control",
+      "tooltip": "Off: no gyro. Full: tilt the controller to roll, pitch and yaw the ship (and the jetpack in zero gravity). Roll only: only the sideways tilt rolls, pitch and yaw stay on the right stick. Hold L3 and press R3 to set the current pose as level."
     }
   }
 }

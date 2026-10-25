@@ -24,7 +24,7 @@ namespace OuterWildsDualSense
 
 		public static bool On
 		{
-			get { var m = DualSenseMod.Instance; return m != null && m.Gyro && TouchpadInput.Available; }
+			get { var m = DualSenseMod.Instance; return m != null && m.GyroMode != 0 && TouchpadInput.Available; }
 		}
 
 		/// <summary>Where the gyro would roll right now: the cockpit, or the jetpack without gravity.</summary>
@@ -93,8 +93,9 @@ namespace OuterWildsDualSense
 			float dead = cfg["deadzone"], max = Mathf.Max(cfg["maxAngle"], dead + 1f);
 			// Signs as found in the game: with the default strength 1 a tilt to the right rolls right, nose down pitches down.
 			Roll = Mathf.Clamp(-Stick(Mathf.DeltaAngle(_zero, _angle), dead, max) * cfg["roll"], -1f, 1f);
-			Pitch = Mathf.Clamp(-Stick(Mathf.DeltaAngle(_zeroPitch, _pitchAngle), dead, max) * cfg["pitch"], -1f, 1f);
-			Yaw = Mathf.Clamp(-Stick(_yawAngle, dead, max) * cfg["yaw"], -1f, 1f);
+			bool rollOnly = DualSenseMod.Instance.GyroMode == 2;
+			Pitch = rollOnly ? 0f : Mathf.Clamp(-Stick(Mathf.DeltaAngle(_zeroPitch, _pitchAngle), dead, max) * cfg["pitch"], -1f, 1f);
+			Yaw = rollOnly ? 0f : Mathf.Clamp(-Stick(_yawAngle, dead, max) * cfg["yaw"], -1f, 1f);
 		}
 	}
 
