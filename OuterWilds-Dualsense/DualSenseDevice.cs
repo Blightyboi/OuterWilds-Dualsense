@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
+using System.Threading;
+using UnityEngine;
 
 namespace OuterWildsDualSense
 {
@@ -107,6 +109,13 @@ namespace OuterWildsDualSense
 		}
 	}
 
+	/// <summary>Touchpad fingers: X 0..1919, Y 0..1079 (Y grows downward).</summary>
+	public struct TouchState
+	{
+		public bool Down1, Down2, Click;
+		public int X1, Y1, X2, Y2;
+	}
+
 	/// <summary>
 	/// Talks to a USB-connected DualSense directly over HID output report 0x02.
 	/// Bluetooth (report 0x31 + CRC32) is not implemented yet.
@@ -129,6 +138,7 @@ namespace OuterWildsDualSense
 		private bool _lightbarSetupPending;
 		private byte _motorRight, _motorLeft;
 		private bool _rumbleWasOn;
+		private TouchReader _touchReader;
 
 		/// <summary>Receives diagnostic messages (set by the mod).</summary>
 		public Action<string> Log = delegate { };
@@ -215,6 +225,13 @@ namespace OuterWildsDualSense
 			}
 		}
 
+		/// <summary>Latest touchpad state from the background reader (started on the first call).</summary>
+		public bool ReadTouch(out TouchState touch)
+		{
+			if (_touchReader == null) _touchReader = new TouchReader(Log);
+			return _touchReader.TryGet(out touch);
+		}
+
 		private bool TryOpen()
 		{
 			_path = NativeMethods.FindDualSensePath();
@@ -251,7 +268,87 @@ namespace OuterWildsDualSense
 
 		public void Dispose()
 		{
+			if (_touchReader != null) _touchReader.Dispose();
 			Close();
+		}
+	}
+
+	/// <summary>
+	/// Reads the DualSense input reports (0x01, USB) on a background thread over its own overlapped handle and keeps
+	/// the latest touchpad state. HidD_GetInputReport fails on this interface (Win32 error 31), so the reports are read.
+	/// </summary>
+	internal sealed class TouchReader : IDisposable
+	{
+		private readonly Action<string> _log;
+		private readonly object _lock = new object();
+		private readonly Thread _thread;
+		private volatile bool _stop;
+		private TouchState _state;
+		private bool _has;
+
+		public TouchReader(Action<string> log)
+		{
+			_log = log;
+			_thread = new Thread(Run) { IsBackground = true, Name = "DualSense touch reader" };
+			_thread.Start();
+		}
+
+		public bool TryGet(out TouchState state)
+		{
+			lock (_lock) { state = _state; return _has; }
+		}
+
+		public void Dispose() { _stop = true; }
+
+		private void Run()
+		{
+			bool loggedFirst = false;
+			while (!_stop)
+			{
+				string path = NativeMethods.FindDualSensePath();
+				SafeFileHandle h = path == null ? null : NativeMethods.CreateFile(path, 0x80000000, 3, IntPtr.Zero, 3, 0x40000000, IntPtr.Zero); // read, FILE_FLAG_OVERLAPPED
+				if (h == null || h.IsInvalid) { lock (_lock) _has = false; Thread.Sleep(1000); continue; }
+				IntPtr evt = NativeMethods.CreateEvent(IntPtr.Zero, true, false, null);
+				IntPtr ov = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(NativeOverlapped)));
+				var buf = new byte[64];
+				try
+				{
+					while (!_stop)
+					{
+						Marshal.StructureToPtr(new NativeOverlapped { EventHandle = evt }, ov, false);
+						int n;
+						if (!NativeMethods.ReadFile(h, buf, buf.Length, out n, ov))
+						{
+							int err = Marshal.GetLastWin32Error();
+							if (err != 997) { _log("Touchpad read failed, Win32 error " + err); break; }
+							bool done = false;
+							while (!_stop && !done) done = NativeMethods.WaitForSingleObject(evt, 100) == 0;
+							if (!done) { NativeMethods.CancelIo(h); break; }
+							if (!NativeMethods.GetOverlappedResult(h, ov, out n, false)) break;
+						}
+						if (!loggedFirst) { loggedFirst = true; _log("Touchpad reader: first report id 0x" + buf[0].ToString("X2") + ", " + n + " bytes."); }
+						if (buf[0] != 0x01 || n < 41) continue;
+						var t = new TouchState();
+						t.Click = (buf[10] & 0x02) != 0;
+						// Each finger: bit 7 of the first byte = not touching, then 12-bit X and 12-bit Y in three bytes.
+						t.Down1 = (buf[33] & 0x80) == 0;
+						t.X1 = buf[34] | ((buf[35] & 0x0F) << 8);
+						t.Y1 = (buf[35] >> 4) | (buf[36] << 4);
+						t.Down2 = (buf[37] & 0x80) == 0;
+						t.X2 = buf[38] | ((buf[39] & 0x0F) << 8);
+						t.Y2 = (buf[39] >> 4) | (buf[40] << 4);
+						lock (_lock) { _state = t; _has = true; }
+					}
+				}
+				finally
+				{
+					lock (_lock) _has = false;
+					h.Close();
+					NativeMethods.CloseHandle(evt);
+					Marshal.FreeHGlobal(ov);
+				}
+				if (!_stop) Thread.Sleep(1000);
+			}
 		}
 	}
 
@@ -280,6 +377,24 @@ namespace OuterWildsDualSense
 
 		[DllImport("setupapi.dll")]
 		private static extern bool SetupDiDestroyDeviceInfoList(IntPtr set);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern bool ReadFile(SafeFileHandle handle, byte[] buffer, int count, out int read, IntPtr overlapped);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern bool GetOverlappedResult(SafeFileHandle handle, IntPtr overlapped, out int transferred, bool wait);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern bool CancelIo(SafeFileHandle handle);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern IntPtr CreateEvent(IntPtr attributes, bool manualReset, bool initialState, string name);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern uint WaitForSingleObject(IntPtr handle, uint milliseconds);
+
+		[DllImport("kernel32.dll")]
+		public static extern bool CloseHandle(IntPtr handle);
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
 		public static extern SafeFileHandle CreateFile(string name, uint access, uint share, IntPtr security, uint creation, uint flags, IntPtr template);

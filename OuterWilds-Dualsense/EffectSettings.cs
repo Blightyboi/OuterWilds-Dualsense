@@ -119,6 +119,14 @@ namespace OuterWildsDualSense
 				.Add("lowLevel", "Big motor level", 0.9f, 0, 1.5f)
 				.Add("highLevel", "Small motor level", 0.6f, 0, 1.5f);
 
+			Define("touch.pad", "Touchpad", "Touchpad gestures (map, ship log)", "One finger pans the map and scrolls log text, two fingers moving together rotate the map, a pinch zooms. Negative numbers flip a direction. Only works in the map and the ship log, over USB.")
+				.Add("enabled", "On (1) / off (0)", 1, 0, 1, true)
+				.Add("speed", "Finger speed px/s for full stick", 1500, 200, 5000)
+				.Add("pan", "Pan", 1, -3, 3)
+				.Add("rotate", "Rotate", 1, -3, 3)
+				.Add("zoom", "Zoom (pinch)", 1, -3, 3)
+				.Add("scroll", "Text scroll", 1, -3, 3);
+
 			const string steps = "Player/Footsteps";
 			Define("step.base", steps, "Step thump", "A haptic thump on every footstep, at the moment the foot lands. Faster movement is stronger.")
 				.Add("strength", "Strength", 0.7f, 0, 1.5f)
