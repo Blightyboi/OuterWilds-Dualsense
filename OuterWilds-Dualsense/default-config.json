@@ -9,6 +9,12 @@
     "useExtractedClips": false,
     "watchClip": "",
     "debugLog": false,
+    "debugMenu": {
+      "type": "toggle",
+      "value": false,
+      "title": "Debug menu (F1)",
+      "tooltip": "Lets F1 open the effect tuning menu: strengths, tones, colours and Play buttons for every haptic, trigger and gyro effect."
+    },
     "gyroMode": {
       "type": "selector",
       "value": "Off",

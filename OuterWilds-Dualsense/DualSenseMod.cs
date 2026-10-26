@@ -22,6 +22,7 @@ namespace OuterWildsDualSense
 		public bool UseExtractedClips;
 		public string WatchClip = "";
 		public bool DebugLog;
+		public bool DebugMenuEnabled;
 		/// <summary>0 = off, 1 = full (roll, pitch, yaw), 2 = roll only.</summary>
 		public int GyroMode;
 
@@ -78,6 +79,7 @@ namespace OuterWildsDualSense
 			HapticGain = Mathf.Clamp(config.GetSettingsValue<float>("hapticGain"), 0f, 4f);
 			if (Haptics != null) Haptics.MasterGain = HapticGain;
 			DebugLog = config.GetSettingsValue<bool>("debugLog");
+			DebugMenuEnabled = config.GetSettingsValue<bool>("debugMenu");
 			GyroMode = ParseGyroMode(config.GetSettingsValue<string>("gyroMode"));
 			if (!Enabled) ResetController();
 		}

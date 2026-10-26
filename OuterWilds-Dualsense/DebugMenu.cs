@@ -45,6 +45,13 @@ namespace OuterWildsDualSense
 
 		private void Update()
 		{
+			// The menu is a tuning tool: it exists only while the "debugMenu" mod setting is on.
+			var mod = DualSenseMod.Instance;
+			if (mod == null || !mod.DebugMenuEnabled)
+			{
+				if (_open) SetOpen(false);
+				return;
+			}
 			if (F1Pressed()) SetOpen(!_open);
 			if (_open && _pickTarget != null) UpdatePicking();
 			TickPreview();
