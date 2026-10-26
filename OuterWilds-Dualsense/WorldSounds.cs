@@ -180,6 +180,11 @@ namespace OuterWildsDualSense
 			// when the player steps in and out. Singularities: black and white holes share one loop (Warp_Loop_01). Pedestals
 			// (PedestalAnimator): the slide loop while they move; the contact thud is a door-stop clip (Nomai_Stone_Door_End_V2_08), so
 			// door.small.stop already covers it. The computer and recorder ambiences are almost silent in the low band.
+			// A Nomai scroll put into a wall socket and taken out again (PlayerAudioController.PlayInsertItem / PlayRemoveItem, on the
+			// player's own source). Both clips are quiet (about 0.02) and have no low end, so they are ticks that follow the envelope.
+			new Rule { ClipPrefix = "OW_NM_InsertScroll", EffectId = "scroll.insert", Crackle = true },
+			new Rule { ClipPrefix = "OW_NM_RemoveScroll", EffectId = "scroll.remove", Crackle = true },
+
 			// Reading Nomai writing with the translator tool (NomaiTranslatorProp: PlayerAudioController.PlayTranslateAudio plays the
 			// ToolTranslateText_LP loop on the player's own source while a text is translated) and the text of Nomai walls appearing.
 			// Neither has any low end, so both are ticks that follow the envelope.

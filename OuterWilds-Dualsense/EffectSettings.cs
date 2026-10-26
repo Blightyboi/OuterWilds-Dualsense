@@ -428,6 +428,14 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
 				.Add("gain", "Strength", 1.5f, 0, 10);
+			Define("scroll.insert", mech, "Scroll into the wall", "OW_NM_InsertScroll, 1 s, peak 0.17 and almost nothing in the low band: the player slides a Nomai scroll into a wall socket (ScrollSocket). Every blip of the sound becomes a short tick.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("scroll.remove", mech, "Scroll out of the wall", "OW_NM_RemoveScroll, 1 s, peak 0.14, no low end: the scroll is pulled out of the socket.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			Define("translator.text", mech, "Translator: reading Nomai text", "OW_PR_TranslatorTranslateNew, a 3 s loop, a steady 0.11 and nothing in the low band: the translator tool plays it on the player while a Nomai text is translated (also when it is translated automatically). Every blip of the sound becomes a short tick. While reading, the game freezes time; the suit triggers stay on.")
 				.Add("gain", "Strength", 3f, 0, 30)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)

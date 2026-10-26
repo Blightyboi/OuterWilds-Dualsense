@@ -133,6 +133,8 @@ namespace OuterWildsDualSense
 			Effects.Get("orb.grab").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbStartDrag);
 			Effects.Get("orb.slot").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbSlotActivated);
 			Effects.Get("hologram.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiHologramActivate);
+			Effects.Get("scroll.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollInsert);
+			Effects.Get("scroll.remove").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollRemove);
 			Effects.Get("translator.text").Preview = () => WorldSounds.HoldLoop("translator.text", AudioType.ToolTranslateText_LP);
 			Effects.Get("nomai.textreveal").Preview = () => WorldSounds.HoldLoop("nomai.textreveal", AudioType.NomaiTextReveal_LP);
 			Effects.Get("pool.loop").Preview = () => WorldSounds.HoldLoop("pool.loop", AudioType.NomaiRemoteCameraAmbient_LP);
@@ -249,6 +251,8 @@ namespace OuterWildsDualSense
 			Effects.Get("tornado.ride").PreviewPeriod = 2.3f;
 			Effects.Get("hologram.shot").PreviewPeriod = 7.8f;
 			Effects.Get("pool.shot").PreviewPeriod = 5.0f;
+			Effects.Get("scroll.insert").PreviewPeriod = 1.4f;
+			Effects.Get("scroll.remove").PreviewPeriod = 1.4f;
 			Effects.Get("orb.grab").PreviewPeriod = 1.4f;
 			Effects.Get("orb.slot").PreviewPeriod = 1.2f;
 			Effects.Get("fire.ignite").PreviewPeriod = 2.2f;
