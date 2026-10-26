@@ -38,7 +38,11 @@ namespace OuterWildsDualSense
 				TriggerEffect left = TriggerEffect.Off;
 				TriggerEffect right = TriggerEffect.Off;
 
-				bool paused = OWTime.IsPaused();
+				// Reading with the translator freezes time (PauseType.Reading) while the player stands still: the triggers stay on,
+				// otherwise they switched off and back on with every nudge of the stick. Menus, loading and sleeping silence them.
+				bool paused = OWTime.IsPaused(OWTime.PauseType.Menu) || OWTime.IsPaused(OWTime.PauseType.Loading)
+					|| OWTime.IsPaused(OWTime.PauseType.Sleeping) || OWTime.IsPaused(OWTime.PauseType.Initializing)
+					|| OWTime.IsPaused(OWTime.PauseType.Streaming) || OWTime.IsPaused(OWTime.PauseType.System);
 				if (mod.AdaptiveTriggers && !paused && __instance.enabled)
 				{
 					TriggerLogic.Compute(mod.TriggerStrength, out left, out right);

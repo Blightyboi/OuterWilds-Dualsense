@@ -176,6 +176,23 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Hologram_Enter_v2", EffectId = "hologram.shot", GameRolloff = true },
 			new Rule { ClipPrefix = "Hologram_Exit_v2", EffectId = "hologram.shot", GameRolloff = true },
 
+			// Other Nomai mechanisms. The projection pool (NomaiRemoteCameraPlatform): the ambient loop of the pool and the one-shots
+			// when the player steps in and out. Singularities: black and white holes share one loop (Warp_Loop_01). Pedestals
+			// (PedestalAnimator): the slide loop while they move; the contact thud is a door-stop clip (Nomai_Stone_Door_End_V2_08), so
+			// door.small.stop already covers it. The computer and recorder ambiences are almost silent in the low band.
+			// Reading Nomai writing with the translator tool (NomaiTranslatorProp: PlayerAudioController.PlayTranslateAudio plays the
+			// ToolTranslateText_LP loop on the player's own source while a text is translated) and the text of Nomai walls appearing.
+			// Neither has any low end, so both are ticks that follow the envelope.
+			new Rule { ClipPrefix = "OW_PR_TranslatorTranslateNew", EffectId = "translator.text", Loop = true, Crackle = true },
+			new Rule { ClipPrefix = "nomai_textbranchout", EffectId = "nomai.textreveal", Loop = true, GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "OW_NM_SkypeLP", EffectId = "pool.loop", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Pool_Enter_v3", EffectId = "pool.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Pool_Exit_v3", EffectId = "pool.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Warp_Loop_01", EffectId = "hole.loop", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Slot_Linking_Stone_Loop", EffectId = "pedestal.slide", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_ComputerAmbienceLP", EffectId = "nomai.computer", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "BeaconIdea4", EffectId = "nomai.recorder", Loop = true, GameRolloff = true },
+
 			// Timber Hearth: the elevator (Elevator: start and arrival one-shots, a loop it fades in while it runs), geysers
 			// (GeyserAudioController), the water wheel, the waterfall and the rush under water. Strength follows the
 			// source's own 3D rolloff, what the player actually hears.
@@ -288,7 +305,7 @@ namespace OuterWildsDualSense
 
 			// The crackle also plays on the player's own source while dozing off at a fire: that one has its own strength and
 			// silences the fires in the world meanwhile, so the two are not felt on top of each other.
-			bool sleeping = rule.Crackle && IsPlayerSource(source);
+			bool sleeping = rule.Crackle && rule.EffectId == "fire.crackle" && IsPlayerSource(source);
 			string id = sleeping ? "fire.sleep" : rule.EffectId;
 			if (sleeping) _sleepSource = source;
 			bool distance = rule.Distance;

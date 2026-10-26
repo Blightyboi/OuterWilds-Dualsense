@@ -428,6 +428,26 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
 				.Add("gain", "Strength", 1.5f, 0, 10);
+			Define("translator.text", mech, "Translator: reading Nomai text", "OW_PR_TranslatorTranslateNew, a 3 s loop, a steady 0.11 and nothing in the low band: the translator tool plays it on the player while a Nomai text is translated (also when it is translated automatically). Every blip of the sound becomes a short tick. While reading, the game freezes time; the suit triggers stay on.")
+				.Add("gain", "Strength", 3f, 0, 30)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 40f, 3, 200);
+			Define("nomai.textreveal", mech, "Nomai wall text appearing", "nomai_textbranchout_noenergy2, a 3.5 s loop, almost silent (0.01) and no low end: the text of Nomai walls and recordings revealing itself. Every blip becomes a short tick.")
+				.Add("gain", "Strength", 10f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 40f, 3, 200);
+			Define("pool.loop", mech, "Projection pool: ambient", "OW_NM_SkypeLP, 76 s loop, low end 0.13-0.28 (the strongest part in the middle): the pool of a Nomai remote camera (NomaiRemoteCameraPlatform) hums while it is near.")
+				.Add("gain", "Strength", 1f, 0, 10);
+			Define("pool.shot", mech, "Projection pool: entering and leaving", "Pool_Enter_v3_Fade (4.5 s, low end up to 0.20) and Pool_Exit_v3 (2.4 s, up to 0.22): a swell when the player steps into the pool or out of it.")
+				.Add("gain", "Strength", 2.5f, 0, 15);
+			Define("hole.loop", mech, "Black and white holes: hum", "Warp_Loop_01_v2, 3.4 s loop, steady low end 0.21: the singularity of every black and white hole (Singularity_BlackHole_LP and Singularity_WhiteHole_LP share the clip).")
+				.Add("gain", "Strength", 1f, 0, 10);
+			Define("pedestal.slide", mech, "Pedestal sliding", "Slot_Linking_Stone_Loop_02, 2.2 s loop, low end only 0.03 (the sound is mostly mid): the Nomai pedestals (PedestalAnimator) move. The contact thud at the end is the door-stop clip, see Small door stopping.")
+				.Add("gain", "Strength", 5f, 0, 15);
+			Define("nomai.computer", mech, "Nomai computer hum", "OW_NM_ComputerAmbienceLP, 13.5 s loop, low end only 0.01-0.03: a very quiet hum.")
+				.Add("gain", "Strength", 8f, 0, 20);
+			Define("nomai.recorder", mech, "Nomai recorder", "BeaconIdea4, 38 s, no low end at all (0.00, overall 0.01): almost nothing to feel, the haptic is a hum made from the volume.")
+				.Add("gain", "Strength", 8f, 0, 20);
 			Define("dish.sun", mech, "Signal dish: Sun found", "All three rings point at the Sun and the player stands at the dish: OW_SUN_Ambience_v4, 106 s, low end 0.12 (the weakest of the three, so the default is higher). Counted only on the dish's own source.")
 				.Add("gain", "Strength", 4f, 0, 15);
 			Define("dish.giants", mech, "Signal dish: Giant's Deep found", "OW_GD_Tornado_v2 (the tornado), 27 s, low end 0.25.")

@@ -133,6 +133,14 @@ namespace OuterWildsDualSense
 			Effects.Get("orb.grab").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbStartDrag);
 			Effects.Get("orb.slot").Preview = () => WorldSounds.Preview(AudioType.NomaiOrbSlotActivated);
 			Effects.Get("hologram.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiHologramActivate);
+			Effects.Get("translator.text").Preview = () => WorldSounds.HoldLoop("translator.text", AudioType.ToolTranslateText_LP);
+			Effects.Get("nomai.textreveal").Preview = () => WorldSounds.HoldLoop("nomai.textreveal", AudioType.NomaiTextReveal_LP);
+			Effects.Get("pool.loop").Preview = () => WorldSounds.HoldLoop("pool.loop", AudioType.NomaiRemoteCameraAmbient_LP);
+			Effects.Get("pool.shot").Preview = () => WorldSounds.Preview(AudioType.NomaiRemoteCameraEntry);
+			Effects.Get("hole.loop").Preview = () => WorldSounds.HoldLoop("hole.loop", AudioType.Singularity_BlackHole_LP);
+			Effects.Get("pedestal.slide").Preview = () => WorldSounds.HoldLoop("pedestal.slide", AudioType.NomaiPedestalSlide_LP);
+			Effects.Get("nomai.computer").Preview = () => WorldSounds.HoldLoop("nomai.computer", AudioType.NomaiComputerAmbient);
+			Effects.Get("nomai.recorder").Preview = () => WorldSounds.HoldLoop("nomai.recorder", AudioType.NomaiRecorderAmbient_LP);
 			Effects.Get("obs.tornado").Preview = () => WorldSounds.HoldLoop("obs.tornado", AudioType.GD_Tornado_LP, "Audio_Observatory preview");
 			Effects.Get("tornado.roar").Preview = () => WorldSounds.HoldLoop("tornado.roar", AudioType.GD_Tornado_LP);
 			Effects.Get("tornado.ride").Preview = () => TornadoHaptics.Preview();
@@ -240,13 +248,14 @@ namespace OuterWildsDualSense
 			Effects.Get("island.splash").PreviewPeriod = 12.5f;
 			Effects.Get("tornado.ride").PreviewPeriod = 2.3f;
 			Effects.Get("hologram.shot").PreviewPeriod = 7.8f;
+			Effects.Get("pool.shot").PreviewPeriod = 5.0f;
 			Effects.Get("orb.grab").PreviewPeriod = 1.4f;
 			Effects.Get("orb.slot").PreviewPeriod = 1.2f;
 			Effects.Get("fire.ignite").PreviewPeriod = 2.2f;
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;
