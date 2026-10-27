@@ -171,6 +171,18 @@ namespace OuterWildsDualSense
 			Effects.Get("mallow.eat").PreviewPeriod = 3.2f;
 			Effects.Get("mallow.ignite").PreviewPeriod = 1.4f;
 			Effects.Get("repair.done").PreviewPeriod = 3.2f;
+			Effects.Get("item.pickup").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollPickUp);
+			Effects.Get("item.drop").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollDrop);
+			Effects.Get("stone.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneInsert);
+			Effects.Get("stone.remove").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneRemove);
+			Effects.Get("core.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemWarpCoreInsert);
+			Effects.Get("core.remove").Preview = () => WorldSounds.Preview(AudioType.ToolItemWarpCoreRemove);
+			Effects.Get("item.pickup").PreviewPeriod = 3.6f;
+			Effects.Get("item.drop").PreviewPeriod = 3.6f;
+			Effects.Get("stone.insert").PreviewPeriod = 1.6f;
+			Effects.Get("stone.remove").PreviewPeriod = 1.6f;
+			Effects.Get("core.insert").PreviewPeriod = 3.6f;
+			Effects.Get("core.remove").PreviewPeriod = 3.6f;
 			Effects.Get("scroll.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollInsert);
 			Effects.Get("scroll.remove").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollRemove);
 			Effects.Get("translator.text").Preview = () => WorldSounds.HoldLoop("translator.text", AudioType.ToolTranslateText_LP);

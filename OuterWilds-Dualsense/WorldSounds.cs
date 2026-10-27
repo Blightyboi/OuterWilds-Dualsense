@@ -213,6 +213,20 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Repair_Loop", EffectId = "repair.loop", Loop = true, Crackle = true },
 			new Rule { ClipPrefix = "ShipRepair_Finish", EffectId = "repair.done", Crackle = true },
 
+			// Items of the base game (PlayerAudioController.PlayPickUpItem / PlayDropItem / PlayInsertItem / PlayRemoveItem): the scroll,
+			// the shared (linking) stone and conversation stone, and the warp core. A scroll and the stones share one pick-up and one
+			// put-down clip, the warp core has its own. Picking up and putting down are a quiet knock with nothing in the low band, so
+			// ticks; the warp core going into and out of its receptacle has a real low end. Items of the Strangers (lantern, slide
+			// reel, dream lantern, vision torch) belong to the DLC stage.
+			new Rule { ClipPrefix = "Pickup_Rock", EffectId = "item.pickup", Crackle = true },
+			new Rule { ClipPrefix = "Pickup_Ceramic", EffectId = "item.pickup", Crackle = true },
+			new Rule { ClipPrefix = "PutDown_Rock", EffectId = "item.drop", Crackle = true },
+			new Rule { ClipPrefix = "PutDown_Ceramic", EffectId = "item.drop", Crackle = true },
+			new Rule { ClipPrefix = "WarpCore_Insert", EffectId = "core.insert" },
+			new Rule { ClipPrefix = "WarpCore_Remove", EffectId = "core.remove" },
+			new Rule { ClipPrefix = "linkingstone_in", EffectId = "stone.insert", Crackle = true },
+			new Rule { ClipPrefix = "linkingstone_out", EffectId = "stone.remove", Crackle = true },
+
 			// A Nomai scroll put into a wall socket and taken out again (PlayerAudioController.PlayInsertItem / PlayRemoveItem, on the
 			// player's own source). Both clips are quiet (about 0.02) and have no low end, so they are ticks that follow the envelope.
 			new Rule { ClipPrefix = "OW_NM_InsertScroll", EffectId = "scroll.insert", Crackle = true },

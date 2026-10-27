@@ -206,6 +206,28 @@ namespace OuterWildsDualSense
 			Define("mallow.ignite", tools, "Marshmallow catching fire", "Ignite_Marshmallow_01..03 (also the menu key rebind sound, so only on the player), 0.8 s, low end up to 0.05.")
 				.Add("gain", "Strength", 8f, 0, 20);
 
+			const string items = "Items";
+			Define("item.pickup", items, "Picking up an item", "Pickup_Rock_01 (scroll, shared stone, conversation stone) and Pickup_Ceramic_01 (warp core), 2.7-2.9 s: a knock at the start (low end up to 0.03) and then silence.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("item.drop", items, "Putting an item down", "PutDown_Rock_01 and PutDown_Ceramic_01, 2.7-2.9 s: a knock at the start (low end up to 0.02).")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("stone.insert", items, "Shared stone into its socket", "linkingstone_in, 1.3 s, almost silent (peak 0.03).")
+				.Add("gain", "Strength", 20f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("stone.remove", items, "Shared stone out of its socket", "linkingstone_out, 1.3 s, almost silent (0.01).")
+				.Add("gain", "Strength", 20f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("core.insert", items, "Warp core into its receptacle", "WarpCore_Insert_V3_01, 3.2 s, low end up to 0.14.")
+				.Add("gain", "Strength", 3.8f, 0, 15);
+			Define("core.remove", items, "Warp core out of its receptacle", "WarpCore_Remove_V3_01, 3.3 s, low end up to 0.13.")
+				.Add("gain", "Strength", 3.8f, 0, 15);
+
 			const string steps = "Player/Footsteps";
 			Define("step.base", steps, "Step thump", "A haptic thump on every footstep, at the moment the foot lands. Faster movement is stronger.")
 				.Add("strength", "Strength", 0.7f, 0, 1.5f)
