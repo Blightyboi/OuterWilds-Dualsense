@@ -231,6 +231,14 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 12f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("gasp.light", "Player/Gasps", "Gasp: light (first loop wake-up)", "gasp_light9, 4.7 s, peak 0.2 without low end: a soft sigh, so ticks.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("gasp.medium", "Player/Gasps", "Gasp: medium (waking up, leaving a dream)", "gasp_normal11..13, 1.4-2.8 s, a breath at the start with low end up to 0.02.")
+				.Add("gain", "Strength", 6f, 0, 20);
+			Define("gasp.heavy", "Player/Gasps", "Gasp: heavy (waking after suffocating)", "gasp_traumatic3 and 7, 5-5.8 s, low end up to 0.08 in the first 1.5 s.")
+				.Add("gain", "Strength", 2f, 0, 10);
 			Define("dmg.failure", damage, "Power failure", "Power_Failure_v2_02, 3.4 s, low end up to 0.04.")
 				.Add("gain", "Strength", 3.5f, 0, 15);
 			Define("dmg.fuelleak", damage, "Fuel tank leak", "Ship_FuelLeak, a 16 s loop (0.05), low end 0.01.")

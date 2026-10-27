@@ -225,6 +225,14 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_PR_OxygenLeakingFromSuit_loop_louder", EffectId = "suit.leak", Loop = true, Crackle = true, PlayerOnly = true },
 			new Rule { ClipPrefix = "Fix_Puncture_", EffectId = "suit.patch", Crackle = true, PlayerOnly = true },
 
+			// Gasps of the player (PlayerBreathingAudio.PlayWakeGasp when waking up at the start of a loop: light on the first loop
+			// and after a supernova or meditation, heavy after suffocating, medium otherwise; the campfire wake-up and leaving the
+			// dream world use the same clips). The light one is quiet with no low end, so ticks; the others have a low end.
+			new Rule { ClipPrefix = "gasp_light", EffectId = "gasp.light", Crackle = true, PlayerOnly = true },
+			new Rule { ClipPrefix = "gasp_normal", EffectId = "gasp.medium", PlayerOnly = true },
+			new Rule { ClipPrefix = "gasp_traumatic3", EffectId = "gasp.heavy", PlayerOnly = true },
+			new Rule { ClipPrefix = "gasp_traumatic7", EffectId = "gasp.heavy", PlayerOnly = true },
+
 			// The repair tool (ship damage, hold to repair).
 			new Rule { ClipPrefix = "Repair_Loop", EffectId = "repair.loop", Loop = true, Crackle = true },
 			new Rule { ClipPrefix = "ShipRepair_Finish", EffectId = "repair.done", Crackle = true },

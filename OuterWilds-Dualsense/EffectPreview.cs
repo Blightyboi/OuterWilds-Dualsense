@@ -183,6 +183,12 @@ namespace OuterWildsDualSense
 			Effects.Get("suit.leak").Preview = () => WorldSounds.HoldLoop("suit.leak", AudioType.PlayerSuitOxygenLeak_LP, "DualSense suit leak preview");
 			Effects.Get("suit.patch").Preview = () => WorldSounds.Preview(AudioType.PlayerSuitPatchPuncture);
 			Effects.Get("suit.patch").PreviewPeriod = 1.2f;
+			Effects.Get("gasp.light").Preview = () => WorldSounds.Preview(AudioType.PlayerGasp_Light);
+			Effects.Get("gasp.medium").Preview = () => WorldSounds.Preview(AudioType.PlayerGasp_Medium);
+			Effects.Get("gasp.heavy").Preview = () => WorldSounds.Preview(AudioType.PlayerGasp_Heavy);
+			Effects.Get("gasp.light").PreviewPeriod = 5f;
+			Effects.Get("gasp.medium").PreviewPeriod = 3f;
+			Effects.Get("gasp.heavy").PreviewPeriod = 6f;
 			Effects.Get("item.pickup").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollPickUp);
 			Effects.Get("item.drop").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollDrop);
 			Effects.Get("stone.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneInsert);
