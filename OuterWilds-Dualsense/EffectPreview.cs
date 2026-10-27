@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace OuterWildsDualSense
@@ -189,6 +190,18 @@ namespace OuterWildsDualSense
 			Effects.Get("gasp.light").PreviewPeriod = 5f;
 			Effects.Get("gasp.medium").PreviewPeriod = 3f;
 			Effects.Get("gasp.heavy").PreviewPeriod = 6f;
+			Effects.Get("sig.whistle").Preview = () => WorldSounds.HoldLoop("sig.whistle", AudioType.TravelerEsker, "DualSense signal preview");
+			Effects.Get("sig.drums").Preview = () => WorldSounds.HoldLoop("sig.drums", AudioType.TravelerChert, "DualSense signal preview");
+			Effects.Get("sig.banjo").Preview = () => WorldSounds.HoldLoop("sig.banjo", AudioType.TravelerRiebeck, "DualSense signal preview");
+			Effects.Get("sig.flute").Preview = () => WorldSounds.HoldLoop("sig.flute", AudioType.TravelerGabbro, "DualSense signal preview");
+			Effects.Get("sig.harmonica").Preview = () => WorldSounds.HoldLoop("sig.harmonica", AudioType.TravelerFeldspar, "DualSense signal preview");
+			Effects.Get("sig.piano").Preview = () => WorldSounds.HoldLoop("sig.piano", AudioType.TravelerNomai, "DualSense signal preview");
+			Effects.Get("sig.prisoner").Preview = () => WorldSounds.HoldLoop("sig.prisoner", AudioType.TravelerPrisoner, "DualSense signal preview");
+			Effects.Get("sig.quantum").Preview = () => WorldSounds.HoldLoop("sig.quantum", AudioType.QuantumAmbience_LP, "DualSense signal preview");
+			Effects.Get("sig.pod").Preview = () => WorldSounds.HoldLoop("sig.pod", AudioType.NomaiEscapePodDistressSignal_LP, "DualSense signal preview");
+			Effects.Get("sig.radio").Preview = () => WorldSounds.HoldLoop("sig.radio", AudioType.TH_RadioSignal_LP, "DualSense Signal_Radio preview");
+			Effects.Get("sig.hide").Preview = () => WorldSounds.HoldLoop("sig.hide", AudioType.ToolScopeHideAndSeekSignal, "DualSense signal preview");
+			Effects.Get("sig.all").Preview = () => WorldSounds.HoldLoops("sig.all", new KeyValuePair<string, AudioType>("DualSense signal preview sig.whistle", AudioType.TravelerEsker), new KeyValuePair<string, AudioType>("DualSense signal preview sig.drums", AudioType.TravelerChert), new KeyValuePair<string, AudioType>("DualSense signal preview sig.banjo", AudioType.TravelerRiebeck), new KeyValuePair<string, AudioType>("DualSense signal preview sig.flute", AudioType.TravelerGabbro), new KeyValuePair<string, AudioType>("DualSense signal preview sig.harmonica", AudioType.TravelerFeldspar), new KeyValuePair<string, AudioType>("DualSense signal preview sig.piano", AudioType.TravelerNomai), new KeyValuePair<string, AudioType>("DualSense signal preview sig.prisoner", AudioType.TravelerPrisoner));
 			Effects.Get("item.pickup").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollPickUp);
 			Effects.Get("item.drop").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollDrop);
 			Effects.Get("stone.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneInsert);
@@ -327,7 +340,7 @@ namespace OuterWildsDualSense
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "scope.static", "scope.zoom", "probe.flight", "repair.loop", "dmg.electric", "dmg.fuelleak", "dmg.oxyleak", "suit.leak", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "scope.static", "scope.zoom", "probe.flight", "repair.loop", "sig.whistle", "sig.drums", "sig.banjo", "sig.flute", "sig.harmonica", "sig.piano", "sig.prisoner", "sig.quantum", "sig.pod", "sig.radio", "sig.hide", "sig.all", "dmg.electric", "dmg.fuelleak", "dmg.oxyleak", "suit.leak", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;

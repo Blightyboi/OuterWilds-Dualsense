@@ -62,6 +62,9 @@ namespace OuterWildsDualSense
 		/// <summary>Dynamic mode: scale the strength by the source's current volume (loops the game fades in and out).</summary>
 		public bool FollowVolume;
 
+		/// <summary>Silence completely (not just to the game's fifth) while a signal is tuned in: the scope's static.</summary>
+		public bool MuteOnSignal;
+
 		/// <summary>Dynamic mode: only sounds that set OneShotGain are felt (the source also plays unrelated sounds).</summary>
 		public bool Strict;
 
@@ -223,6 +226,34 @@ namespace OuterWildsDualSense
 			}
 		}
 
+		private float _duckCheck;
+		private float _duck = 1f;
+
+		/// <summary>
+		/// While a signal is tuned in, the game ducks every track except Signal in the mixer (OWAudioMixer.MixSignal, NonSignalVolume):
+		/// the scope's static fades to a fifth that way, without any source volume changing. Follow it here.
+		/// </summary>
+		private float NonSignalFactor()
+		{
+			if (Time.unscaledTime < _duckCheck) return _duck;
+			_duckCheck = Time.unscaledTime + 0.05f;
+			_duck = 1f;
+			try
+			{
+				var mixer = Locator.GetAudioMixer();
+				if (mixer == null) return _duck;
+				var track = _owSource != null ? _owSource.GetTrack() : OWAudioMixer.TrackName.Undefined;
+				if (track == OWAudioMixer.TrackName.Signal || track == OWAudioMixer.TrackName.Menu) return _duck;
+				bool music = track == OWAudioMixer.TrackName.Music || track == OWAudioMixer.TrackName.EndTimes_Music || track == OWAudioMixer.TrackName.SlideReelMusic;
+				float db;
+				if (mixer.GetUnityAudioMixer().GetFloat(music ? "NonSignalVolume_Music" : "NonSignalVolume_SFX", out db))
+					_duck = Mathf.Clamp01(Mathf.Pow(10f, db / 20f));
+				if (MuteOnSignal) _duck = Mathf.Clamp01((_duck - 0.2f) / 0.8f); // 1 without a signal, 0 once the game has ducked to its fifth
+			}
+			catch (System.Exception) { }
+			return _duck;
+		}
+
 		private void Update()
 		{
 			if (_source == null || DualSenseMod.Haptics == null) return;
@@ -230,7 +261,7 @@ namespace OuterWildsDualSense
 			ChooseMode();
 			if (_active == null) return;
 
-			_volume = _source.mute ? 0f : _source.volume;
+			_volume = _source.mute ? 0f : _source.volume * NonSignalFactor();
 			float gain = 0f;
 			if (_source.isPlaying)
 			{

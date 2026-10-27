@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 
@@ -195,6 +196,20 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "flashlightO", EffectId = "flashlight.switch", Crackle = true },
 			new Rule { ClipPrefix = "Flashlight_Malfunction", EffectId = "flashlight.flicker", Crackle = true },
 			// The probe launcher (ProbeLauncherEffects) and the probe (ProbeEffects, the flight loop on the probe itself).
+			// Signalscope signals (AudioSignal: a looping OWAudioSource on the Signal track, volume follows how well the scope is
+			// aimed; without the scope they are heard in the world by distance). Each signal is a piece of music, an exception to the
+			// no-music rule. They add up when several are in range. The radio signal uses the probe's flight clip, hence UnderName.
+			new Rule { ClipPrefix = "OW_TravelerTheme_whistling", EffectId = "sig.whistle", Loop = true, GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "OW_TravelerTheme_drums", EffectId = "sig.drums", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_TravelerTheme_banjo", EffectId = "sig.banjo", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_TravelerTheme_flute", EffectId = "sig.flute", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_TravelerTheme_harmonica", EffectId = "sig.harmonica", Loop = true, GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "OW_TravelerTheme_piano", EffectId = "sig.piano", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_TravelerTheme_newtraveler 061021 AP", EffectId = "sig.prisoner", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_QuantumSignal", EffectId = "sig.quantum", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_EscapePodDistressSignal", EffectId = "sig.pod", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_PR_ProbeInAirSound", EffectId = "sig.radio", Loop = true, GameRolloff = true, UnderName = "Signal_Radio" },
+			new Rule { ClipPrefix = "CampfireTune_All_Reverb", EffectId = "sig.hide", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_PR_ThrowProbe", EffectId = "probe.launch" },
 			new Rule { ClipPrefix = "OW_PR_ProbeUnderwaterLaunch", EffectId = "probe.launch.water" },
 			new Rule { ClipPrefix = "Probe_SnapShot", EffectId = "probe.photo", Crackle = true },
@@ -389,6 +404,7 @@ namespace OuterWildsDualSense
 			bool crackle = rule.Crackle;
 			Func<float> ride = rule.Lift ? LiftSpeed(source) : null;
 			tap.FollowVolume = true;
+			tap.MuteOnSignal = rule.EffectId == "scope.static";
 			if (crackle)
 			{
 				// Pops, not a steady level: a short tick for every pop (the interface profile with its own tone and length).
@@ -544,6 +560,28 @@ namespace OuterWildsDualSense
 			source.AssignAudioLibraryClip(type);
 			source.loop = true;
 			source.Play(); // the AudioSource hook sets up the haptic like for any other loop
+		}
+
+		/// <summary>F1 menu: holds several game loops at once (named sources, so rules with UnderName still match).</summary>
+		public static void HoldLoops(string key, params KeyValuePair<string, AudioType>[] items)
+		{
+			if (_loopHolder != null && _loopKey == key) return;
+			StopLoop();
+			var camera = Locator.GetPlayerCamera();
+			if (camera == null || DualSenseMod.Haptics == null) return;
+
+			_loopKey = key;
+			_loopHolder = new GameObject("DualSense loops preview");
+			_loopHolder.transform.position = camera.transform.position + camera.transform.forward * 2f;
+			foreach (var item in items)
+			{
+				var child = new GameObject(item.Key);
+				child.transform.SetParent(_loopHolder.transform, false);
+				var source = child.AddComponent<OWAudioSource>();
+				source.AssignAudioLibraryClip(item.Value);
+				source.loop = true;
+				source.Play();
+			}
 		}
 
 		public static void StopLoop()
