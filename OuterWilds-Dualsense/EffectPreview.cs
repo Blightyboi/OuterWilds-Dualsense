@@ -180,6 +180,9 @@ namespace OuterWildsDualSense
 			Effects.Get("dmg.spark").PreviewPeriod = 0.8f;
 			Effects.Get("dmg.glass").PreviewPeriod = 2.2f;
 			Effects.Get("dmg.failure").PreviewPeriod = 3.8f;
+			Effects.Get("suit.leak").Preview = () => WorldSounds.HoldLoop("suit.leak", AudioType.PlayerSuitOxygenLeak_LP, "DualSense suit leak preview");
+			Effects.Get("suit.patch").Preview = () => WorldSounds.Preview(AudioType.PlayerSuitPatchPuncture);
+			Effects.Get("suit.patch").PreviewPeriod = 1.2f;
 			Effects.Get("item.pickup").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollPickUp);
 			Effects.Get("item.drop").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollDrop);
 			Effects.Get("stone.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneInsert);
@@ -318,7 +321,7 @@ namespace OuterWildsDualSense
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "scope.static", "scope.zoom", "probe.flight", "repair.loop", "dmg.electric", "dmg.fuelleak", "dmg.oxyleak", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "scope.static", "scope.zoom", "probe.flight", "repair.loop", "dmg.electric", "dmg.fuelleak", "dmg.oxyleak", "suit.leak", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;

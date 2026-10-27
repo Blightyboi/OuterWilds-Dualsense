@@ -223,6 +223,14 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 12f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("suit.leak", "Player/Suit", "Suit leak (punctured by spikes)", "OW_PR_OxygenLeakingFromSuit_loop_louder, a 1 s hiss (0.11) without low end; the game fades it with the number of holes.")
+				.Add("gain", "Strength", 6f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("suit.patch", "Player/Suit", "Patching a suit hole", "Fix_Puncture_01..08, 0.8 s, a sharp start (0.09) and silence.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			Define("dmg.failure", damage, "Power failure", "Power_Failure_v2_02, 3.4 s, low end up to 0.04.")
 				.Add("gain", "Strength", 3.5f, 0, 15);
 			Define("dmg.fuelleak", damage, "Fuel tank leak", "Ship_FuelLeak, a 16 s loop (0.05), low end 0.01.")

@@ -220,6 +220,11 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Ship_FuelLeak", EffectId = "dmg.fuelleak", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_PR_OxygenLeakingFromSuit_loop", EffectId = "dmg.oxyleak", Loop = true, GameRolloff = true, Crackle = true, UnderName = "Ship_Body" },
 
+			// Suit puncture (cactus spikes): PlayerAudioController.UpdateSuitPunctures fades a hiss on the player's own source with the
+			// number of holes, and patching a hole (PlayPatchPuncture) is a sharp one-shot. Nothing in the low band, so ticks.
+			new Rule { ClipPrefix = "OW_PR_OxygenLeakingFromSuit_loop_louder", EffectId = "suit.leak", Loop = true, Crackle = true, PlayerOnly = true },
+			new Rule { ClipPrefix = "Fix_Puncture_", EffectId = "suit.patch", Crackle = true, PlayerOnly = true },
+
 			// The repair tool (ship damage, hold to repair).
 			new Rule { ClipPrefix = "Repair_Loop", EffectId = "repair.loop", Loop = true, Crackle = true },
 			new Rule { ClipPrefix = "ShipRepair_Finish", EffectId = "repair.done", Crackle = true },
