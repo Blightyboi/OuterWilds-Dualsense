@@ -17,6 +17,9 @@ namespace OuterWildsDualSense
 
 		/// <summary>True while the F1 menu is open (its Play buttons must be felt even if the game is paused).</summary>
 		public static bool IsOpen { get; private set; }
+
+		/// <summary>A Play button of the menu is on: only then does the open menu let the haptics through on a paused game.</summary>
+		public static bool Previewing { get; private set; }
 		private bool _blockInput = true;
 		private bool _inputBlocked;
 		private Rect _window = new Rect(20, 20, 560, 720);
@@ -70,6 +73,7 @@ namespace OuterWildsDualSense
 		{
 			StopPreview();
 			_playing = def;
+			Previewing = true;
 			_nextPlay = 0f;
 		}
 
@@ -78,6 +82,7 @@ namespace OuterWildsDualSense
 			if (_playing == null) return;
 			var def = _playing;
 			_playing = null;
+			Previewing = false;
 			if (def.PreviewStop != null) def.PreviewStop();
 		}
 

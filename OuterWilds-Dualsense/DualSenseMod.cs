@@ -53,8 +53,8 @@ namespace OuterWildsDualSense
 			if (Haptics == null) return;
 			Haptics.Maintain(); // reopens the audio output after the controller was unplugged
 			// The pause menu silences the game's audio but not our haptics: fade them out with it, and back in on resume.
-			// The F1 menu keeps them on so its Play buttons can be tried while the game is paused.
-			bool silent = OWTime.IsPaused(OWTime.PauseType.Menu) && !DebugMenu.IsOpen;
+			// The F1 menu lets them through only while one of its Play buttons is on, so they can be tried on a paused game.
+			bool silent = OWTime.IsPaused(OWTime.PauseType.Menu) && !(DebugMenu.IsOpen && DebugMenu.Previewing);
 			float step = Time.unscaledDeltaTime / (silent ? 0.25f : 0.4f);
 			Haptics.PauseGain = Mathf.MoveTowards(Haptics.PauseGain, silent ? 0f : 1f, step);
 			TornadoHaptics.Tick();
