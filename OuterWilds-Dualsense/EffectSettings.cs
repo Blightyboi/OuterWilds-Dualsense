@@ -331,7 +331,7 @@ namespace OuterWildsDualSense
 				.Add("tone", "Tick tone Hz", 140f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 40f, 3, 200);
 			Define("fire.sleep", fire, "Campfire crackle while dozing off", "The same clip on the player's own source while sleeping at a fire (fades in over 3 s). The fires around are silent in the haptics meanwhile.")
-				.Add("gain", "Strength", 1.5f, 0, 8)
+				.Add("gain", "Strength", 2f, 0, 8)
 				.Add("tone", "Tick tone Hz", 120f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 25f, 3, 200);
 			Define("grav.shot", gravity, "Gravity cannon start and stop", "OW_NM_GravityCannonActivated / Deactivated, 8 s: build-up and a heavy blow at about 5.3 s.")
