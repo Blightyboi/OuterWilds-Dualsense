@@ -209,6 +209,17 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "mallowpuff3", EffectId = "mallow.puff", Crackle = true },
 			new Rule { ClipPrefix = "mallowpuff4", EffectId = "mallow.puff", Crackle = true },
 			new Rule { ClipPrefix = "OW_PR_MarshmallowEat", EffectId = "mallow.eat", Crackle = true },
+			// Damaged ship parts (ShipComponent / DamageEffect, ShipAudioController): sparks of a broken part (a burst one-shot per
+			// DamageEffect burst, plus an electrical loop), the cockpit glass cracking, the power failure when the electrics break and
+			// the leaks of the fuel and oxygen tanks. All quiet and without low end except the power failure, so ticks. The leak clip
+			// is the suit's leak too (the _louder variant), hence UnderName: only on the ship.
+			new Rule { ClipPrefix = "Spark_", EffectId = "dmg.spark", GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "OW_SP_ElectricalDamageLP", EffectId = "dmg.electric", Loop = true, GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "glass_crack_", EffectId = "dmg.glass", GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "Power_Failure_v2", EffectId = "dmg.failure", GameRolloff = true },
+			new Rule { ClipPrefix = "Ship_FuelLeak", EffectId = "dmg.fuelleak", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_PR_OxygenLeakingFromSuit_loop", EffectId = "dmg.oxyleak", Loop = true, GameRolloff = true, Crackle = true, UnderName = "Ship_Body" },
+
 			// The repair tool (ship damage, hold to repair).
 			new Rule { ClipPrefix = "Repair_Loop", EffectId = "repair.loop", Loop = true, Crackle = true },
 			new Rule { ClipPrefix = "ShipRepair_Finish", EffectId = "repair.done", Crackle = true },

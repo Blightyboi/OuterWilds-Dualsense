@@ -206,6 +206,28 @@ namespace OuterWildsDualSense
 			Define("mallow.ignite", tools, "Marshmallow catching fire", "Ignite_Marshmallow_01..03 (also the menu key rebind sound, so only on the player), 0.8 s, low end up to 0.05.")
 				.Add("gain", "Strength", 8f, 0, 20);
 
+			const string damage = "Ship/Damage";
+			Define("dmg.spark", damage, "Spark of a broken part", "Spark_01..13, 0.5 s one-shots (peak 0.9) without low end.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("dmg.electric", damage, "Electrical damage hiss", "OW_SP_ElectricalDamageLP, a 10 s loop (0.02) without low end.")
+				.Add("gain", "Strength", 10f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("dmg.glass", damage, "Cockpit glass cracking", "glass_crack_01..03, 1.8 s, nothing in the low band.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("dmg.oxyleak", damage, "Ship oxygen leak", "OW_PR_OxygenLeakingFromSuit_loop on the ship, a 1 s hiss (0.01).")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("dmg.failure", damage, "Power failure", "Power_Failure_v2_02, 3.4 s, low end up to 0.04.")
+				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("dmg.fuelleak", damage, "Fuel tank leak", "Ship_FuelLeak, a 16 s loop (0.05), low end 0.01.")
+				.Add("gain", "Strength", 12f, 0, 40);
+
 			const string items = "Items";
 			Define("item.pickup", items, "Picking up an item", "Pickup_Rock_01 (scroll, shared stone, conversation stone) and Pickup_Ceramic_01 (warp core), 2.7-2.9 s: a knock at the start (low end up to 0.03) and then silence.")
 				.Add("gain", "Strength", 12f, 0, 40)
