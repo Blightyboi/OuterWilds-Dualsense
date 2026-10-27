@@ -136,6 +136,76 @@ namespace OuterWildsDualSense
 				.Add("yaw", "Yaw strength, turn left/right (negative flips)", 1, -3, 3)
 				.Add("smoothing", "Smoothing Hz (lower = smoother)", 8, 1, 30);
 
+			const string tools = "Tools";
+			Define("tool.equip", tools, "Tool taken out", "Tool_Take_Out_02, 0.45 s, low end only 0.02: the signalscope, the translator and the probe launcher all use it (PlayEquipTool).")
+				.Add("gain", "Strength", 10f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("tool.unequip", tools, "Tool put away", "Tool_Put_Away_01, 0.64 s, low end 0.02: the same three tools.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("tool.click", tools, "Tool mode click", "OW_SP_AnalogClick2_v2, 0.25 s, almost silent: switching the signalscope frequency and the probe launcher mode.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("scope.identify", tools, "Signalscope: signal identified", "LogUpdated_001, 0.5 s, a loud chime (0.29) with nothing in the low band.")
+				.Add("gain", "Strength", 4f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("scope.static", tools, "Signalscope: static", "signalscope_static, a 19 s loop of hiss (0.01), the noise of the scope.")
+				.Add("gain", "Strength", 15f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("flashlight.switch", tools, "Flashlight on and off", "flashlightOn / flashlightOff, 0.5 s, nothing in the low band: a click.")
+				.Add("gain", "Strength", 15f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("flashlight.flicker", tools, "Flashlight flickering", "Flashlight_Malfunction_02/03, 0.65 s, nothing in the low band: the flashlight stutters.")
+				.Add("gain", "Strength", 10f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("probe.photo", tools, "Probe: photo", "Probe_SnapShot_01..03, 0.45 s, no low end: the probe takes a picture.")
+				.Add("gain", "Strength", 10f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("mallow.replace", tools, "Marshmallow: new one and toss", "Marshmallow_Replace_01 (also the menu tab sound, so only on the player) and _02: a soft pop.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("mallow.puff", tools, "Marshmallow: blowing it out", "mallowpuff1/3/4, 1.4 s, no low end.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("mallow.eat", tools, "Marshmallow: eating", "OW_PR_MarshmallowEatUnburnt / EatBurnt, 2.3-3 s, almost silent.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("repair.loop", tools, "Repair tool: repairing", "Repair_Loop, a 16.6 s loop of a quiet whir (0.04).")
+				.Add("gain", "Strength", 8f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("repair.done", tools, "Repair tool: finished", "ShipRepair_Finish, 3 s, low end up to 0.02.")
+				.Add("gain", "Strength", 8f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("scope.zoom", tools, "Signalscope: zoom", "Signalscope_Zoom_Loop, a 5.8 s loop (0.05) without low end: the hum made from the volume.")
+				.Add("gain", "Strength", 8f, 0, 20);
+			Define("probe.launch", tools, "Probe launcher: launch", "OW_PR_ThrowProbe, 2 s, a launch thump: low end up to 0.22.")
+				.Add("gain", "Strength", 2.5f, 0, 15);
+			Define("probe.launch.water", tools, "Probe launcher: launch under water", "OW_PR_ProbeUnderwaterLaunch, 2.5 s, low end up to 0.19.")
+				.Add("gain", "Strength", 3f, 0, 15);
+			Define("probe.retrieve", tools, "Probe launcher: probe retrieved", "OW_PR_ProbeRetrieval, 2 s, low end up to 0.05.")
+				.Add("gain", "Strength", 10f, 0, 20);
+			Define("probe.flight", tools, "Probe in flight", "OW_PR_ProbeInAirSound, a 2 s loop on the probe itself, a steady low end of 0.02. Falls off with the distance to the probe.")
+				.Add("gain", "Strength", 7f, 0, 20);
+			Define("probe.attach", tools, "Probe sticking to a surface", "Probe_Attach_v3_01/02, 0.42 s, low end up to 0.14, on the probe.")
+				.Add("gain", "Strength", 3.8f, 0, 15);
+			Define("mallow.equip", tools, "Marshmallow stick pulled out", "OW_PR_PullOutStick, 0.5 s, low end up to 0.17.")
+				.Add("gain", "Strength", 3.2f, 0, 15);
+			Define("mallow.ignite", tools, "Marshmallow catching fire", "Ignite_Marshmallow_01..03 (also the menu key rebind sound, so only on the player), 0.8 s, low end up to 0.05.")
+				.Add("gain", "Strength", 8f, 0, 20);
+
 			const string steps = "Player/Footsteps";
 			Define("step.base", steps, "Step thump", "A haptic thump on every footstep, at the moment the foot lands. Faster movement is stronger.")
 				.Add("strength", "Strength", 0.7f, 0, 1.5f)

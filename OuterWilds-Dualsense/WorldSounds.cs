@@ -29,6 +29,8 @@ namespace OuterWildsDualSense
 			public bool Lift;
 			/// <summary>The rule only applies to sources with this text in the name of the object or one of its parents (a clip the game also plays elsewhere).</summary>
 			public string UnderName;
+			/// <summary>The rule only applies to sources on the player (a clip the menu or something else also plays).</summary>
+			public bool PlayerOnly;
 		}
 
 		private static readonly Rule[] Rules =
@@ -180,6 +182,37 @@ namespace OuterWildsDualSense
 			// when the player steps in and out. Singularities: black and white holes share one loop (Warp_Loop_01). Pedestals
 			// (PedestalAnimator): the slide loop while they move; the contact thud is a door-stop clip (Nomai_Stone_Door_End_V2_08), so
 			// door.small.stop already covers it. The computer and recorder ambiences are almost silent in the low band.
+			// Tools. Equip and unequip share two clips between the signalscope, the translator and the probe launcher
+			// (PlayerAudioController.PlayEquipTool / PlayUnequipTool). The marshmallow clips Marshmallow_Replace_01 and
+			// Ignite_Marshmallow_* are also the menu's tab change and key rebind sounds, so those two only count on the player.
+			// Almost everything here is quiet with nothing in the low band: ticks that follow the envelope (Crackle).
+			new Rule { ClipPrefix = "Tool_Take_Out", EffectId = "tool.equip", Crackle = true },
+			new Rule { ClipPrefix = "Tool_Put_Away", EffectId = "tool.unequip", Crackle = true },
+			new Rule { ClipPrefix = "OW_SP_AnalogClick2", EffectId = "tool.click", Crackle = true },
+			new Rule { ClipPrefix = "LogUpdated_001", EffectId = "scope.identify", Crackle = true },
+			new Rule { ClipPrefix = "signalscope_static", EffectId = "scope.static", Loop = true, Crackle = true },
+			new Rule { ClipPrefix = "Signalscope_Zoom_Loop", EffectId = "scope.zoom", Loop = true },
+			new Rule { ClipPrefix = "flashlightO", EffectId = "flashlight.switch", Crackle = true },
+			new Rule { ClipPrefix = "Flashlight_Malfunction", EffectId = "flashlight.flicker", Crackle = true },
+			// The probe launcher (ProbeLauncherEffects) and the probe (ProbeEffects, the flight loop on the probe itself).
+			new Rule { ClipPrefix = "OW_PR_ThrowProbe", EffectId = "probe.launch" },
+			new Rule { ClipPrefix = "OW_PR_ProbeUnderwaterLaunch", EffectId = "probe.launch.water" },
+			new Rule { ClipPrefix = "Probe_SnapShot", EffectId = "probe.photo", Crackle = true },
+			new Rule { ClipPrefix = "OW_PR_ProbeRetrieval", EffectId = "probe.retrieve" },
+			new Rule { ClipPrefix = "OW_PR_ProbeInAirSound", EffectId = "probe.flight", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Probe_Attach_v3", EffectId = "probe.attach", GameRolloff = true },
+			// The marshmallow stick (RoastingStickController through PlayerAudioController).
+			new Rule { ClipPrefix = "OW_PR_PullOutStick", EffectId = "mallow.equip" },
+			new Rule { ClipPrefix = "Marshmallow_Replace_0", EffectId = "mallow.replace", Crackle = true, PlayerOnly = true },
+			new Rule { ClipPrefix = "Ignite_Marshmallow", EffectId = "mallow.ignite", PlayerOnly = true },
+			new Rule { ClipPrefix = "mallowpuff1", EffectId = "mallow.puff", Crackle = true },
+			new Rule { ClipPrefix = "mallowpuff3", EffectId = "mallow.puff", Crackle = true },
+			new Rule { ClipPrefix = "mallowpuff4", EffectId = "mallow.puff", Crackle = true },
+			new Rule { ClipPrefix = "OW_PR_MarshmallowEat", EffectId = "mallow.eat", Crackle = true },
+			// The repair tool (ship damage, hold to repair).
+			new Rule { ClipPrefix = "Repair_Loop", EffectId = "repair.loop", Loop = true, Crackle = true },
+			new Rule { ClipPrefix = "ShipRepair_Finish", EffectId = "repair.done", Crackle = true },
+
 			// A Nomai scroll put into a wall socket and taken out again (PlayerAudioController.PlayInsertItem / PlayRemoveItem, on the
 			// player's own source). Both clips are quiet (about 0.02) and have no low end, so they are ticks that follow the envelope.
 			new Rule { ClipPrefix = "OW_NM_InsertScroll", EffectId = "scroll.insert", Crackle = true },
@@ -258,7 +291,7 @@ namespace OuterWildsDualSense
 
 				Rule? found = null;
 				foreach (var rule in Rules)
-					if (clip.name.StartsWith(rule.ClipPrefix, StringComparison.Ordinal) && (rule.UnderName == null || IsUnder(source, rule.UnderName))) { found = rule; break; }
+					if (clip.name.StartsWith(rule.ClipPrefix, StringComparison.Ordinal) && (rule.UnderName == null || IsUnder(source, rule.UnderName)) && (!rule.PlayerOnly || OnPlayer(source))) { found = rule; break; }
 				if (found == null) return;
 				var match = found.Value;
 
@@ -394,6 +427,12 @@ namespace OuterWildsDualSense
 		}
 
 		/// <summary>True for a source that belongs to the player (the one that plays the fire while dozing off) or the F1 sleep preview.</summary>
+		/// <summary>A source of the player, including the F1 menu's preview sources (they sit next to the player).</summary>
+		private static bool OnPlayer(AudioSource source)
+		{
+			return IsPlayerSource(source) || source.name.StartsWith("DualSense ", StringComparison.Ordinal);
+		}
+
 		private static bool IsPlayerSource(AudioSource source)
 		{
 			if (source.name == SleepPreviewName) return true;
