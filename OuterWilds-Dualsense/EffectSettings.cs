@@ -525,6 +525,28 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("bh.ambience", hollow, "Surface and under-crust beds", "BH_Ambience_Surface (121 s, low end 0.015) and BH_Ambience_Below_Crust (98 s, 0.03): very quiet AudioVolume zones of Volumes_BH that fade in over 2 s, so a faint steady rumble.")
 				.Add("gain", "Strength", 5f, 0, 20);
+			const string sand = "World sounds/Ember Twin and Ash Twin (sand)";
+			Define("sand.river", sand, "Sand river and the start of the sand column", "Sand_Column_Start_v2_03, a 44 s loop with a lot of low end (0.14, up to 0.23): the sand rushing through the Lakebed caves, on a rail that carries the source along; the same clip starts the sand column.")
+				.Add("gain", "Strength", 1.2f, 0, 10);
+			Define("sand.columnend", sand, "End of the sand column", "SandColumnEnd_v2, a 27 s loop with the most low end of them (0.23).")
+				.Add("gain", "Strength", 0.7f, 0, 10);
+			Define("sand.fall", sand, "Sandfalls", "Sandfall_Inside_Loop_01, a 6 s hiss (0.08) with no low end at all; 28 sources in the caves and the city, so ticks.")
+				.Add("gain", "Strength", 8f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("sand.inside", sand, "Inside the sand (suit)", "HGT_SandFallSmall_Inside, a 15 s muffled hiss (0.03) with no low end, faded in when the player gets into the sand.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("sand.inside.ship", sand, "Inside the sand (ship)", "HGT_SandColumn_Ship, a 25 s rumble inside the cabin (0.08, low end only 0.01).")
+				.Add("gain", "Strength", 10f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+
+			Define("sand.cave", sand, "Cave beds", "HGT_Ambience_Cave_Big / Small, 102 s, very quiet (low end 0.02, up to 0.04). AudioVolume zones that fade in, so a faint steady rumble in the caves.")
+				.Add("gain", "Strength", 5f, 0, 20);
+			Define("sand.surface", sand, "Surface bed", "HGT_Ambience_Surface, 95 s, very quiet (low end 0.013). AudioVolume zones (atmosphere, grotto, escape pod interior) that fade in, so a faint steady rumble on the surface.")
+				.Add("gain", "Strength", 6f, 0, 20);
 			const string suit = "Player/Suit";
 			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
 				.Add("gain", "Strength", 2.5f, 0, 10)

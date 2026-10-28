@@ -296,6 +296,19 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_TH_Waterwheel_loop", EffectId = "water.wheel", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_TH_Waterfall_loop", EffectId = "water.fall", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_TH_Underwater", EffectId = "water.under", Loop = true },
+
+			// Ember Twin and Ash Twin, the sand: the river running through the Lakebed caves (an audio rail that carries the source
+			// along it) and the start of the sand column share one clip; the column's end is its own, the many small sandfalls in the
+			// caves and the city are a hiss with no low end (ticks), and inside the sand the player has a muffled hiss on the player's
+			// own source (PlayerAudioController.OnEnterFluidType) and the ship another (ShipInteriorAudio).
+			new Rule { ClipPrefix = "Sand_Column_Start", EffectId = "sand.river", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "SandColumnEnd", EffectId = "sand.columnend", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Sandfall_Inside_Loop", EffectId = "sand.fall", Loop = true, GameRolloff = true, Crackle = true },
+			new Rule { ClipPrefix = "HGT_SandFallSmall_Inside", EffectId = "sand.inside", Loop = true, Crackle = true, PlayerOnly = true },
+			new Rule { ClipPrefix = "HGT_SandColumn_Ship", EffectId = "sand.inside.ship", Loop = true, Crackle = true },
+			// The beds of the twins: caves (big and small) and the surface, AudioVolume zones that fade in, very quiet.
+			new Rule { ClipPrefix = "HGT_Ambience_Cave", EffectId = "sand.cave", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "HGT_Ambience_Surface", EffectId = "sand.surface", Loop = true, GameRolloff = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>
