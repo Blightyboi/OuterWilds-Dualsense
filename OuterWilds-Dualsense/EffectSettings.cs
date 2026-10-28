@@ -246,31 +246,31 @@ namespace OuterWildsDualSense
 
 			const string signals = "Signals";
 			Define("sig.whistle", signals, "Signal: Esker (whistling)", "OW_TravelerTheme_whistling, low end about 0.005, peak 0.45.")
-				.Add("gain", "Strength", 20f, 0, 40)
+				.Add("gain", "Strength", 10f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			Define("sig.drums", signals, "Signal: Chert (drums)", "OW_TravelerTheme_drums, low end 0.01-0.08, beats.")
-				.Add("gain", "Strength", 7f, 0, 40);
+				.Add("gain", "Strength", 3.5f, 0, 40);
 			Define("sig.banjo", signals, "Signal: Riebeck (banjo)", "OW_TravelerTheme_banjo, low end 0.01-0.05, plucks.")
-				.Add("gain", "Strength", 14f, 0, 40);
+				.Add("gain", "Strength", 7f, 0, 40);
 			Define("sig.flute", signals, "Signal: Gabbro (flute)", "OW_TravelerTheme_flute, low end 0.05-0.13, a steady tone.")
-				.Add("gain", "Strength", 3.4f, 0, 40);
+				.Add("gain", "Strength", 1.7f, 0, 40);
 			Define("sig.harmonica", signals, "Signal: Feldspar (harmonica)", "OW_TravelerTheme_harmonica, peak 0.1, no low end.")
-				.Add("gain", "Strength", 20f, 0, 40)
+				.Add("gain", "Strength", 10f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			Define("sig.piano", signals, "Signal: Solanum (piano)", "OW_TravelerTheme_piano, low end 0.05-0.19, the strongest of them.")
-				.Add("gain", "Strength", 3f, 0, 40);
+				.Add("gain", "Strength", 1.5f, 0, 40);
 			Define("sig.prisoner", signals, "Signal: Prisoner (DLC)", "OW_TravelerTheme_newtraveler 061021 AP, low end 0.03, steady.")
-				.Add("gain", "Strength", 10f, 0, 40);
+				.Add("gain", "Strength", 5f, 0, 40);
 			Define("sig.quantum", signals, "Signal: Quantum signal", "OW_QuantumSignal, 48 s loop, low end 0.04-0.08.")
-				.Add("gain", "Strength", 5f, 0, 40);
+				.Add("gain", "Strength", 2.5f, 0, 40);
 			Define("sig.pod", signals, "Signal: Escape pod beacon", "OW_NM_EscapePodDistressSignal, 10 s loop, low end 0.01.")
-				.Add("gain", "Strength", 24f, 0, 40);
+				.Add("gain", "Strength", 12f, 0, 40);
 			Define("sig.radio", signals, "Signal: Radio signal (tower, satellite)", "OW_PR_ProbeInAirSound, 2 s loop, the probe flight clip, low end 0.015.")
-				.Add("gain", "Strength", 20f, 0, 40);
+				.Add("gain", "Strength", 10f, 0, 40);
 			Define("sig.hide", signals, "Signal: Hide and seek tune", "CampfireTune_All_Reverb, 32 s loop, low end 0.04-0.08.")
-				.Add("gain", "Strength", 5f, 0, 40);
+				.Add("gain", "Strength", 2.5f, 0, 40);
 			Define("sig.all", signals, "All traveler signals together", "Play only: the six instruments and the prisoner at once, each with its own strength set above (the way they add up when tuned together).");
 
 			const string items = "Items";

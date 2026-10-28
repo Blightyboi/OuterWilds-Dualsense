@@ -35,6 +35,9 @@ namespace OuterWildsDualSense
 		}
 
 		/// <summary>Attaches the Play buttons to the effect definitions.</summary>
+		/// <summary>The scope's signals only reach full volume dead centre; the F1 Play button plays them at about the level of a good lock.</summary>
+		private const float SignalPreviewVolume = 0.5f;
+
 		public static void Wire()
 		{
 			var rest = Effects.Get("jp.rest");
@@ -190,18 +193,18 @@ namespace OuterWildsDualSense
 			Effects.Get("gasp.light").PreviewPeriod = 5f;
 			Effects.Get("gasp.medium").PreviewPeriod = 3f;
 			Effects.Get("gasp.heavy").PreviewPeriod = 6f;
-			Effects.Get("sig.whistle").Preview = () => WorldSounds.HoldLoop("sig.whistle", AudioType.TravelerEsker, "DualSense signal preview");
-			Effects.Get("sig.drums").Preview = () => WorldSounds.HoldLoop("sig.drums", AudioType.TravelerChert, "DualSense signal preview");
-			Effects.Get("sig.banjo").Preview = () => WorldSounds.HoldLoop("sig.banjo", AudioType.TravelerRiebeck, "DualSense signal preview");
-			Effects.Get("sig.flute").Preview = () => WorldSounds.HoldLoop("sig.flute", AudioType.TravelerGabbro, "DualSense signal preview");
-			Effects.Get("sig.harmonica").Preview = () => WorldSounds.HoldLoop("sig.harmonica", AudioType.TravelerFeldspar, "DualSense signal preview");
-			Effects.Get("sig.piano").Preview = () => WorldSounds.HoldLoop("sig.piano", AudioType.TravelerNomai, "DualSense signal preview");
-			Effects.Get("sig.prisoner").Preview = () => WorldSounds.HoldLoop("sig.prisoner", AudioType.TravelerPrisoner, "DualSense signal preview");
-			Effects.Get("sig.quantum").Preview = () => WorldSounds.HoldLoop("sig.quantum", AudioType.QuantumAmbience_LP, "DualSense signal preview");
-			Effects.Get("sig.pod").Preview = () => WorldSounds.HoldLoop("sig.pod", AudioType.NomaiEscapePodDistressSignal_LP, "DualSense signal preview");
-			Effects.Get("sig.radio").Preview = () => WorldSounds.HoldLoop("sig.radio", AudioType.TH_RadioSignal_LP, "DualSense Signal_Radio preview");
-			Effects.Get("sig.hide").Preview = () => WorldSounds.HoldLoop("sig.hide", AudioType.ToolScopeHideAndSeekSignal, "DualSense signal preview");
-			Effects.Get("sig.all").Preview = () => WorldSounds.HoldLoops("sig.all", new KeyValuePair<string, AudioType>("DualSense signal preview sig.whistle", AudioType.TravelerEsker), new KeyValuePair<string, AudioType>("DualSense signal preview sig.drums", AudioType.TravelerChert), new KeyValuePair<string, AudioType>("DualSense signal preview sig.banjo", AudioType.TravelerRiebeck), new KeyValuePair<string, AudioType>("DualSense signal preview sig.flute", AudioType.TravelerGabbro), new KeyValuePair<string, AudioType>("DualSense signal preview sig.harmonica", AudioType.TravelerFeldspar), new KeyValuePair<string, AudioType>("DualSense signal preview sig.piano", AudioType.TravelerNomai), new KeyValuePair<string, AudioType>("DualSense signal preview sig.prisoner", AudioType.TravelerPrisoner));
+			Effects.Get("sig.whistle").Preview = () => WorldSounds.HoldLoop("sig.whistle", AudioType.TravelerEsker, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.drums").Preview = () => WorldSounds.HoldLoop("sig.drums", AudioType.TravelerChert, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.banjo").Preview = () => WorldSounds.HoldLoop("sig.banjo", AudioType.TravelerRiebeck, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.flute").Preview = () => WorldSounds.HoldLoop("sig.flute", AudioType.TravelerGabbro, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.harmonica").Preview = () => WorldSounds.HoldLoop("sig.harmonica", AudioType.TravelerFeldspar, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.piano").Preview = () => WorldSounds.HoldLoop("sig.piano", AudioType.TravelerNomai, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.prisoner").Preview = () => WorldSounds.HoldLoop("sig.prisoner", AudioType.TravelerPrisoner, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.quantum").Preview = () => WorldSounds.HoldLoop("sig.quantum", AudioType.QuantumAmbience_LP, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.pod").Preview = () => WorldSounds.HoldLoop("sig.pod", AudioType.NomaiEscapePodDistressSignal_LP, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.radio").Preview = () => WorldSounds.HoldLoop("sig.radio", AudioType.TH_RadioSignal_LP, "DualSense Signal_Radio preview", SignalPreviewVolume);
+			Effects.Get("sig.hide").Preview = () => WorldSounds.HoldLoop("sig.hide", AudioType.ToolScopeHideAndSeekSignal, "DualSense signal preview", SignalPreviewVolume);
+			Effects.Get("sig.all").Preview = () => WorldSounds.HoldLoops("sig.all", SignalPreviewVolume, new KeyValuePair<string, AudioType>("DualSense signal preview sig.whistle", AudioType.TravelerEsker), new KeyValuePair<string, AudioType>("DualSense signal preview sig.drums", AudioType.TravelerChert), new KeyValuePair<string, AudioType>("DualSense signal preview sig.banjo", AudioType.TravelerRiebeck), new KeyValuePair<string, AudioType>("DualSense signal preview sig.flute", AudioType.TravelerGabbro), new KeyValuePair<string, AudioType>("DualSense signal preview sig.harmonica", AudioType.TravelerFeldspar), new KeyValuePair<string, AudioType>("DualSense signal preview sig.piano", AudioType.TravelerNomai), new KeyValuePair<string, AudioType>("DualSense signal preview sig.prisoner", AudioType.TravelerPrisoner));
 			Effects.Get("item.pickup").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollPickUp);
 			Effects.Get("item.drop").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollDrop);
 			Effects.Get("stone.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneInsert);

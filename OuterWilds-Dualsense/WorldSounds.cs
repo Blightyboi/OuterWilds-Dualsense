@@ -546,7 +546,7 @@ namespace OuterWildsDualSense
 		private static string _loopKey;
 
 		/// <summary>F1 menu: holds a game loop next to the player while called every frame.</summary>
-		public static void HoldLoop(string key, AudioType type, string holderName = "DualSense loop preview")
+		public static void HoldLoop(string key, AudioType type, string holderName = "DualSense loop preview", float volume = 1f)
 		{
 			if (_loopHolder != null && _loopKey == key) return;
 			StopLoop();
@@ -559,11 +559,12 @@ namespace OuterWildsDualSense
 			var source = _loopHolder.AddComponent<OWAudioSource>();
 			source.AssignAudioLibraryClip(type);
 			source.loop = true;
+			source.SetLocalVolume(volume);
 			source.Play(); // the AudioSource hook sets up the haptic like for any other loop
 		}
 
 		/// <summary>F1 menu: holds several game loops at once (named sources, so rules with UnderName still match).</summary>
-		public static void HoldLoops(string key, params KeyValuePair<string, AudioType>[] items)
+		public static void HoldLoops(string key, float volume, params KeyValuePair<string, AudioType>[] items)
 		{
 			if (_loopHolder != null && _loopKey == key) return;
 			StopLoop();
@@ -580,6 +581,7 @@ namespace OuterWildsDualSense
 				var source = child.AddComponent<OWAudioSource>();
 				source.AssignAudioLibraryClip(item.Value);
 				source.loop = true;
+				source.SetLocalVolume(volume);
 				source.Play();
 			}
 		}
