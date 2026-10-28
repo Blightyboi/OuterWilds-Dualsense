@@ -264,7 +264,7 @@ namespace OuterWildsDualSense
 			Define("sig.prisoner", signals, "Signal: Prisoner (DLC)", "OW_TravelerTheme_newtraveler 061021 AP, low end 0.03, steady.")
 				.Add("gain", "Strength", 5f, 0, 40);
 			Define("sig.quantum", signals, "Signal: Quantum signal", "OW_QuantumSignal, 48 s loop, low end 0.04-0.08.")
-				.Add("gain", "Strength", 2.5f, 0, 40);
+				.Add("gain", "Strength", 15f, 0, 40);
 			Define("sig.pod", signals, "Signal: Escape pod beacon", "OW_NM_EscapePodDistressSignal, 10 s loop, low end 0.01.")
 				.Add("gain", "Strength", 12f, 0, 40);
 			Define("sig.radio", signals, "Signal: Radio signal (tower, satellite)", "OW_PR_ProbeInAirSound, 2 s loop, the probe flight clip, low end 0.015.")
