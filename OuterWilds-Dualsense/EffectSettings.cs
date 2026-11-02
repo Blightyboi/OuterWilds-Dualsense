@@ -549,6 +549,11 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 6f, 0, 20);
 			Define("lab.ambience", mech, "Observatory and lab hum", "amb_observatory, a 23 s loop (0.05, low end 0.04, up to 0.07): the Timber Hearth and Brittle Hollow observatories, the High Energy Lab on Ember Twin and the Giant's Deep tower. AudioVolume zones that fade in, so a faint steady hum.")
 				.Add("gain", "Strength", 3f, 0, 20);
+			const string ash = "World sounds/Ash Twin (time loop project)";
+			Define("loop.core.open", ash, "Time loop core opening", "AshTwinCore_Open_01, 5.6 s, low end 0.05 on average and up to 0.19: the casing panels turn open (TimeLoopCoreController.OpenCore).")
+				.Add("gain", "Strength", 3f, 0, 15);
+			Define("loop.core.close", ash, "Time loop core closing", "AshTwinCore_Close_01, 6.5 s, low end 0.07 on average and up to 0.16 (TimeLoopCoreController.CloseCore).")
+				.Add("gain", "Strength", 3f, 0, 15);
 			const string suit = "Player/Suit";
 			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
 				.Add("gain", "Strength", 2.5f, 0, 10)

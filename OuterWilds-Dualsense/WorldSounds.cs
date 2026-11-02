@@ -318,6 +318,11 @@ namespace OuterWildsDualSense
 			// observatory, the experiment lab of Ember Twin, the Giant's Deep tower; Ambience_RW_Lab, the lab of the Stranger, plays
 			// the same clip): AudioVolume zones that fade in, quiet.
 			new Rule { ClipPrefix = "amb_observatory", EffectId = "lab.ambience", Loop = true, GameRolloff = true },
+
+			// The Ash Twin project: the core of the time loop machine opens and closes (TimeLoopCoreController.OpenCore / CloseCore,
+			// on AudioSource_TimeLoopCore, while the panels turn for 3 s). Both have a real low end, up to 0.19.
+			new Rule { ClipPrefix = "AshTwinCore_Open", EffectId = "loop.core.open", GameRolloff = true },
+			new Rule { ClipPrefix = "AshTwinCore_Close", EffectId = "loop.core.close", GameRolloff = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>
