@@ -420,7 +420,7 @@ namespace OuterWildsDualSense
 				.Add("tone", "Tick tone Hz", 140f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 40f, 3, 200);
 			Define("fire.sleep", fire, "Campfire crackle while dozing off", "The same clip on the player's own source while sleeping at a fire (fades in over 3 s). The fires around are silent in the haptics meanwhile.")
-				.Add("gain", "Strength", 4f, 0, 8)
+				.Add("gain", "Strength", 8f, 0, 8)
 				.Add("tone", "Tick tone Hz", 120f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 25f, 3, 200);
 			Define("grav.shot", gravity, "Gravity cannon start and stop", "OW_NM_GravityCannonActivated / Deactivated, 8 s: build-up and a heavy blow at about 5.3 s.")
@@ -631,6 +631,15 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 2.5f, 0, 15);
 			Define("hole.loop", mech, "Black and white holes: hum", "Warp_Loop_01_v2, 3.4 s loop, steady low end 0.21: the singularity of every black and white hole (Singularity_BlackHole_LP and Singularity_WhiteHole_LP share the clip).")
 				.Add("gain", "Strength", 1f, 0, 10);
+			Define("window.slide", mech, "Experiment window (High Energy Lab)", "TLE_ExptWindow_01..06, one multi-part door whose clips never reach the live tap, so this is made from the event: a rumble for the whole travel (about 8 s) and a blow when it ends, falling off with the distance to the window.")
+				.Add("strength", "Strength", 0.8f, 0, 1.5f)
+				.Add("freq", "Tone Hz", 45, 20, 150)
+				.Add("chop", "Grinding throb Hz", 7, 0, 30)
+				.Add("range", "Reach in metres", 14, 3, 60);
+			Define("hole.create", mech, "Black or white hole appearing", "OW_NM_BHEnterItem_v2 (SingularityCreate), 2 s, low end only in the first 0.5 s (up to 0.05): a soft thump when a black or white hole opens, for instance behind the window of the High Energy Lab.")
+				.Add("gain", "Strength", 6f, 0, 20);
+			Define("hole.collapse", mech, "Black or white hole closing", "OW_NM_HoleEnterExit (SingularityCollapse), 4 s, one blow at 0.5-1.25 s with low end up to 0.61, then silence.")
+				.Add("gain", "Strength", 0.8f, 0, 10);
 			Define("pedestal.slide", mech, "Pedestal sliding", "Slot_Linking_Stone_Loop_02, 2.2 s loop, low end only 0.03 (the sound is mostly mid): the Nomai pedestals (PedestalAnimator) move. The contact thud at the end is the door-stop clip, see Small door stopping.")
 				.Add("gain", "Strength", 5f, 0, 15);
 			Define("nomai.computer", mech, "Nomai computer hum", "OW_NM_ComputerAmbienceLP, 13.5 s loop, low end only 0.01-0.03: a very quiet hum.")

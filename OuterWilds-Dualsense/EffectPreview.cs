@@ -212,6 +212,12 @@ namespace OuterWildsDualSense
 			Effects.Get("sand.inside.ship").Preview = () => WorldSounds.HoldLoop("sand.inside.ship", AudioType.HT_InsideSandfall_Ship_LP);
 			Effects.Get("sand.cave").Preview = () => WorldSounds.HoldLoop("sand.cave", AudioType.HT_CaveAmbientBig_LP);
 			Effects.Get("sand.surface").Preview = () => WorldSounds.HoldLoop("sand.surface", AudioType.HT_SurfaceAmbience_LP);
+			Effects.Get("hole.create").Preview = () => WorldSounds.Preview(AudioType.SingularityCreate);
+			Effects.Get("hole.collapse").Preview = () => WorldSounds.Preview(AudioType.SingularityCollapse);
+			Effects.Get("hole.create").PreviewPeriod = 2.4f;
+			Effects.Get("hole.collapse").PreviewPeriod = 4.4f;
+			Effects.Get("window.slide").Preview = WindowHaptics.Preview;
+			Effects.Get("window.slide").PreviewPeriod = 7f;
 			Effects.Get("item.pickup").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollPickUp);
 			Effects.Get("item.drop").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollDrop);
 			Effects.Get("stone.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneInsert);

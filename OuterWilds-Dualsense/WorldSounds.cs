@@ -280,6 +280,11 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Pool_Enter_v3", EffectId = "pool.shot", GameRolloff = true },
 			new Rule { ClipPrefix = "Pool_Exit_v3", EffectId = "pool.shot", GameRolloff = true },
 			new Rule { ClipPrefix = "Warp_Loop_01", EffectId = "hole.loop", Loop = true, GameRolloff = true },
+			// A black or white hole appearing and closing (SingularityController.OpenSingularity / CloseSingularity, when the
+			// experiment window of the High Energy Lab opens or a warp core is socketed): the creation is a soft thump, the closing a
+			// real blow with a lot of low end.
+			new Rule { ClipPrefix = "OW_NM_BHEnterItem", EffectId = "hole.create", GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_HoleEnterExit", EffectId = "hole.collapse", GameRolloff = true },
 			new Rule { ClipPrefix = "Slot_Linking_Stone_Loop", EffectId = "pedestal.slide", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_ComputerAmbienceLP", EffectId = "nomai.computer", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "BeaconIdea4", EffectId = "nomai.recorder", Loop = true, GameRolloff = true },
