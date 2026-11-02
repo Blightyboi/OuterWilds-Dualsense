@@ -515,7 +515,7 @@ namespace OuterWildsDualSense
 		public const string SleepPreviewName = "DualSense sleep preview";
 
 		/// <summary>How loud the source is at this distance by its own Unity rolloff settings (1 = right at it, 0 = out of earshot).</summary>
-		private static float GameRolloffAt(AudioSource source, float distance)
+		internal static float GameRolloffAt(AudioSource source, float distance)
 		{
 			float min = source.minDistance, max = Mathf.Max(source.maxDistance, min + 0.01f);
 			float level;

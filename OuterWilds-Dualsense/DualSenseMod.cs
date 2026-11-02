@@ -58,6 +58,7 @@ namespace OuterWildsDualSense
 			float step = Time.unscaledDeltaTime / (silent ? 0.25f : 0.4f);
 			Haptics.PauseGain = Mathf.MoveTowards(Haptics.PauseGain, silent ? 0f : 1f, step);
 			TornadoHaptics.Tick();
+			WindowHaptics.Tick();
 			var live = Effects.Get("hap.live");
 			var rumble = Effects.Get("hap.rumble");
 			Haptics.MasterGain = HapticGain * live["gain"];
