@@ -515,7 +515,7 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("bh.hole.approach", hollow, "Black hole: approaching", "OW_NM_WHAmbience2_v2, 34 s with a lot of low end (0.31, the strongest ambience measured). The BlackHoleAmbience source sits in BlackHole_BH and the game grades it by distance with its own rolloff, so it grows as you fly to the hole. The signal dish plays the same clip for Brittle Hollow (dish.hollow).")
 				.Add("gain", "Strength", 1.6f, 0, 10);
-			Define("bh.hole.transit", hollow, "Black hole: passing through", "BlackHole_02 (SingularityOnPlayerEnterExit), 1.5 s, low end 0.33 with a blow up to 0.57. Falling into the hole is silent in the game; this plays when a white hole lets the player out, on the player's own source. It is also the sound of dying in a black hole.")
+			Define("bh.hole.transit", mech, "Warp: coming out of a white hole (warp towers, White Hole Station)", "BlackHole_02 (SingularityOnPlayerEnterExit), 1.5 s, low end 0.33 with a blow up to 0.57. Falling into a black hole is silent in the game; this plays when a white hole lets the player out (every warp tower platform, NomaiWarpPlatform.PlayExitAudio, and the White Hole Station, WhiteHoleVolume), on the player's own source. It is also the sound of dying in a black hole.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("bh.hole.emission", hollow, "Black hole: swallowing something", "OW_NM_BHEnterExitPlayer_v2, 2 s, a blow up to 0.55. BlackHoleVolume.Vanish plays it at the hole when a ship, a probe or a meteor vanishes while the player is in the hole's audio sector.")
 				.Add("gain", "Strength", 1f, 0, 10);
