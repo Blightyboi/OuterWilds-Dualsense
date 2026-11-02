@@ -314,6 +314,10 @@ namespace OuterWildsDualSense
 			// The beds of the twins: caves (big and small) and the surface, AudioVolume zones that fade in, very quiet.
 			new Rule { ClipPrefix = "HGT_Ambience_Cave", EffectId = "sand.cave", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "HGT_Ambience_Surface", EffectId = "sand.surface", Loop = true, GameRolloff = true },
+			// The hum of observatories and labs (TH_MuseumAmbience_LP: the Timber Hearth observatory, the Brittle Hollow
+			// observatory, the experiment lab of Ember Twin, the Giant's Deep tower; Ambience_RW_Lab, the lab of the Stranger, plays
+			// the same clip): AudioVolume zones that fade in, quiet.
+			new Rule { ClipPrefix = "amb_observatory", EffectId = "lab.ambience", Loop = true, GameRolloff = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>

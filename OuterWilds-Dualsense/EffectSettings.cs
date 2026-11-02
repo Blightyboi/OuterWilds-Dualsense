@@ -547,6 +547,8 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 5f, 0, 20);
 			Define("sand.surface", sand, "Surface bed", "HGT_Ambience_Surface, 95 s, very quiet (low end 0.013). AudioVolume zones (atmosphere, grotto, escape pod interior) that fade in, so a faint steady rumble on the surface.")
 				.Add("gain", "Strength", 6f, 0, 20);
+			Define("lab.ambience", mech, "Observatory and lab hum", "amb_observatory, a 23 s loop (0.05, low end 0.04, up to 0.07): the Timber Hearth and Brittle Hollow observatories, the High Energy Lab on Ember Twin and the Giant's Deep tower. AudioVolume zones that fade in, so a faint steady hum.")
+				.Add("gain", "Strength", 3f, 0, 20);
 			const string suit = "Player/Suit";
 			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
 				.Add("gain", "Strength", 2.5f, 0, 10)
