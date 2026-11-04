@@ -238,6 +238,8 @@ namespace OuterWildsDualSense
 			Effects.Get("vessel.pillar.move").Preview = () => WorldSounds.HoldLoop("vessel.pillar.move", AudioType.NomaiPillarRaiseLower_LP);
 			Effects.Get("vessel.pillar.turn").Preview = () => WorldSounds.Preview(AudioType.NomaiPillarRotate);
 			Effects.Get("vessel.power").Preview = () => WorldSounds.Preview(AudioType.NomaiVesselPowerUp);
+			Effects.Get("db.vine").Preview = () => WorldSounds.Preview(AudioType.DB_VineImpact);
+			Effects.Get("db.vine").PreviewPeriod = 3.5f;
 			Effects.Get("pod.hatch").Preview = () => WorldSounds.Preview(AudioType.NomaiEscapePodHatch);
 			Effects.Get("vessel.warp.open").PreviewPeriod = 5.5f;
 			Effects.Get("vessel.warp.close").PreviewPeriod = 3f;

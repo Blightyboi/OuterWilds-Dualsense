@@ -349,6 +349,7 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_NM_DataWormhole", EffectId = "vessel.pillar.move", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_CenterClampsRemoving", EffectId = "vessel.pillar.turn", GameRolloff = true },
 			new Rule { ClipPrefix = "Nomai_ShipPowerOn", EffectId = "vessel.power", GameRolloff = true },
+			new Rule { ClipPrefix = "Vine_Crash_V3", EffectId = "db.vine", GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_EscapePodHatch", EffectId = "pod.hatch", GameRolloff = true },
 		};
 

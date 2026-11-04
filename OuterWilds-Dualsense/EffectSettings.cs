@@ -593,6 +593,8 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 3f, 0, 15);
 			Define("vessel.power", bramble, "Vessel powering on", "Nomai_ShipPowerOn_V2_01, 7.9 s (low end 0.054, up to 0.23).")
 				.Add("gain", "Strength", 2.5f, 0, 15);
+			Define("db.vine", bramble, "Vine impact", "Vine_Crash_V3_01..04, 3.2 s (low end 0.049, up to 0.13): AudioSource_VineImpact, three in each of the eight dimensions, a one-shot when something hits the thorns.")
+				.Add("gain", "Strength", 3.5f, 0, 15);
 			Define("pod.hatch", mech, "Nomai escape pod hatch", "OW_NM_EscapePodHatch, 10 s, one strong blow (up to 0.21), the rest quiet. The same hatch is on the pods of Dark Bramble and the Brittle Hollow crash site.")
 				.Add("gain", "Strength", 2.5f, 0, 15);
 			const string suit = "Player/Suit";
