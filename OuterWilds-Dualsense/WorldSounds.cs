@@ -340,6 +340,16 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "AnglerFish_OpenMouth", EffectId = "angler.mouth", GameRolloff = true },
 			new Rule { ClipPrefix = "Anglerfish_ChompBite", EffectId = "angler.bite", GameRolloff = true },
 			new Rule { ClipPrefix = "AnglerFish_Chomp_Loop", EffectId = "angler.chomp", Loop = true, GameRolloff = true },
+
+			// The Nomai vessel in Dark Bramble: the warp singularity opens and closes (VesselWarpController), the pillars rise
+			// and lower (loop) and turn, the ship powers on.
+			// The Nomai escape pod hatch (OW_NM_EscapePodHatch) is on three pods: Dark Bramble, Brittle Hollow's crash site.
+			new Rule { ClipPrefix = "Nomai_Warp_01", EffectId = "vessel.warp.open", GameRolloff = true },
+			new Rule { ClipPrefix = "Nomai_Warp_03_Shorter", EffectId = "vessel.warp.close", GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_DataWormhole", EffectId = "vessel.pillar.move", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_CenterClampsRemoving", EffectId = "vessel.pillar.turn", GameRolloff = true },
+			new Rule { ClipPrefix = "Nomai_ShipPowerOn", EffectId = "vessel.power", GameRolloff = true },
+			new Rule { ClipPrefix = "OW_NM_EscapePodHatch", EffectId = "pod.hatch", GameRolloff = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>

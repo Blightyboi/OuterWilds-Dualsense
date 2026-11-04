@@ -582,6 +582,19 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 6f, 0, 30);
 			Define("angler.chomp", angler, "Anglerfish chewing", "AnglerFish_Chomp_Loop_v2, a 19.5 s loop (low end 0.07), caught by clip.")
 				.Add("gain", "Strength", 2.2f, 0, 15);
+			const string bramble = "World sounds/Dark Bramble (vessel and bed)";
+			Define("vessel.warp.open", bramble, "Vessel warp singularity opens", "Nomai_Warp_01, 5 s, strong low end (0.22 on average, up to 0.41): VesselWarpController when the vessel opens its warp.")
+				.Add("gain", "Strength", 1.2f, 0, 10);
+			Define("vessel.warp.close", bramble, "Vessel warp singularity collapses", "Nomai_Warp_03_Shorter, 2.4 s, the strongest low end of the dimension (0.39, up to 0.52).")
+				.Add("gain", "Strength", 1f, 0, 10);
+			Define("vessel.pillar.move", bramble, "Vessel pillars rising and lowering", "OW_NM_DataWormhole, a 10 s loop with an even low end (0.040): plays while the pillars move.")
+				.Add("gain", "Strength", 3.7f, 0, 15);
+			Define("vessel.pillar.turn", bramble, "Vessel pillar turning", "OW_NM_CenterClampsRemoving, 6 s (low end 0.033, up to 0.15).")
+				.Add("gain", "Strength", 3f, 0, 15);
+			Define("vessel.power", bramble, "Vessel powering on", "Nomai_ShipPowerOn_V2_01, 7.9 s (low end 0.054, up to 0.23).")
+				.Add("gain", "Strength", 2.5f, 0, 15);
+			Define("pod.hatch", mech, "Nomai escape pod hatch", "OW_NM_EscapePodHatch, 10 s, one strong blow (up to 0.21), the rest quiet. The same hatch is on the pods of Dark Bramble and the Brittle Hollow crash site.")
+				.Add("gain", "Strength", 2.5f, 0, 15);
 			const string suit = "Player/Suit";
 			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
 				.Add("gain", "Strength", 2.5f, 0, 10)
