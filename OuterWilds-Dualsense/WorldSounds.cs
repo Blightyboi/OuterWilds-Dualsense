@@ -330,6 +330,16 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "IceMelt_v2", EffectId = "comet.melt", Loop = true, GameRolloff = true, Crackle = true },
 			// Sliding on ice (PlayerMovementAudio.FixedUpdate while IsSlidingOnIce: the volume follows the slide speed).
 			new Rule { ClipPrefix = "OW_PR_FootstepsIceSlide_Lp", EffectId = "ice.slide", Loop = true, Crackle = true, PlayerOnly = true },
+
+			// Dark Bramble anglerfish (AnglerfishAudioController): the chasing breath and the sleeping loop on the fish's LoopSource,
+			// the disturbance cry on its long-range source, the target roar, and the mouth clips (open, bite, chomp loop).
+			new Rule { ClipPrefix = "Anglerfish_Chase_Breathing", EffectId = "angler.chase", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Anglerfish_Sleeping", EffectId = "angler.sleep", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Anglerfish_Awake", EffectId = "angler.disturb", GameRolloff = true },
+			new Rule { ClipPrefix = "AnglerFish_Target", EffectId = "angler.target", GameRolloff = true },
+			new Rule { ClipPrefix = "AnglerFish_OpenMouth", EffectId = "angler.mouth", GameRolloff = true },
+			new Rule { ClipPrefix = "Anglerfish_ChompBite", EffectId = "angler.bite", GameRolloff = true },
+			new Rule { ClipPrefix = "AnglerFish_Chomp_Loop", EffectId = "angler.chomp", Loop = true, GameRolloff = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>

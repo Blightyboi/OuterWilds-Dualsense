@@ -567,6 +567,21 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 8f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			const string angler = "World sounds/Dark Bramble (anglerfish)";
+			Define("angler.chase", angler, "Anglerfish chasing", "Anglerfish_Chase_Breathing, a 9.3 s loop (low end 0.053, up to 0.17): the fish's LoopSource while it chases the player, faded in over 0.5 s.")
+				.Add("gain", "Strength", 2.8f, 0, 15);
+			Define("angler.sleep", angler, "Anglerfish sleeping", "Anglerfish_Sleeping, a 27 s loop, very quiet (low end 0.005): the fish's LoopSource while it lurks, so a faint rumble close by.")
+				.Add("gain", "Strength", 25f, 0, 60);
+			Define("angler.disturb", angler, "Anglerfish notices a noise", "Anglerfish_Awake, 5.8 s (low end 0.059, up to 0.14): played on the long-range source when the fish starts to investigate, heard from far away.")
+				.Add("gain", "Strength", 3f, 0, 15);
+			Define("angler.target", angler, "Anglerfish spots the target", "AnglerFish_Target_v2, 3.1 s (low end 0.082, up to 0.31): the roar when the fish starts the chase, at most once in two seconds.")
+				.Add("gain", "Strength", 2f, 0, 15);
+			Define("angler.mouth", angler, "Anglerfish opens its mouth", "AnglerFish_OpenMouth_v2_01, 3.7 s, low end up to 0.35. Who plays it is not found in the code (animation event or prefab); caught by clip.")
+				.Add("gain", "Strength", 1.8f, 0, 15);
+			Define("angler.bite", angler, "Anglerfish bite", "Anglerfish_ChompBite_01, 0.4 s (low end 0.025): a short snap, caught by clip.")
+				.Add("gain", "Strength", 6f, 0, 30);
+			Define("angler.chomp", angler, "Anglerfish chewing", "AnglerFish_Chomp_Loop_v2, a 19.5 s loop (low end 0.07), caught by clip.")
+				.Add("gain", "Strength", 2.2f, 0, 15);
 			const string suit = "Player/Suit";
 			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
 				.Add("gain", "Strength", 2.5f, 0, 10)

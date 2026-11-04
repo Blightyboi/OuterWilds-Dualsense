@@ -226,7 +226,18 @@ namespace OuterWildsDualSense
 			Effects.Get("comet.cave").Preview = () => WorldSounds.HoldLoop("comet.cave", AudioType.CometAmbience_LP);
 			Effects.Get("ice.slide").Preview = () => WorldSounds.HoldLoop("ice.slide", AudioType.MovementIceLSiding);
 			Effects.Get("comet.melt").Preview = () => WorldSounds.HoldLoop("comet.melt", AudioType.CometIceMelting_LP);
-			Effects.Get("item.pickup").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollPickUp);
+			Effects.Get("angler.chase").Preview = () => WorldSounds.HoldLoop("angler.chase", AudioType.DBAnglerfishChasing_LP);
+			Effects.Get("angler.sleep").Preview = () => WorldSounds.HoldLoop("angler.sleep", AudioType.DBAnglerfishLurking_LP);
+			Effects.Get("angler.chomp").Preview = () => WorldSounds.HoldLoop("angler.chomp", AudioType.DBAnglerfishChomp);
+			Effects.Get("angler.disturb").Preview = () => WorldSounds.Preview(AudioType.DBAnglerfishDetectDisturbance);
+			Effects.Get("angler.target").Preview = () => WorldSounds.Preview(AudioType.DBAnglerfishDetectTarget);
+			Effects.Get("angler.mouth").Preview = () => WorldSounds.Preview(AudioType.DBAnglerfishOpeningMouth);
+			Effects.Get("angler.bite").Preview = () => WorldSounds.Preview(AudioType.DBAnglerfishBite);
+			Effects.Get("angler.disturb").PreviewPeriod = 6f;
+			Effects.Get("angler.target").PreviewPeriod = 3.5f;
+			Effects.Get("angler.mouth").PreviewPeriod = 4f;
+			Effects.Get("angler.bite").PreviewPeriod = 1.5f;
+			Effects.Get("item.pickup").Preview =() => WorldSounds.Preview(AudioType.ToolItemScrollPickUp);
 			Effects.Get("item.drop").Preview = () => WorldSounds.Preview(AudioType.ToolItemScrollDrop);
 			Effects.Get("stone.insert").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneInsert);
 			Effects.Get("stone.remove").Preview = () => WorldSounds.Preview(AudioType.ToolItemSharedStoneRemove);
@@ -364,7 +375,7 @@ namespace OuterWildsDualSense
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "scope.static", "scope.zoom", "probe.flight", "repair.loop", "ice.slide", "comet.cave", "comet.melt", "lab.ambience", "sand.cave", "sand.surface", "sand.river", "sand.columnend", "sand.fall", "sand.inside", "sand.inside.ship", "sig.whistle", "sig.drums", "sig.banjo", "sig.flute", "sig.harmonica", "sig.piano", "sig.prisoner", "sig.quantum", "sig.pod", "sig.radio", "sig.hide", "sig.all", "dmg.electric", "dmg.fuelleak", "dmg.oxyleak", "suit.leak", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "scope.static", "scope.zoom", "probe.flight", "repair.loop", "ice.slide", "comet.cave", "comet.melt", "angler.chase", "angler.sleep", "angler.chomp", "lab.ambience", "sand.cave", "sand.surface", "sand.river", "sand.columnend", "sand.fall", "sand.inside", "sand.inside.ship", "sig.whistle", "sig.drums", "sig.banjo", "sig.flute", "sig.harmonica", "sig.piano", "sig.prisoner", "sig.quantum", "sig.pod", "sig.radio", "sig.hide", "sig.all", "dmg.electric", "dmg.fuelleak", "dmg.oxyleak", "suit.leak", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;
