@@ -323,6 +323,13 @@ namespace OuterWildsDualSense
 			// on AudioSource_TimeLoopCore, while the panels turn for 3 s). Both have a real low end, up to 0.19.
 			new Rule { ClipPrefix = "AshTwinCore_Open", EffectId = "loop.core.open", GameRolloff = true },
 			new Rule { ClipPrefix = "AshTwinCore_Close", EffectId = "loop.core.close", GameRolloff = true },
+
+			// The Interloper: the ice cave bed (an AudioVolume zone of Volumes_CometInterior) and the melting ice (the zone
+			// IceMeltController switches on while the comet falls toward the sun; a hiss with no low end, so ticks).
+			new Rule { ClipPrefix = "Ice_Cave_Amb_loop", EffectId = "comet.cave", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "IceMelt_v2", EffectId = "comet.melt", Loop = true, GameRolloff = true, Crackle = true },
+			// Sliding on ice (PlayerMovementAudio.FixedUpdate while IsSlidingOnIce: the volume follows the slide speed).
+			new Rule { ClipPrefix = "OW_PR_FootstepsIceSlide_Lp", EffectId = "ice.slide", Loop = true, Crackle = true, PlayerOnly = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>

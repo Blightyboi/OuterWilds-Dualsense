@@ -302,12 +302,14 @@ namespace OuterWildsDualSense
 				.Add("durationMs", "Length ms", 90, 30, 300)
 				.Add("speedScale", "Stronger when running", 0.5f, 0, 1)
 				.Add("panAmount", "Left/right foot emphasis", 0.7f, 0, 1);
-			Define("step.surface", steps, "Ground types", "Soft: grass, sand, snow, foliage, water. Hard: stone, metal, glass, ice. The rest is medium.")
+			Define("step.surface", steps, "Ground types", "Soft: grass, sand, snow, foliage, water. Hard: stone, metal, glass. Ice: its own sharper, crisper step (the Interloper). The rest is medium.")
 				.Add("softMul", "Soft ground strength", 0.6f, 0, 2)
 				.Add("mediumMul", "Medium ground strength", 1f, 0, 2)
 				.Add("hardMul", "Hard ground strength", 1.3f, 0, 2)
 				.Add("softFreqSub", "Soft ground: tone lower by Hz", 15, 0, 40)
-				.Add("hardFreqAdd", "Hard ground: tone higher by Hz", 35, 0, 100);
+				.Add("hardFreqAdd", "Hard ground: tone higher by Hz", 35, 0, 100)
+				.Add("iceMul", "Ice strength", 1.1f, 0, 2)
+				.Add("iceFreqAdd", "Ice: tone higher by Hz", 70, 0, 150);
 
 			const string chr = "Player/Character";
 			Define("char.jump", chr, "Jump", "A push-off thump when the character jumps.")
@@ -554,6 +556,17 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 3f, 0, 15);
 			Define("loop.core.close", ash, "Time loop core closing", "AshTwinCore_Close_01, 6.5 s, low end 0.07 on average and up to 0.16 (TimeLoopCoreController.CloseCore).")
 				.Add("gain", "Strength", 3f, 0, 15);
+			const string comet = "World sounds/Interloper";
+			Define("comet.cave", comet, "Ice cave bed", "Ice_Cave_Amb_loop_v3_01, a 129 s loop with real low end (0.056 on average, up to 0.25): the AudioVolume zone of the comet's interior, faded in on entering.")
+				.Add("gain", "Strength", 2.5f, 0, 15);
+			Define("ice.slide", steps, "Sliding on ice", "OW_PR_FootstepsIceSlide_Lp_01, a 2.9 s loop with no low end (0.015, peak 0.22): PlayerMovementAudio fades it in with the speed of the slide relative to the ground (0-8 m/s) while the player slides on ice with no friction, so ticks that follow it.")
+				.Add("gain", "Strength", 12f, 0, 40)
+				.Add("tone", "Tick tone Hz", 150f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 25f, 3, 200);
+			Define("comet.melt", comet, "Melting ice", "IceMelt_v2_LowPass, a 7 s hiss (0.02) with no low end (0.002): the zone that IceMeltController switches on while the comet is 1000-500 m from the sun, so ticks.")
+				.Add("gain", "Strength", 8f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			const string suit = "Player/Suit";
 			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
 				.Add("gain", "Strength", 2.5f, 0, 10)

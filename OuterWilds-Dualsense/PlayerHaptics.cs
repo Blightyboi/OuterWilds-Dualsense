@@ -21,10 +21,11 @@ namespace OuterWildsDualSense
 		public static void Landing(FootstepHaptics.Ground ground, float intensity, float delay = 0f)
 		{
 			var fx = Effects.Get("char.landing");
-			float mul = ground == FootstepHaptics.Ground.Soft ? fx["softMul"] : ground == FootstepHaptics.Ground.Hard ? fx["hardMul"] : fx["mediumMul"];
+			bool hard = ground == FootstepHaptics.Ground.Hard || ground == FootstepHaptics.Ground.Ice;
+			float mul = ground == FootstepHaptics.Ground.Soft ? fx["softMul"] : hard ? fx["hardMul"] : fx["mediumMul"];
 			float amp = fx["strength"] * mul * (0.3f + 0.7f * Mathf.Clamp01(intensity));
-			float freq = fx["freq"] + (ground == FootstepHaptics.Ground.Hard ? 15f : 0f);
-			HapticSynth.Play(HapticSynth.Thump(freq, fx["durationMs"] / 1000f, amp, ground == FootstepHaptics.Ground.Hard, delay));
+			float freq = fx["freq"] + (hard ? 15f : 0f);
+			HapticSynth.Play(HapticSynth.Thump(freq, fx["durationMs"] / 1000f, amp, hard, delay));
 		}
 
 		/// <summary>Bumping into something (not a landing). level: 0 light, 1 medium, 2 heavy.</summary>
@@ -90,11 +91,12 @@ namespace OuterWildsDualSense
 				case AudioType.Raft_Impact_Player:
 					return FootstepHaptics.Ground.Soft;
 				case AudioType.LandingStone:
-				case AudioType.LandingIce:
 				case AudioType.LandingMetal:
 				case AudioType.LandingNomaiMetal:
 				case AudioType.MovementGlassLanding:
 					return FootstepHaptics.Ground.Hard;
+				case AudioType.LandingIce:
+					return FootstepHaptics.Ground.Ice;
 				case AudioType.LandingDirt:
 				case AudioType.MovementGravelLanding:
 				case AudioType.MovementWoodLanding:

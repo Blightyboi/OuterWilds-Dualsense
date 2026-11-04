@@ -11,7 +11,7 @@ namespace OuterWildsDualSense
 	/// </summary>
 	internal static class FootstepHaptics
 	{
-		public enum Ground { Soft, Medium, Hard }
+		public enum Ground { Soft, Medium, Hard, Ice }
 
 		public static Ground Classify(SurfaceType surface)
 		{
@@ -34,8 +34,9 @@ namespace OuterWildsDualSense
 				case SurfaceType.Ceramic:
 				case SurfaceType.Metal:
 				case SurfaceType.MetalNomai:
-				case SurfaceType.Ice:
 					return Ground.Hard;
+				case SurfaceType.Ice:
+					return Ground.Ice;
 				default:
 					return Ground.Medium; // dirt, gravel, wood, planks
 			}
@@ -51,12 +52,12 @@ namespace OuterWildsDualSense
 			var step = Effects.Get("step.base");
 			var surface = Effects.Get("step.surface");
 
-			float surfaceMul = ground == Ground.Soft ? surface["softMul"] : ground == Ground.Hard ? surface["hardMul"] : surface["mediumMul"];
-			float freq = step["freq"] + (ground == Ground.Hard ? surface["hardFreqAdd"] : ground == Ground.Soft ? -surface["softFreqSub"] : 0f);
+			float surfaceMul = ground == Ground.Soft ? surface["softMul"] : ground == Ground.Hard ? surface["hardMul"] : ground == Ground.Ice ? surface["iceMul"] : surface["mediumMul"];
+			float freq = step["freq"] + (ground == Ground.Hard ? surface["hardFreqAdd"] : ground == Ground.Ice ? surface["iceFreqAdd"] : ground == Ground.Soft ? -surface["softFreqSub"] : 0f);
 			float speedFactor = Mathf.Lerp(1f - step["speedScale"], 1f, Mathf.Clamp01(speedFraction));
 			float amplitude = step["strength"] * surfaceMul * speedFactor;
 
-			float[] wave = HapticSynth.Thump(freq, step["durationMs"] / 1000f, amplitude, ground == Ground.Hard, delaySeconds);
+			float[] wave = HapticSynth.Thump(freq, step["durationMs"] / 1000f, amplitude, ground == Ground.Hard || ground == Ground.Ice, delaySeconds);
 			HapticSynth.Play(wave, foot * step["panAmount"]);
 		}
 
@@ -69,6 +70,8 @@ namespace OuterWildsDualSense
 			Play(1, Ground.Medium, 0.6f, 1.55f);
 			Play(-1, Ground.Hard, 0.6f, 2.2f);
 			Play(1, Ground.Hard, 0.6f, 2.65f);
+			Play(-1, Ground.Ice, 0.6f, 3.3f);
+			Play(1, Ground.Ice, 0.6f, 3.75f);
 		}
 
 		/// <summary>Preview: walking and then running on medium ground.</summary>
