@@ -282,6 +282,8 @@ namespace OuterWildsDualSense
 			Effects.Get("ring.river").Preview = () => WorldSounds.HoldLoop("ring.river", AudioType.River_Rapids);
 			Effects.Get("ring.ambience").Preview = () => WorldSounds.HoldLoop("ring.ambience", AudioType.Ambience_RW_Base);
 			Effects.Get("reel.item").Preview = () => WorldSounds.Preview(AudioType.SlideReel_Insert);
+			Effects.Get("projector.slide").Preview = () => WorldSounds.Preview(AudioType.Projector_Next);
+			Effects.Get("projector.slide").PreviewPeriod = 1f;
 			Effects.Get("lantern.socket").Preview = () => WorldSounds.Preview(AudioType.Lantern_Insert);
 			Effects.Get("lantern.short").Preview = () => WorldSounds.Preview(AudioType.Lantern_ShortOut);
 			Effects.Get("torch.scan").Preview = () => WorldSounds.HoldLoop("torch.scan", AudioType.VisionTorch_Scanning_Loop);

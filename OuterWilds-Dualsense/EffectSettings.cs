@@ -294,6 +294,10 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 20f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("projector.slide", items, "Slide projector changing slides", "Projector Next / Previous Slide 2, 0.25-0.4 s, a click with no low end (peak 0.33 and 0.64): SlideProjector, AutoSlideProjector and the Dreamworld projectors, so a tick.")
+				.Add("gain", "Strength", 10f, 0, 40)
+				.Add("tone", "Tick tone Hz", 120f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			Define("lantern.socket", items, "Lantern into and out of its socket", "Lantern Insert 3 / Lantern Remove 2, 1.6 s (low end 0.049, up to 0.14).")
 				.Add("gain", "Strength", 3.8f, 0, 15);
 			Define("lantern.short", items, "Lantern shorting out", "Lantern Shorting Out 2, 2.6 s (low end 0.044, up to 0.20): SimpleLanternItem when it runs into water or electricity.")

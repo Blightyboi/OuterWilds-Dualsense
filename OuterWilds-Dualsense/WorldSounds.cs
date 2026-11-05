@@ -272,6 +272,8 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Slide Reel Put Down", EffectId = "reel.item", Crackle = true },
 			new Rule { ClipPrefix = "Slide Reel Insert", EffectId = "reel.item", Crackle = true },
 			new Rule { ClipPrefix = "Slide Reel Remove", EffectId = "reel.item", Crackle = true },
+			new Rule { ClipPrefix = "Projector Next Slide", EffectId = "projector.slide", Crackle = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Projector Previous Slide", EffectId = "projector.slide", Crackle = true, GameRolloff = true },
 			new Rule { ClipPrefix = "Lantern Insert", EffectId = "lantern.socket" },
 			new Rule { ClipPrefix = "Lantern Remove", EffectId = "lantern.socket" },
 			new Rule { ClipPrefix = "Lantern Shorting Out", EffectId = "lantern.short" },
