@@ -43,7 +43,7 @@ namespace OuterWildsDualSense
 				bool paused = OWTime.IsPaused(OWTime.PauseType.Menu) || OWTime.IsPaused(OWTime.PauseType.Loading)
 					|| OWTime.IsPaused(OWTime.PauseType.Sleeping) || OWTime.IsPaused(OWTime.PauseType.Initializing)
 					|| OWTime.IsPaused(OWTime.PauseType.Streaming) || OWTime.IsPaused(OWTime.PauseType.System);
-				if (mod.AdaptiveTriggers && !paused && __instance.enabled)
+				if (mod.AdaptiveTriggers && !paused && __instance.enabled && DualSenseMod.GamepadInUse())
 				{
 					TriggerLogic.Compute(mod.TriggerStrength, out left, out right);
 

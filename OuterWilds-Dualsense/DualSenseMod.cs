@@ -54,7 +54,9 @@ namespace OuterWildsDualSense
 			Haptics.Maintain(); // reopens the audio output after the controller was unplugged
 			// The pause menu silences the game's audio but not our haptics: fade them out with it, and back in on resume.
 			// The F1 menu lets them through only while one of its Play buttons is on, so they can be tried on a paused game.
-			bool silent = OWTime.IsPaused(OWTime.PauseType.Menu) && !(DebugMenu.IsOpen && DebugMenu.Previewing);
+			// The same goes for playing on the keyboard or mouse: the controller lies on the desk then, so it falls silent until
+			// the game sees a controller input again (OWInput.UsingGamepad, the last device that gave a command).
+			bool silent = (OWTime.IsPaused(OWTime.PauseType.Menu) || !GamepadInUse()) && !(DebugMenu.IsOpen && DebugMenu.Previewing);
 			float step = Time.unscaledDeltaTime / (silent ? 0.25f : 0.4f);
 			Haptics.PauseGain = Mathf.MoveTowards(Haptics.PauseGain, silent ? 0f : 1f, step);
 			TornadoHaptics.Tick();
@@ -66,6 +68,13 @@ namespace OuterWildsDualSense
 			Haptics.Rumble.HighHz = rumble["highHz"];
 			Haptics.Rumble.LowLevel = rumble["lowLevel"];
 			Haptics.Rumble.HighLevel = rumble["highLevel"];
+		}
+
+		/// <summary>True while the game's last input came from a controller (false after the player switched to keyboard or mouse).</summary>
+		internal static bool GamepadInUse()
+		{
+			try { return OWInput.UsingGamepad(); }
+			catch (Exception) { return true; } // the input manager does not exist yet (title screen loading): do not silence
 		}
 
 		public override void Configure(IModConfig config)
