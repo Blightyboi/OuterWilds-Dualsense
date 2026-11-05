@@ -252,6 +252,9 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Power_Failure_v2", EffectId = "dmg.failure", GameRolloff = true },
 			new Rule { ClipPrefix = "Ship_FuelLeak", EffectId = "dmg.fuelleak", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_PR_OxygenLeakingFromSuit_loop", EffectId = "dmg.oxyleak", Loop = true, GameRolloff = true, Crackle = true, UnderName = "Ship_Body" },
+			// The master alarm of the cockpit (MasterAlarm -> ShipAudioController.PlayAlarm loops the clip on the ship's own source while
+			// a part is broken). Three loud beeps and nothing in the low band, so a tick on every beep.
+			new Rule { ClipPrefix = "SpaceshipAlarm2", EffectId = "ship.alarm", Loop = true, GameRolloff = true, Crackle = true },
 
 			// Suit puncture (cactus spikes): PlayerAudioController.UpdateSuitPunctures fades a hiss on the player's own source with the
 			// number of holes, and patching a hole (PlayPatchPuncture) is a sharp one-shot. Nothing in the low band, so ticks.

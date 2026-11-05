@@ -223,6 +223,10 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 12f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("ship.alarm", damage, "Cockpit master alarm", "SpaceshipAlarm2_3Iterations, a 1.7 s loop of three loud beeps (peak 1.0, low end 0.01): ShipAudioController.PlayAlarm while a ship part is broken. A tick on every beep.")
+				.Add("gain", "Strength", 8f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			Define("suit.leak", "Player/Suit", "Suit leak (punctured by spikes)", "OW_PR_OxygenLeakingFromSuit_loop_louder, a 1 s hiss (0.11) without low end; the game fades it with the number of holes.")
 				.Add("gain", "Strength", 6f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
