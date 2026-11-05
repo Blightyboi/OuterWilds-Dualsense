@@ -256,7 +256,7 @@ namespace OuterWildsDualSense
 			// the shared (linking) stone and conversation stone, and the warp core. A scroll and the stones share one pick-up and one
 			// put-down clip, the warp core has its own. Picking up and putting down are a quiet knock with nothing in the low band, so
 			// ticks; the warp core going into and out of its receptacle has a real low end. Items of the Strangers (lantern, slide
-			// reel, dream lantern, vision torch) belong to the DLC stage.
+			// reel, vision torch) are below.
 			new Rule { ClipPrefix = "Pickup_Rock", EffectId = "item.pickup", Crackle = true },
 			new Rule { ClipPrefix = "Pickup_Ceramic", EffectId = "item.pickup", Crackle = true },
 			new Rule { ClipPrefix = "PutDown_Rock", EffectId = "item.drop", Crackle = true },
@@ -265,6 +265,20 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "WarpCore_Remove", EffectId = "core.remove" },
 			new Rule { ClipPrefix = "linkingstone_in", EffectId = "stone.insert", Crackle = true },
 			new Rule { ClipPrefix = "linkingstone_out", EffectId = "stone.remove", Crackle = true },
+
+			// Items of the Strangers (DLC): the slide reel (put down, into the projector, out of it: knocks with no low end; picking it
+			// up is silent), the lantern in its socket and shorting out, and the vision torch (projection on, entering a vision, the
+			// scanning loop of MindProjectorTrigger).
+			new Rule { ClipPrefix = "Slide Reel Put Down", EffectId = "reel.item", Crackle = true },
+			new Rule { ClipPrefix = "Slide Reel Insert", EffectId = "reel.item", Crackle = true },
+			new Rule { ClipPrefix = "Slide Reel Remove", EffectId = "reel.item", Crackle = true },
+			new Rule { ClipPrefix = "Lantern Insert", EffectId = "lantern.socket" },
+			new Rule { ClipPrefix = "Lantern Remove", EffectId = "lantern.socket" },
+			new Rule { ClipPrefix = "Lantern Shorting Out", EffectId = "lantern.short" },
+			new Rule { ClipPrefix = "Vision Torch Scanning", EffectId = "torch.scan", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Vision Torch Light Rays", EffectId = "torch.projection", GameRolloff = true },
+			new Rule { ClipPrefix = "Vision Torch - Step In", EffectId = "torch.vision" },
+			new Rule { ClipPrefix = "Vision Torch - Vision Dissolves", EffectId = "torch.vision" },
 
 			// A Nomai scroll put into a wall socket and taken out again (PlayerAudioController.PlayInsertItem / PlayRemoveItem, on the
 			// player's own source). Both clips are quiet (about 0.02) and have no low end, so they are ticks that follow the envelope.
@@ -351,6 +365,47 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Nomai_ShipPowerOn", EffectId = "vessel.power", GameRolloff = true },
 			new Rule { ClipPrefix = "Vine_Crash_V3", EffectId = "db.vine", GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_EscapePodHatch", EffectId = "pod.hatch", GameRolloff = true },
+
+			// The Ringworld (DLC): light sensors, the flood and the dam, the station, rafts, doors, cage elevators, airlocks, rivers, beds.
+			new Rule { ClipPrefix = "Real World Dam Crack Water Loop", EffectId = "ring.dam.leak", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Wood Door Loop", EffectId = "ring.door.loop", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Light Sensor Loop", EffectId = "ring.sensor", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Light Sensor Fade In", EffectId = "ring.sensor.switch", GameRolloff = true },
+			new Rule { ClipPrefix = "Light Sensor Fade Out", EffectId = "ring.sensor.switch", GameRolloff = true },
+			new Rule { ClipPrefix = "Real World Tidal Wave", EffectId = "ring.flood", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Real World Dam Break", EffectId = "ring.dam.break", GameRolloff = true },
+			new Rule { ClipPrefix = "Real World Dam Crack", EffectId = "ring.dam.crack", GameRolloff = true },
+			new Rule { ClipPrefix = "Station Shudder", EffectId = "ring.shudder", GameRolloff = true },
+			new Rule { ClipPrefix = "Station Light Flicker", EffectId = "ring.flicker", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Movement Loop", EffectId = "ring.raft.move", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Reeling Loop", EffectId = "ring.raft.reel", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Start Reeling", EffectId = "ring.raft.reelshot", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Stop Reeling", EffectId = "ring.raft.reelshot", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Movement Start", EffectId = "ring.raft.reelshot", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Movement Stop", EffectId = "ring.raft.reelshot", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Light Impact", EffectId = "ring.raft.impact", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Medium Impact", EffectId = "ring.raft.impact", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Heavy Impact", EffectId = "ring.raft.impact", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Socket", EffectId = "ring.raft.dock", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Release", EffectId = "ring.raft.dock", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Push", EffectId = "ring.raft.dock", GameRolloff = true },
+			new Rule { ClipPrefix = "Raft Run Aground", EffectId = "ring.raft.dock", GameRolloff = true },
+			new Rule { ClipPrefix = "Secret Passageway Open Loop", EffectId = "ring.secret.loop", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Secret Passageway Open Start", EffectId = "ring.secret.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Secret Passageway Open Stop", EffectId = "ring.secret.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Light Sensor Door Loop", EffectId = "ring.door.sensor", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Wood Door", EffectId = "ring.door.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Metal Door", EffectId = "ring.door.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Light Sensor Door Open", EffectId = "ring.door.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Light Sensor Door Stop", EffectId = "ring.door.shot", GameRolloff = true },
+			new Rule { ClipPrefix = "Elevator Rattle Loop", EffectId = "ring.elevator.rattle", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Airlock Loop", EffectId = "ring.airlock", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Air Rushing Out", EffectId = "ring.airrush", GameRolloff = true },
+			new Rule { ClipPrefix = "Solar Sail Loop", EffectId = "ring.sail", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Real World Water Ambience", EffectId = "ring.river", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Ringworld Ambience", EffectId = "ring.ambience", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Ringworld Cave Ambience", EffectId = "ring.ambience", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "Ringworld Muffled Indoor Ambience", EffectId = "ring.ambience", Loop = true, GameRolloff = true },
 		};
 
 		/// <summary>Patches the AudioSource methods that start a sound. Unity's own methods, so done by hand.</summary>

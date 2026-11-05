@@ -290,6 +290,20 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 20f, 0, 40)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("reel.item", items, "Slide reel put down, in and out of the projector", "Slide Reel Put Down 2 / Insert 3 / Remove 3, 0.2-0.5 s, no real low end (0.02-0.03): knocks, so ticks. Picking the reel up is silent (Slide Reel Pickup 2).")
+				.Add("gain", "Strength", 20f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("lantern.socket", items, "Lantern into and out of its socket", "Lantern Insert 3 / Lantern Remove 2, 1.6 s (low end 0.049, up to 0.14).")
+				.Add("gain", "Strength", 3.8f, 0, 15);
+			Define("lantern.short", items, "Lantern shorting out", "Lantern Shorting Out 2, 2.6 s (low end 0.044, up to 0.20): SimpleLanternItem when it runs into water or electricity.")
+				.Add("gain", "Strength", 2.5f, 0, 15);
+			Define("torch.scan", items, "Vision torch scanning", "Vision Torch Scanning - Loop, an 8.5 s loop with a strong low end (0.153, up to 0.22): MindProjectorTrigger while the torch scans.")
+				.Add("gain", "Strength", 1f, 0, 10);
+			Define("torch.projection", items, "Vision torch projection on", "Vision Torch Light Rays - On, 1.8 s (low end 0.088, up to 0.29).")
+				.Add("gain", "Strength", 1.8f, 0, 10);
+			Define("torch.vision", items, "Entering and leaving a vision", "Vision Torch - Step In (3 s, low end 0.035, up to 0.14) and Vision Dissolves: MindSlideProjector on the player's source.")
+				.Add("gain", "Strength", 3.5f, 0, 15);
 			Define("core.insert", items, "Warp core into its receptacle", "WarpCore_Insert_V3_01, 3.2 s, low end up to 0.14.")
 				.Add("gain", "Strength", 3.8f, 0, 15);
 			Define("core.remove", items, "Warp core out of its receptacle", "WarpCore_Remove_V3_01, 3.3 s, low end up to 0.13.")
@@ -597,6 +611,55 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 3.5f, 0, 15);
 			Define("pod.hatch", mech, "Nomai escape pod hatch", "OW_NM_EscapePodHatch, 10 s, one strong blow (up to 0.21), the rest quiet. The same hatch is on the pods of Dark Bramble and the Brittle Hollow crash site.")
 				.Add("gain", "Strength", 2.5f, 0, 15);
+			const string ring = "World sounds/Ringworld (DLC)";
+			Define("ring.sensor", ring, "Light sensor humming", "Light Sensor Loop, a 26 s loop (low end 0.15, up to 0.30): AudioLoopCrossfader starts it (LightSensorEffects.OnDetectLight) only while the sensor is lit, and fades it out in the dark.")
+				.Add("gain", "Strength", 1.0f, 0, 10);
+			Define("ring.sensor.switch", ring, "Light sensor lit or dark", "Light Sensor Fade In / Fade Out 1..4, 0.65 s (low end 0.07, up to 0.12): the sensor starts or stops seeing light.")
+				.Add("gain", "Strength", 3.0f, 0, 15);
+			Define("ring.flood", ring, "Flood wave", "Real World Tidal Wave Loop Louder, a 53 s loop (low end 0.14, peak 0.97): RingWaveAudioController fades it in over 5 s when the dam breaks.")
+				.Add("gain", "Strength", 1.1f, 0, 10);
+			Define("ring.dam.break", ring, "Dam breaking", "Real World Dam Break Alex Composite 2 (9.3 s, low end up to 0.13) and Real World Dam Break Water Oneshot (4.4 s, up to 0.22): RingWorldController at the end of the loop.")
+				.Add("gain", "Strength", 2.0f, 0, 12);
+			Define("ring.dam.leak", ring, "Dam leaking", "Real World Dam Crack Water Loop, a 10 s loop (low end 0.02): DamLeakAudioController raises the volume as the leak grows.")
+				.Add("gain", "Strength", 7.0f, 0, 25);
+			Define("ring.dam.crack", ring, "Dam cracking", "Real World Dam Crack, 2.4 s (low end 0.039, up to 0.10).")
+				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("ring.shudder", ring, "Station shuddering", "Station Shudder (6.3 s, low end 0.066, up to 0.14) and the Dreamworld one (7.5 s): RingWorldController.")
+				.Add("gain", "Strength", 3.0f, 0, 15);
+			Define("ring.flicker", ring, "Station lights flickering", "Station Light Flicker, 4 s (low end 0.09, up to 0.33), but the library plays it at 0.1 volume, so a high strength.")
+				.Add("gain", "Strength", 5.0f, 0, 20);
+			Define("ring.raft.move", ring, "Raft moving", "Raft Movement Loop, a 22.7 s loop (low end 0.04): RaftMovementAudioController fades it in while the raft moves.")
+				.Add("gain", "Strength", 3.7f, 0, 15);
+			Define("ring.raft.reel", ring, "Raft or cage winch reeling", "Raft Reeling Loop, a 5 s loop (low end 0.04): RaftDock, DamRaftLift and the cage elevators (CageElevator_Loop_Winch) while they pull.")
+				.Add("gain", "Strength", 3.7f, 0, 15);
+			Define("ring.raft.reelshot", ring, "Raft or cage starting and stopping", "Raft Start / Stop Reeling and Raft Movement Start / Stop (low end up to 0.08), also the cage elevators' start and end.")
+				.Add("gain", "Strength", 5.0f, 0, 20);
+			Define("ring.raft.impact", ring, "Raft impact", "Raft Light / Medium / Heavy Impact (low end up to 0.17) and Raft Heavy Impacts V2 (the player landing on it): RaftEffectsController, volume from the speed. The game also gives its own rumble for it (RumbleManager.PulseRaftImpact).")
+				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("ring.raft.dock", ring, "Raft docking, releasing, pushing, running aground", "Raft Socket (low end up to 0.15), Raft Release (0.10), Raft Push (0.08), Raft Run Aground (0.14).")
+				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("ring.secret.loop", ring, "Secret door sliding", "Secret Passageway Open Loop 2, a 2.8 s loop (low end 0.11): SlidingDoor and PrisonCellElevator while they move.")
+				.Add("gain", "Strength", 1.4f, 0, 10);
+			Define("ring.secret.shot", ring, "Secret door starting and stopping", "Secret Passageway Open Start / Stop 2.")
+				.Add("gain", "Strength", 3.0f, 0, 15);
+			Define("ring.door.loop", ring, "Door creaking", "Wood Door Loop, a 10.7 s loop (low end 0.05): RotatingDoor while the door turns.")
+				.Add("gain", "Strength", 3.0f, 0, 15);
+			Define("ring.door.sensor", ring, "Sensor door sliding", "Light Sensor Door Loop (low end 0.01-0.02): the faint hum of doors opened by light.")
+				.Add("gain", "Strength", 8.0f, 0, 30);
+			Define("ring.door.shot", ring, "Door starting and stopping", "Wood and Metal Door Open / Close Start / Stop and the small light sensor doors (low end up to 0.13): RotatingDoor, RotatingDoubleDoor.")
+				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("ring.elevator.rattle", ring, "Cage elevator rattling", "Elevator Rattle Loop 3, an 8.5 s loop (low end 0.02): CageElevator while it moves.")
+				.Add("gain", "Strength", 7.0f, 0, 25);
+			Define("ring.airlock", ring, "Airlock", "Airlock Loop, a 2 s loop (low end 0.16): the airlocks of the station.")
+				.Add("gain", "Strength", 1.0f, 0, 10);
+			Define("ring.airrush", ring, "Air rushing out", "Air Rushing Out Into Space, 41 s (low end 0.06, up to 0.15).")
+				.Add("gain", "Strength", 2.5f, 0, 15);
+			Define("ring.sail", ring, "Solar sail", "Solar Sail Loop (2), a 4 s loop (low end 0.07): RingWorldController while the sails are open (the Dreamworld one is the same kind of loop).")
+				.Add("gain", "Strength", 2.1f, 0, 12);
+			Define("ring.river", ring, "Rivers", "Real World Water Ambience (Rapids, Slow River, Calm, Reservoir; low end 0.04-0.05): RingRiverAudioPath follows the player along the river.")
+				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("ring.ambience", ring, "World beds", "Ringworld Ambience 3, Ringworld Cave Ambience and Ringworld Muffled Indoor Ambience (low end 0.03-0.04): AudioVolume zones.")
+				.Add("gain", "Strength", 4.5f, 0, 15);
 			const string suit = "Player/Suit";
 			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
 				.Add("gain", "Strength", 2.5f, 0, 10)
