@@ -664,6 +664,37 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 3.5f, 0, 15);
 			Define("ring.ambience", ring, "World beds", "Ringworld Ambience 3, Ringworld Cave Ambience and Ringworld Muffled Indoor Ambience (low end 0.03-0.04): AudioVolume zones.")
 				.Add("gain", "Strength", 4.5f, 0, 15);
+			const string dream = "World sounds/Dream World (DLC)";
+			Define("ghost.step.walk", dream, "Ghost walking", "Ghost Walk Footstep Wood_v2 (low end 0.06, up to 0.12) and Forest (up to 0.07): GhostEffects, one per step of the animation.")
+				.Add("gain", "Strength", 4.5f, 0, 20);
+			Define("ghost.step.run", dream, "Ghost running", "Ghost Run Footstep Wood_v2 / Forest (low end 0.02, up to 0.07).")
+				.Add("gain", "Strength", 6.0f, 0, 25);
+			Define("dream.fire", dream, "Dream fire crackling", "Dreamfire Crackling Loop 3 (17 s, low end 0.05) and Vision Torch Fire - Loop (0.04): DreamCampfire, torches.")
+				.Add("gain", "Strength", 3.0f, 0, 15);
+			Define("dream.artifact", dream, "Lantern flame crackling", "Artifact Fire Loop, an 11 s loop with no low end (0.00, peak 0.17): DreamLibraryFlame and the lantern flame, so ticks.")
+				.Add("gain", "Strength", 12.0f, 0, 40)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			Define("dream.explosion", dream, "Dream fire exploding", "Dreamfire Explosion, 6.5 s (low end 0.085, up to 0.23): DreamExplosionController.")
+				.Add("gain", "Strength", 2.0f, 0, 12);
+			Define("dream.extinguish", dream, "Dream fire going out", "Dreamfire Extinguish 1, 3 s (low end 0.029, up to 0.11): DreamCampfire, DreamArrivalPoint.")
+				.Add("gain", "Strength", 4.0f, 0, 20);
+			Define("sarcophagus.open", dream, "Sarcophagus opening", "Sarcophagus Open 2, 6.7 s (low end 0.05, up to 0.16): SarcophagusController.")
+				.Add("gain", "Strength", 2.8f, 0, 15);
+			Define("sarcophagus.strain", dream, "Sarcophagus straining, something is coming", "Sarcophagus Strain 2 / 3 (0.018, up to 0.05) and Hotel Oneshot - Heavy Creak 2 (0.02): the lid that does not open yet.")
+				.Add("gain", "Strength", 8.0f, 0, 30);
+			Define("dream.loading", dream, "Simulation tunnel", "Loading Tunnel - Loop, a 4.5 s loop with a strong low end (0.144, up to 0.17): DreamWorldAudioController while the player is between the real world and the simulation.")
+				.Add("gain", "Strength", 1.0f, 0, 10);
+			Define("dream.loading.shot", dream, "Entering or leaving the simulation", "Loading Tunnel - Load (2.9 s, low end 0.066, up to 0.22), also used for the Unload and the glitch-out.")
+				.Add("gain", "Strength", 2.0f, 0, 12);
+			Define("dream.flood", dream, "Dream flood wave", "Dream World Tidal Wave Loop, a 50 s loop (low end 0.092, up to 0.12): DreamWorldAudioController._waveSource.")
+				.Add("gain", "Strength", 1.6f, 0, 10);
+			Define("dream.dam.break", dream, "Dream dam breaking", "Dream World Dam Break, 8.5 s (low end 0.057, up to 0.15).")
+				.Add("gain", "Strength", 3.0f, 0, 15);
+			Define("dream.bed", dream, "Dream world beds", "Dreamworld Base Ambience 1 (low end 0.12), Lights Out Ambience 1 and 4 (0.04-0.07), Ghost Hotel (0.05), Nature (0.07): AudioVolume zones, also the tunnel and lights-on ambience of the sarcophagus.")
+				.Add("gain", "Strength", 2.5f, 0, 12);
+			Define("dream.bed.quiet", dream, "Quiet dream world beds", "Dreamworld Forest Ambience 2 (0.03), Lights Out Ambience 3 (0.03), Tronworld Ambience 1 / 2 (0.02-0.04) and Dream Fire Room Ambience (0.02): the quietest zones.")
+				.Add("gain", "Strength", 6.0f, 0, 20);
 			const string suit = "Player/Suit";
 			Define("suit.suit", suit, "Putting on and taking off the suit", "OW_PR_SuitOn (2.6 s) and OW_PR_SuitOff (2.0 s): cloth and straps, low end 0.01-0.04, so the haptic follows the rustle. Not played when the game does it instantly.")
 				.Add("gain", "Strength", 2.5f, 0, 10)
@@ -856,6 +887,14 @@ namespace OuterWildsDualSense
 				.Add("r", "Red", 255, 0, 255, true)
 				.Add("g", "Green", 210, 0, 255, true)
 				.Add("b", "Blue", 60, 0, 255, true);
+			Define("light.ringworld", light, "The Stranger (Ringworld)")
+				.Add("r", "Red", 57, 0, 255, true)
+				.Add("g", "Green", 63, 0, 255, true)
+				.Add("b", "Blue", 5, 0, 255, true);
+			Define("light.dream", light, "Dream World")
+				.Add("r", "Red", 37, 0, 255, true)
+				.Add("g", "Green", 151, 0, 255, true)
+				.Add("b", "Blue", 118, 0, 255, true);
 			Define("light.eye", light, "Eye of the Universe")
 				.Add("r", "Red", 120, 0, 255, true)
 				.Add("g", "Green", 80, 0, 255, true)

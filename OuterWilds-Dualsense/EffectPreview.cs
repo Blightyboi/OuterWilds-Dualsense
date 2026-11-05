@@ -294,6 +294,28 @@ namespace OuterWildsDualSense
 			Effects.Get("lantern.short").PreviewPeriod = 3f;
 			Effects.Get("torch.projection").PreviewPeriod = 2.5f;
 			Effects.Get("torch.vision").PreviewPeriod = 3.5f;
+			Effects.Get("ghost.step.walk").Preview = () => WorldSounds.Preview(AudioType.Ghost_Footstep_Wood_Stompy);
+			Effects.Get("ghost.step.walk").PreviewPeriod = 3f;
+			Effects.Get("ghost.step.run").Preview = () => WorldSounds.Preview(AudioType.Ghost_Footstep_Wood_Running);
+			Effects.Get("ghost.step.run").PreviewPeriod = 3f;
+			Effects.Get("dream.fire").Preview = () => WorldSounds.HoldLoop("dream.fire", AudioType.DreamFire_Crackling_Loop);
+			Effects.Get("dream.artifact").Preview = () => WorldSounds.HoldLoop("dream.artifact", AudioType.Artifact_Crackling_Loop);
+			Effects.Get("dream.explosion").Preview = () => WorldSounds.Preview(AudioType.DreamFire_Explosion);
+			Effects.Get("dream.explosion").PreviewPeriod = 7f;
+			Effects.Get("dream.extinguish").Preview = () => WorldSounds.Preview(AudioType.DreamFire_Extinguish);
+			Effects.Get("dream.extinguish").PreviewPeriod = 3f;
+			Effects.Get("sarcophagus.open").Preview = () => WorldSounds.Preview(AudioType.Sarcophagus_Open);
+			Effects.Get("sarcophagus.open").PreviewPeriod = 7f;
+			Effects.Get("sarcophagus.strain").Preview = () => WorldSounds.Preview(AudioType.Sarcophagus_OpenFail);
+			Effects.Get("sarcophagus.strain").PreviewPeriod = 3f;
+			Effects.Get("dream.loading").Preview = () => WorldSounds.HoldLoop("dream.loading", AudioType.LoadingZone_Loop);
+			Effects.Get("dream.loading.shot").Preview = () => WorldSounds.Preview(AudioType.LoadingZone_Enter);
+			Effects.Get("dream.loading.shot").PreviewPeriod = 3f;
+			Effects.Get("dream.flood").Preview = () => WorldSounds.HoldLoop("dream.flood", AudioType.FloodWave_DW_Loop);
+			Effects.Get("dream.dam.break").Preview = () => WorldSounds.Preview(AudioType.DamBreak_DW_Base);
+			Effects.Get("dream.dam.break").PreviewPeriod = 7f;
+			Effects.Get("dream.bed").Preview = () => WorldSounds.HoldLoop("dream.bed", AudioType.Ambience_DW_Base);
+			Effects.Get("dream.bed.quiet").Preview = () => WorldSounds.HoldLoop("dream.bed.quiet", AudioType.Ambience_DW_Forest);
 			Effects.Get("angler.disturb").PreviewPeriod = 6f;
 			Effects.Get("angler.target").PreviewPeriod = 3.5f;
 			Effects.Get("angler.mouth").PreviewPeriod = 4f;
@@ -436,7 +458,7 @@ namespace OuterWildsDualSense
 			Effects.Get("pick.hit").PreviewPeriod = 0.7f;
 			Effects.Get("geyser.shot").PreviewPeriod = 4.6f;
 			Effects.Get("grav.beamswitch").PreviewPeriod = 7.2f;
-			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "scope.static", "scope.zoom", "probe.flight", "repair.loop", "ice.slide", "comet.cave", "comet.melt", "angler.chase", "angler.sleep", "angler.chomp", "torch.scan", "vessel.pillar.move", "ring.sensor", "ring.flood", "ring.dam.leak", "ring.raft.move", "ring.raft.reel", "ring.secret.loop", "ring.door.loop", "ring.door.sensor", "ring.elevator.rattle", "ring.airlock", "ring.sail", "ring.river", "ring.ambience", "lab.ambience", "sand.cave", "sand.surface", "sand.river", "sand.columnend", "sand.fall", "sand.inside", "sand.inside.ship", "sig.whistle", "sig.drums", "sig.banjo", "sig.flute", "sig.harmonica", "sig.piano", "sig.prisoner", "sig.quantum", "sig.pod", "sig.radio", "sig.hide", "sig.all", "dmg.electric", "dmg.fuelleak", "dmg.oxyleak", "suit.leak", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
+			foreach (var id in new[] { "grav.crystal", "grav.flicker", "grav.cannon", "grav.beam", "fire.crackle", "fire.sleep", "lift.loop", "geyser.loop", "water.wheel", "water.fall", "water.under", "orb.drag", "orb.roll", "mech.big", "dish.sun", "dish.giants", "dish.hollow", "obs.tornado", "tornado.roar", "island.waves", "gd.current", "gd.ambience", "gd.barrier", "bh.hole.approach", "bh.forge", "bh.ambience", "suit.breath", "suit.breath.low", "door.small", "door.big", "pool.loop", "scope.static", "scope.zoom", "probe.flight", "repair.loop", "ice.slide", "comet.cave", "comet.melt", "angler.chase", "angler.sleep", "angler.chomp", "torch.scan", "dream.fire", "dream.artifact", "dream.loading", "dream.flood", "dream.bed", "dream.bed.quiet", "vessel.pillar.move", "ring.sensor", "ring.flood", "ring.dam.leak", "ring.raft.move", "ring.raft.reel", "ring.secret.loop", "ring.door.loop", "ring.door.sensor", "ring.elevator.rattle", "ring.airlock", "ring.sail", "ring.river", "ring.ambience", "lab.ambience", "sand.cave", "sand.surface", "sand.river", "sand.columnend", "sand.fall", "sand.inside", "sand.inside.ship", "sig.whistle", "sig.drums", "sig.banjo", "sig.flute", "sig.harmonica", "sig.piano", "sig.prisoner", "sig.quantum", "sig.pod", "sig.radio", "sig.hide", "sig.all", "dmg.electric", "dmg.fuelleak", "dmg.oxyleak", "suit.leak", "translator.text", "nomai.textreveal", "hole.loop", "pedestal.slide", "nomai.computer", "nomai.recorder" })
 				Effects.Get(id).PreviewStop = WorldSounds.StopLoop;
 			Effects.Get("mem.slam").PreviewPeriod = 6.0f;
 			Effects.Get("mem.end").PreviewPeriod = 4.0f;

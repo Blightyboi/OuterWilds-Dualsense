@@ -19,6 +19,8 @@ namespace OuterWildsDualSense
 		private static readonly Place[] Places =
 		{
 			new Place { Sector = Sector.Name.EyeOfTheUniverse, Id = "light.eye" },
+			new Place { Sector = Sector.Name.DreamWorld, Id = "light.dream" },          // the simulation inside the Stranger (DLC)
+			new Place { Sector = Sector.Name.InvisiblePlanet, Id = "light.ringworld" }, // the Stranger itself (DLC)
 			new Place { Sector = Sector.Name.VesselDimension, Id = "light.bramble" },   // the Vessel has no colour of its own: it lies in Dark Bramble
 			new Place { Sector = Sector.Name.Vessel, Id = "light.bramble" },
 			new Place { Sector = Sector.Name.BrambleDimension, Id = "light.bramble" },
