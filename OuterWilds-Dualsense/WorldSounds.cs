@@ -113,6 +113,11 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Meteor_Impact", EffectId = "bh.meteor", GameRolloff = true },
 			new Rule { ClipPrefix = "Fragment_Break", EffectId = "bh.fragment", GameRolloff = true },
 
+			// Hollow's Lantern (the volcanic moon): a volcano launches a meteor (MeteorLauncher plays FireBall_01 slowed to pitch 0.4-0.6, only
+			// while the player is in the moon's sector) and the quiet surface bed.
+			new Rule { ClipPrefix = "FireBall_01", EffectId = "hl.launch", GameRolloff = true },
+			new Rule { ClipPrefix = "Volcano_Ambience_Loop", EffectId = "hl.bed", Loop = true, GameRolloff = true },
+
 			// Brittle Hollow's black hole (BlackHole_BH): its ambience (BlackHoleAmbience, the same clip the signal dish plays for
 			// Brittle Hollow, so the dish rule above takes it under the dish) grows as you approach by the source's own rolloff.
 			// Falling in plays nothing (BlackHoleVolume.VanishPlayer: PlayEntryAudio(isPlayer: true) is silent); the player's

@@ -531,6 +531,11 @@ namespace OuterWildsDualSense
 			const string hollow = "World sounds/Brittle Hollow";
 			Define("bh.meteor", hollow, "Meteor hitting the planet", "Meteor_Impact_01..03_b, 3.8 s, a blow with real low end (up to 0.45). MeteorController.Impact plays it on the meteor's own source where it hits and damages the fragment under it by 20-80; a fragment that runs out of integrity then breaks away 0.1 s later (next effect).")
 				.Add("gain", "Strength", 1.5f, 0, 10);
+			const string lantern = "World sounds/Hollow's Lantern";
+			Define("hl.launch", lantern, "Volcano launching a meteor", "FireBall_01, 2.3 s (low end 0.073, up to 0.21), played slowed to pitch 0.4-0.6 so the real low end is bigger. MeteorLauncher plays it every 5-20 s per volcano, only while the player is on the moon.")
+				.Add("gain", "Strength", 2.5f, 0, 12);
+			Define("hl.bed", lantern, "Volcanic moon surface bed", "Volcano_Ambience_Loop_V2, 27.8 s loop (low end 0.108, up to 0.15): the quiet bed of the whole moon (BH_VolcanicMoonSurface_LP).")
+				.Add("gain", "Strength", 1.4f, 0, 10);
 			Define("bh.fragment", hollow, "A fragment breaking away", "Fragment_Break, 8.5 s, a long heavy rumble (low end 0.24 on average, up to 0.41). DetachableFragment.Detach plays it on the fragment's floating source, at most once a second. The same fragments also break by themselves on the planet's own schedule, not only from meteors.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("bh.hole.approach", hollow, "Black hole: approaching", "OW_NM_WHAmbience2_v2, 34 s with a lot of low end (0.31, the strongest ambience measured). The BlackHoleAmbience source sits in BlackHole_BH and the game grades it by distance with its own rolloff, so it grows as you fly to the hole. The signal dish plays the same clip for Brittle Hollow (dish.hollow).")
