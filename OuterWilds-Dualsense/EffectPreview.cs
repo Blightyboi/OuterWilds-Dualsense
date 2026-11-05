@@ -363,6 +363,10 @@ namespace OuterWildsDualSense
 			Effects.Get("eye.inflate").PreviewPeriod = 3f;
 			Effects.Get("eye.bigbang").Preview = () => WorldSounds.Preview(AudioType.EyeBigBang);
 			Effects.Get("eye.bigbang").PreviewPeriod = 10f;
+			Effects.Get("eye.pulse").Preview = () => WorldSounds.Preview(AudioType.EyeSmokeSpherePulse);
+			Effects.Get("eye.pulse").PreviewPeriod = 2f;
+			Effects.Get("eye.collapse").Preview = () => WorldSounds.Preview(AudioType.EyeSmokeSphereCollapse);
+			Effects.Get("eye.collapse").PreviewPeriod = 2f;
 			Effects.Get("hl.bed").Preview = () => WorldSounds.HoldLoop("hl.bed", AudioType.BH_VolcanicMoonSurface_LP);
 			Effects.Get("bh.fragment").Preview = () => WorldSounds.Preview(AudioType.BH_BreakawayFragment);
 			Effects.Get("bh.hole.approach").Preview = () => WorldSounds.HoldLoop("bh.hole.approach", AudioType.BlackHoleAmbience_LP);

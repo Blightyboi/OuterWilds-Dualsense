@@ -125,6 +125,8 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "Jump_Into_Fogsphere_04", EffectId = "eye.shuttle", GameRolloff = true },
 			new Rule { ClipPrefix = "BigBang_WhooshLeadToExplo", EffectId = "eye.inflate", GameRolloff = true },
 			new Rule { ClipPrefix = "BigBang_Explo", EffectId = "eye.bigbang", GameRolloff = true },
+			new Rule { ClipPrefix = "fogsphere_pulse", EffectId = "eye.pulse", GameRolloff = true },
+			new Rule { ClipPrefix = "fogsphere_jump2", EffectId = "eye.collapse", GameRolloff = true },
 
 			// Brittle Hollow's black hole (BlackHole_BH): its ambience (BlackHoleAmbience, the same clip the signal dish plays for
 			// Brittle Hollow, so the dish rule above takes it under the dish) grows as you approach by the source's own rolloff.
