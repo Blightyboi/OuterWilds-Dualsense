@@ -155,6 +155,9 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_PR_SuitOff", EffectId = "suit.suit", Crackle = true },
 			new Rule { ClipPrefix = "OW_PR_HelmetOn", EffectId = "suit.helmet", Crackle = true },
 			new Rule { ClipPrefix = "OW_PR_HelmetOff", EffectId = "suit.helmet", Crackle = true },
+			// Moving to the next line of a conversation (CharacterDialogueTree -> PlayerAudioController.PlayDialogueAdvance on the player's
+			// external one-shot source). The clip is high-passed (low end 0.000), so a tick. Entering and leaving a conversation are left out.
+			new Rule { ClipPrefix = "UI_Advance_Dialog", EffectId = "ui.dialogue", Crackle = true },
 			new Rule { ClipPrefix = "OW_SP_RefuelJetpack", EffectId = "suit.refuel" },
 			new Rule { ClipPrefix = "medkit", EffectId = "suit.medkit", Crackle = true },
 			new Rule { ClipPrefix = "breathing_suit", EffectId = "suit.breath", Loop = true },

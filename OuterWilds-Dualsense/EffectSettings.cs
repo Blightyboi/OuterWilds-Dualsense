@@ -714,6 +714,10 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 2.5f, 0, 10)
 				.Add("tone", "Tick tone Hz", 90f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 12f, 3, 200);
+			Define("ui.dialogue", "Menus and ship log/Dialogue", "Next line of a conversation", "UI_Advance_Dialog_V6-002_highpass, 1.9 s, played at volume 0.15: high-passed, no low end at all, so a light tick. CharacterDialogueTree plays it on every press that moves to the next line.")
+				.Add("gain", "Strength", 4f, 0, 15)
+				.Add("tone", "Tick tone Hz", 130f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			Define("suit.helmet", suit, "Putting on and taking off the helmet", "OW_PR_HelmetOn (1.4 s, peak 0.1) and OW_PR_HelmetOff (2.0 s): soft clicks, almost silent, so a light tick.")
 				.Add("gain", "Strength", 4f, 0, 15)
 				.Add("tone", "Tick tone Hz", 130f, 40, 300)

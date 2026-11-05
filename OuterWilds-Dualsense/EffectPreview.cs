@@ -373,6 +373,8 @@ namespace OuterWildsDualSense
 			Effects.Get("bh.ambience").Preview = () => WorldSounds.HoldLoop("bh.ambience", AudioType.BH_SubsurfaceAmbience_LP);
 			Effects.Get("suit.suit").Preview = () => WorldSounds.Preview(AudioType.PlayerSuitWearSuit);
 			Effects.Get("suit.helmet").Preview = () => WorldSounds.Preview(AudioType.PlayerSuitRemoveHelmet);
+			Effects.Get("ui.dialogue").Preview = () => WorldSounds.Preview(AudioType.DialogueAdvance);
+			Effects.Get("ui.dialogue").PreviewPeriod = 2f;
 			Effects.Get("suit.refuel").Preview = () => WorldSounds.Preview(AudioType.ShipCabinUseRefueller);
 			Effects.Get("suit.medkit").Preview = () => WorldSounds.Preview(AudioType.ShipCabinUseMedkit);
 			Effects.Get("suit.breath").Preview = () => WorldSounds.HoldLoop("suit.breath", AudioType.PlayerBreathing_LP);
