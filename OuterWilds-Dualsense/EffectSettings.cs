@@ -531,6 +531,15 @@ namespace OuterWildsDualSense
 			const string hollow = "World sounds/Brittle Hollow";
 			Define("bh.meteor", hollow, "Meteor hitting the planet", "Meteor_Impact_01..03_b, 3.8 s, a blow with real low end (up to 0.45). MeteorController.Impact plays it on the meteor's own source where it hits and damages the fragment under it by 20-80; a fragment that runs out of integrity then breaks away 0.1 s later (next effect).")
 				.Add("gain", "Strength", 1.5f, 0, 10);
+			const string eye = "World sounds/Eye of the Universe";
+			Define("eye.vortex", eye, "Entering or leaving the vortex", "Jump_Into_Fogsphere_03, 2.3 s, volume 0.4 (low end 0.060, up to 0.20): EyeVortexTrigger plays it on entering and on leaving. The game also rumbles by itself while you are in the vortex.")
+				.Add("gain", "Strength", 4f, 0, 15);
+			Define("eye.shuttle", eye, "Shuttle diving into the light", "Jump_Into_Fogsphere_04, 2.7 s (low end 0.074, up to 0.22): EyeShuttleController when the shuttle flies into the light.")
+				.Add("gain", "Strength", 2f, 0, 12);
+			Define("eye.inflate", eye, "Sphere swelling before the big bang", "BigBang_WhooshLeadToExplo, 2.2 s, volume 0.5 (low end 0.181, up to 0.43): CosmicInflationController when the inflation sphere starts to grow. The game's own inflation rumble comes earlier.")
+				.Add("gain", "Strength", 1.6f, 0, 10);
+			Define("eye.bigbang", eye, "The big bang", "BigBang_Explo, 9.2 s, volume 0.6 (low end 0.237, up to 0.49): the strongest sound of the finale, CosmicInflationController. The death that follows is death.bigbang.")
+				.Add("gain", "Strength", 1f, 0, 10);
 			const string lantern = "World sounds/Hollow's Lantern";
 			Define("hl.launch", lantern, "Volcano launching a meteor", "FireBall_01, 2.3 s (low end 0.073, up to 0.21), played slowed to pitch 0.4-0.6 so the real low end is bigger. MeteorLauncher plays it every 5-20 s per volcano, only while the player is on the moon.")
 				.Add("gain", "Strength", 2.5f, 0, 12);

@@ -118,6 +118,14 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "FireBall_01", EffectId = "hl.launch", GameRolloff = true },
 			new Rule { ClipPrefix = "Volcano_Ambience_Loop", EffectId = "hl.bed", Loop = true, GameRolloff = true },
 
+			// The Eye of the Universe (the finale scene). The game rumbles by itself for the vortex, the lightning, the galaxy map zoom and
+			// the cosmic inflation, so only the one-shots without game rumble are here: the vortex entry and exit, the shuttle into the light,
+			// the sphere swelling and the big bang itself. These clips are used nowhere else.
+			new Rule { ClipPrefix = "Jump_Into_Fogsphere_03", EffectId = "eye.vortex", GameRolloff = true },
+			new Rule { ClipPrefix = "Jump_Into_Fogsphere_04", EffectId = "eye.shuttle", GameRolloff = true },
+			new Rule { ClipPrefix = "BigBang_WhooshLeadToExplo", EffectId = "eye.inflate", GameRolloff = true },
+			new Rule { ClipPrefix = "BigBang_Explo", EffectId = "eye.bigbang", GameRolloff = true },
+
 			// Brittle Hollow's black hole (BlackHole_BH): its ambience (BlackHoleAmbience, the same clip the signal dish plays for
 			// Brittle Hollow, so the dish rule above takes it under the dish) grows as you approach by the source's own rolloff.
 			// Falling in plays nothing (BlackHoleVolume.VanishPlayer: PlayEntryAudio(isPlayer: true) is silent); the player's

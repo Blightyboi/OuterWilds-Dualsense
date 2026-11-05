@@ -355,6 +355,14 @@ namespace OuterWildsDualSense
 			Effects.Get("bh.meteor").Preview = () => WorldSounds.Preview(AudioType.BH_MeteorImpact);
 			Effects.Get("hl.launch").Preview = () => WorldSounds.Preview(AudioType.BH_MeteorLaunch);
 			Effects.Get("hl.launch").PreviewPeriod = 3.5f;
+			Effects.Get("eye.vortex").Preview = () => WorldSounds.Preview(AudioType.EyeVortexEntry);
+			Effects.Get("eye.vortex").PreviewPeriod = 3f;
+			Effects.Get("eye.shuttle").Preview = () => WorldSounds.Preview(AudioType.EyeShuttleIntoLight);
+			Effects.Get("eye.shuttle").PreviewPeriod = 3.5f;
+			Effects.Get("eye.inflate").Preview = () => WorldSounds.Preview(AudioType.EyeSphereInflation);
+			Effects.Get("eye.inflate").PreviewPeriod = 3f;
+			Effects.Get("eye.bigbang").Preview = () => WorldSounds.Preview(AudioType.EyeBigBang);
+			Effects.Get("eye.bigbang").PreviewPeriod = 10f;
 			Effects.Get("hl.bed").Preview = () => WorldSounds.HoldLoop("hl.bed", AudioType.BH_VolcanicMoonSurface_LP);
 			Effects.Get("bh.fragment").Preview = () => WorldSounds.Preview(AudioType.BH_BreakawayFragment);
 			Effects.Get("bh.hole.approach").Preview = () => WorldSounds.HoldLoop("bh.hole.approach", AudioType.BlackHoleAmbience_LP);
