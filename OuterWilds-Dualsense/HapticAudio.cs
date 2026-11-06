@@ -15,6 +15,12 @@ namespace OuterWildsDualSense
 		public volatile float GainLeft = 0.7071f;
 		public volatile float GainRight = 0.7071f;
 
+		/// <summary>
+		/// True for sources made by an F1 "Play" button (and the shared rumble and ride sources, which the preview overrides itself).
+		/// While a preview runs, every other source falls silent, so the game going on in the background does not mix with it.
+		/// </summary>
+		public volatile bool Preview;
+
 		/// <summary>Called from the output thread. step = sourceRate / outputRate.</summary>
 		public abstract float Next(double step);
 	}
@@ -217,6 +223,12 @@ namespace OuterWildsDualSense
 		/// </summary>
 		public volatile float PauseGain = 1f;
 
+		/// <summary>Set while the F1 menu calls a Preview action: sources added meanwhile belong to the preview.</summary>
+		public static volatile bool PreviewScope;
+
+		/// <summary>Gain of the sources that do not belong to a preview; fades to 0 while a preview plays.</summary>
+		public volatile float GameGain = 1f;
+
 		/// <summary>The game's controller rumble, rendered as haptics.</summary>
 		public readonly HapticRumbleSource Rumble = new HapticRumbleSource();
 
@@ -334,6 +346,7 @@ namespace OuterWildsDualSense
 
 		public T AddSource<T>(T source) where T : HapticSource
 		{
+			if (PreviewScope || source is HapticRumbleSource || source is HapticRideSource) source.Preview = true;
 			lock (_lock)
 			{
 				var list = new HapticSource[_streams.Length + 1];
@@ -363,13 +376,14 @@ namespace OuterWildsDualSense
 
 			var streams = _streams;
 			float master = MasterGain * PauseGain;
+			float game = GameGain;
 			for (int f = 0; f < frames; f++)
 			{
 				float left = 0f, right = 0f;
 				for (int s = 0; s < streams.Length; s++)
 				{
 					var st = streams[s];
-					float v = st.Next((double)st.SourceRate / Rate);
+					float v = st.Next((double)st.SourceRate / Rate) * (st.Preview ? 1f : game);
 					left += v * st.GainLeft;
 					right += v * st.GainRight;
 				}

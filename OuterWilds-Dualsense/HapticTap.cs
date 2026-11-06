@@ -13,6 +13,15 @@ namespace OuterWildsDualSense
 	/// </summary>
 	public class HapticTap : MonoBehaviour
 	{
+		/// <summary>True when this component was made by an F1 preview, so its haptics are part of the preview.</summary>
+		private readonly bool _fromPreview = HapticAudio.PreviewScope;
+
+		private T Mark<T>(T source) where T : HapticSource
+		{
+			if (_fromPreview) source.Preview = true;
+			return source;
+		}
+
 		private const float MinVolume = 0.01f;
 		private const float Gate = 0.003f;          // below this broadband level the sound counts as silence
 		private const float PeakDecayPerSecond = 0.97f;
@@ -133,7 +142,7 @@ namespace OuterWildsDualSense
 			var shot = new HapticOneShotSource(wave, rate, Mathf.Clamp01(volume * 1.2f));
 			shot.GainLeft = Mathf.Cos(angle);
 			shot.GainRight = Mathf.Sin(angle);
-			haptics.AddSource(shot);
+			haptics.AddSource(Mark(shot));
 			_suppressLiveTap = true;
 			DualSenseMod.Log(string.Format("Haptic one-shot on '{0}' ({1} samples, volume {2:F2})", name, wave.Length, volume));
 		}
@@ -212,7 +221,7 @@ namespace OuterWildsDualSense
 				float[] wave = HapticClipBank.Get(clip);
 				if (wave != null)
 				{
-					_loop = haptics.AddSource(new HapticLoopSource(wave, clip.frequency));
+					_loop = haptics.AddSource(Mark(new HapticLoopSource(wave, clip.frequency)));
 					_active = _loop;
 					return;
 				}
@@ -221,7 +230,7 @@ namespace OuterWildsDualSense
 			if (_tapStream == null)
 			{
 				Unregister();
-				_tapStream = haptics.AddSource(new HapticStream(AudioSettings.outputSampleRate));
+				_tapStream = haptics.AddSource(Mark(new HapticStream(AudioSettings.outputSampleRate)));
 				_active = _tapStream;
 			}
 		}

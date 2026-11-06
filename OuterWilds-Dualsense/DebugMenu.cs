@@ -65,7 +65,9 @@ namespace OuterWildsDualSense
 			if (_playing == null) return;
 			if (!_open) { StopPreview(); return; }
 			if (Time.unscaledTime < _nextPlay) return;
-			_playing.Preview();
+			HapticAudio.PreviewScope = true;
+			try { _playing.Preview(); }
+			finally { HapticAudio.PreviewScope = false; }
 			_nextPlay = _playing.PreviewPeriod <= 0f ? 0f : Time.unscaledTime + _playing.PreviewPeriod;
 		}
 

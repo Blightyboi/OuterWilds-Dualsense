@@ -59,6 +59,8 @@ namespace OuterWildsDualSense
 			bool silent = (OWTime.IsPaused(OWTime.PauseType.Menu) || !GamepadInUse()) && !(DebugMenu.IsOpen && DebugMenu.Previewing);
 			float step = Time.unscaledDeltaTime / (silent ? 0.25f : 0.4f);
 			Haptics.PauseGain = Mathf.MoveTowards(Haptics.PauseGain, silent ? 0f : 1f, step);
+			// While an F1 Play button is on, the rest of the game's haptics fall silent so the two do not mix.
+			Haptics.GameGain = Mathf.MoveTowards(Haptics.GameGain, DebugMenu.IsOpen && DebugMenu.Previewing ? 0f : 1f, Time.unscaledDeltaTime / 0.15f);
 			TornadoHaptics.Tick();
 			WindowHaptics.Tick();
 			var live = Effects.Get("hap.live");
