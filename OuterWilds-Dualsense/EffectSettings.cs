@@ -545,7 +545,7 @@ namespace OuterWildsDualSense
 			Define("eye.bigbang", eye, "The big bang", "BigBang_Explo, 9.2 s, volume 0.6 (low end 0.237, up to 0.49): the strongest sound of the finale, CosmicInflationController. The death that follows is death.bigbang.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("eye.pulse", eye, "Smoke sphere pulse", "fogsphere_pulse1..5, 1.4 s (low end 0.020, up to 0.07): PossibilitySphereController plays one each time the shadows of the smoke sphere flicker, and the last one again when it collapses. Weak, so the strength is high.")
-				.Add("gain", "Strength", 6f, 0, 20);
+				.Add("gain", "Strength", 1.5f, 0, 20);
 			Define("eye.collapse", eye, "Smoke sphere collapsing", "fogsphere_jump2_delayed, 0.9 s, volume 0.4 (low end 0.040, up to 0.11): PossibilitySphereController.OnCollapse before the big bang.")
 				.Add("gain", "Strength", 3.5f, 0, 15);
 			const string lantern = "World sounds/Hollow's Lantern";

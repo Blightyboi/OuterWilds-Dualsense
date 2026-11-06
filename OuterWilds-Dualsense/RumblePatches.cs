@@ -42,7 +42,11 @@ namespace OuterWildsDualSense
 				// otherwise they switched off and back on with every nudge of the stick. Menus, loading and sleeping silence them.
 				bool paused = OWTime.IsPaused(OWTime.PauseType.Menu) || OWTime.IsPaused(OWTime.PauseType.Loading)
 					|| OWTime.IsPaused(OWTime.PauseType.Sleeping) || OWTime.IsPaused(OWTime.PauseType.Initializing)
-					|| OWTime.IsPaused(OWTime.PauseType.Streaming) || OWTime.IsPaused(OWTime.PauseType.System);
+					|| OWTime.IsPaused(OWTime.PauseType.Streaming) || OWTime.IsPaused(OWTime.PauseType.System)
+					// Sleeping at a campfire does not pause the game (only input is switched off), so ask the player state.
+					|| PlayerState.IsSleepingAtCampfire()
+					// Sitting with the marshmallow stick is the Roasting input mode: the player is not walking or flying.
+					|| OWInput.IsInputMode(InputMode.Roasting);
 				if (mod.AdaptiveTriggers && !paused && __instance.enabled && DualSenseMod.GamepadInUse())
 				{
 					TriggerLogic.Compute(mod.TriggerStrength, out left, out right);
