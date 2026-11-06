@@ -1,4 +1,5 @@
 <p align="center"><img src="assets/logo.jpg" alt="OuterWilds-Dualsense" width="720"></p>
+<p align="center"><sub>Автор логотипа: <a href="https://www.reddit.com/user/young_historic">u/young_historic</a></sub></p>
 
 # OuterWilds-Dualsense
 
