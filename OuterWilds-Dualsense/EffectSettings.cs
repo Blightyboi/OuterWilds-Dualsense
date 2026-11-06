@@ -556,6 +556,11 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 20f, 0, 60)
 				.Add("tone", "Tick tone Hz", 110f, 40, 300)
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
+			const string sun = "World sounds/Sun and stations";
+			Define("sun.ambience", sun, "Hum of the Sun", "OW_SUN_Ambience_v4, a 105 s loop (low end 0.17 on average): SunSurfaceAudioController plays it in the Sun's sector and fades it by the squared distance to the surface (full at 100 m, none at 1600 m, a fifth inside the Sun Station). The strength follows that volume. The heat itself is hazard.heat.")
+				.Add("gain", "Strength", 1f, 0, 8);
+			Define("whs.activate", sun, "White Hole Station starting to rotate", "Nomai_WhiteHoleStationActivation, 7.9 s, volume 0.7 (low end 0.15, up to 0.23): once per game, when the first slot of the station is switched.")
+				.Add("gain", "Strength", 2f, 0, 10);
 			const string lantern = "World sounds/Hollow's Lantern";
 			Define("hl.launch", lantern, "Volcano launching a meteor", "FireBall_01, 2.3 s (low end 0.073, up to 0.21), played slowed to pitch 0.4-0.6 so the real low end is bigger. MeteorLauncher plays it every 5-20 s per volcano, only while the player is on the moon.")
 				.Add("gain", "Strength", 2.5f, 0, 12);

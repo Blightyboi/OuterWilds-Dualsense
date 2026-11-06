@@ -81,6 +81,12 @@ namespace OuterWildsDualSense
 			// own source. The three target clips are also played elsewhere, so they only count under the dish.
 			new Rule { ClipPrefix = "OW_NM_DoorSlide_Big_LP_01", EffectId = "mech.big", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_SUN_Ambience", EffectId = "dish.sun", Loop = true, GameRolloff = true, UnderName = "SignalDish" },
+			// The hum of the Sun (SunSurfaceAudioController on SurfaceAudio_Sun): plays everywhere in the Sun's sector and the game
+			// fades it by the squared distance to the surface (full at 100 m, none at 1600 m, a fifth inside the Sun Station), so
+			// the strength just follows the source volume. The dish rule above stands first and keeps the signal dish's copy.
+			new Rule { ClipPrefix = "OW_SUN_Ambience", EffectId = "sun.ambience", Loop = true },
+			// The White Hole Station starts to rotate (WhiteHoleStationRotation, once per game, when the first slot is switched).
+			new Rule { ClipPrefix = "Nomai_WhiteHoleStationActivation", EffectId = "whs.activate", GameRolloff = true },
 			new Rule { ClipPrefix = "OW_GD_Tornado", EffectId = "dish.giants", Loop = true, GameRolloff = true, UnderName = "SignalDish" },
 			new Rule { ClipPrefix = "OW_NM_WHAmbience2", EffectId = "dish.hollow", Loop = true, GameRolloff = true, UnderName = "SignalDish" },
 
