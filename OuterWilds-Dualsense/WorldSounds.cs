@@ -199,6 +199,9 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "OW_NM_DoorStart_Big", EffectId = "door.big.start", GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_DoorStart_0", EffectId = "door.small.start", GameRolloff = true, Crackle = true },
 			new Rule { ClipPrefix = "Nomai_Stone_Door_End_Big", EffectId = "door.big.stop", GameRolloff = true },
+			// Opening a Nomai airlock (NomaiAirlock: the White Hole Station, Giant's Deep core, Orbital Probe Cannon); the air pouring
+			// in and out has no low end and is left out.
+			new Rule { ClipPrefix = "OW_NM_DoorAirlockOpen", EffectId = "airlock.open", GameRolloff = true },
 			new Rule { ClipPrefix = "Nomai_Stone_Door_End_V2", EffectId = "door.small.stop", GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_DoorSlide_Big_LP_05", EffectId = "door.big", Loop = true, GameRolloff = true },
 			new Rule { ClipPrefix = "OW_NM_DoorSlide_LP", EffectId = "door.small", Loop = true, GameRolloff = true },

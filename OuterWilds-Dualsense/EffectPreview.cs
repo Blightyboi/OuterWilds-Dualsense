@@ -455,6 +455,8 @@ namespace OuterWildsDualSense
 			Effects.Get("door.small.stop").PreviewPeriod = 2.6f;
 			Effects.Get("door.big.start").PreviewPeriod = 2.1f;
 			Effects.Get("door.big.stop").PreviewPeriod = 3.1f;
+			Effects.Get("airlock.open").Preview = () => WorldSounds.Preview(AudioType.NomaiDoorAirLockOpen);
+			Effects.Get("airlock.open").PreviewPeriod = 3f;
 			Effects.Get("qm.shuttle").PreviewPeriod = 8.2f;
 			Effects.Get("qm.lightning").PreviewPeriod = 6.3f;
 			Effects.Get("qm.cairn").PreviewPeriod = 3.5f;

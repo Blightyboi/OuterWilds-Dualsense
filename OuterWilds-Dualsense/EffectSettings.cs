@@ -792,6 +792,8 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 2.5f, 0, 10);
 			Define("door.big.stop", door, "Big door stopping", "Nomai_Stone_Door_End_Big_V2_01..11, 2.7 s: a heavy stone thud at the start (low end up to 0.13). Also played by the Nomai airlocks and the Memory Uplink statue.")
 				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("airlock.open", door, "Nomai airlock opening", "OW_NM_DoorAirlockOpen_03, 2.7 s, volume 0.15 (low end 0.10, up to 0.20): NomaiAirlock when the airlock opens (White Hole Station, Giant's Deep core, Orbital Probe Cannon).")
+				.Add("gain", "Strength", 2.5f, 0, 10);
 			Define("obs.tornado", mech, "Observatory: tornado simulation", "Brittle Hollow, southern observatory: the simulation of Giant's Deep tornadoes plays OW_GD_Tornado_v2 (27 s, low end 0.25) on two sources (UpTornado, DownTornado) that slide along a rail to the point nearest the player. The real tornadoes of Giant's Deep use the same clip and are not covered yet.")
 				.Add("gain", "Strength", 1f, 0, 10);
 			Define("hologram.shot", mech, "Hologram appearing and fading", "Hologram_Enter_v2_01 (7.4 s) and Hologram_Exit_v2_01 (4.1 s): a steady swell with real low end (0.2). HologramProjector plays them when a hologram is made or removed: Brittle Hollow's observatory (orb tracks), Giant's Deep, the orbital probe cannon.")
