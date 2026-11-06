@@ -7,8 +7,6 @@
 
 A DualSense mod for **Outer Wilds** (via [OWML](https://github.com/ow-mods/owml)): real haptic feedback through the controller's audio channels, adaptive triggers, a lightbar that follows the planet you are on, touchpad controls and gyro steering.
 
-> Unofficial fan mod. Not affiliated with Mobius Digital or Annapurna Interactive. The mod contains no game assets: all sounds are read from your own copy of the game while it runs.
->
 > This work is unofficial Fan Content created under permission from the Mobius Digital Fan Content Policy. It includes materials which are the property of Mobius Digital and it is neither approved nor endorsed by Mobius Digital.
 
 ## Features
