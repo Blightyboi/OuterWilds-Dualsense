@@ -57,9 +57,38 @@ Turn on `debugMenu` in the mod settings, then press **F1** in the game. Open a g
 - *Haptics are too weak or too strong:* tune the effect in the F1 menu (the strength of each effect; "Master gain" in the engine sounds group scales all haptics).
 - For bug reports please attach the OWML log and, if possible, switch on `debugLog` first.
 
-## Building
+## Building from source
 
-`dotnet build OuterWilds-Dualsense -c Release` (net48, Harmony). The output goes to the OWML mod folder; see `OuterWilds-Dualsense.csproj`.
+The repository contains only the mod's own code. It is built against the game's and OWML's assemblies, which are not in the repository (they belong to their owners), so you need Outer Wilds with OWML installed on the same machine.
+
+**What you need**
+
+- Windows and a copy of Outer Wilds (Steam) with [OWML](https://github.com/ow-mods/owml) installed through its installer. The installer puts `OWML.*.dll`, `0Harmony.dll` and the patched `Assembly-CSharp.dll` into `OuterWilds_Data/Managed`; the project references them from there.
+- The [.NET SDK](https://dotnet.microsoft.com/download) (6.0 or newer; the project targets .NET Framework 4.8 and gets the reference assemblies from NuGet, so the first build needs an internet connection).
+- Git.
+
+**Steps**
+
+1. Clone the repository: `git clone https://github.com/Blightyboi/OuterWilds-Dualsense.git`.
+2. Tell the project where the game and the OWML mod folder are. The defaults in `OuterWilds-Dualsense/OuterWilds-Dualsense.csproj` are the author's paths (`GameManaged` and `ModsDir` in the first `PropertyGroup`). Either edit them, or pass your own on the command line (quote paths with spaces):
+
+```bash
+dotnet build OuterWilds-Dualsense -c Release -p:GameManaged="C:\Games\Outer Wilds\OuterWilds_Data\Managed" -p:ModsDir="C:\OWML\Mods\Blightyboi.OuterWilds-Dualsense"
+```
+
+3. If your paths are already edited in the project file, a plain `dotnet build OuterWilds-Dualsense -c Release` is enough.
+4. After a successful build the project copies `DualSenseMod.dll`, `DualSenseMod.pdb`, `manifest.json` and `default-config.json` into `ModsDir`, so you can start the game through OWML right away. The raw output is also in `OuterWilds-Dualsense/bin/Release/net48/`.
+
+**Building a release archive**
+
+Zip a folder named `Blightyboi.OuterWilds-Dualsense` that holds `DualSenseMod.dll`, `manifest.json`, `default-config.json` and `LICENSE`. Do not include your own `config.json` and `effects.json` (they are your local settings). Use forward slashes inside the archive (7-Zip or `zip` do this; on Windows PowerShell 5.1 `Compress-Archive` does not).
+
+**Typical problems**
+
+- *"The type or namespace name ... could not be found"* (`UnityEngine`, `OWML`, `Assembly-CSharp`): `GameManaged` points to the wrong folder, or OWML is not installed in that copy of the game.
+- *Restore fails on the first build:* the NuGet package `Microsoft.NETFramework.ReferenceAssemblies` could not be downloaded; check the connection.
+- *The game does not load the new build:* make sure `ModsDir` is the folder OWML reads (`<OWML>/Mods/Blightyboi.OuterWilds-Dualsense`), and that the game was restarted.
+- If you fork the mod, change `uniqueName` and `author` in `manifest.json`, so that it does not clash with the original.
 
 ## License
 

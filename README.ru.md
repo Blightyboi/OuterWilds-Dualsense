@@ -59,9 +59,38 @@
 - *Слишком слабо или слишком сильно:* настройте эффект в меню F1 (силу каждого эффекта; «Master gain» в группе звуков двигателей меняет все хаптики сразу).
 - В сообщении об ошибке приложите лог OWML и, по возможности, включите `debugLog`.
 
-## Сборка
+## Сборка из исходников
 
-`dotnet build OuterWilds-Dualsense -c Release` (net48, Harmony). Результат попадает в папку модов OWML; см. `OuterWilds-Dualsense.csproj`.
+В репозитории только собственный код мода. Он собирается против сборок игры и OWML, которых в репозитории нет (они принадлежат их владельцам), поэтому на машине должна быть Outer Wilds с установленным OWML.
+
+**Что нужно**
+
+- Windows и копия Outer Wilds (Steam) с [OWML](https://github.com/ow-mods/owml), установленным через его установщик. Установщик кладёт `OWML.*.dll`, `0Harmony.dll` и пропатченный `Assembly-CSharp.dll` в `OuterWilds_Data/Managed`; проект берёт их оттуда.
+- [.NET SDK](https://dotnet.microsoft.com/download) (6.0 или новее; проект собирается под .NET Framework 4.8 и берёт сборки ссылок из NuGet, поэтому первой сборке нужен интернет).
+- Git.
+
+**Шаги**
+
+1. Клонируйте репозиторий: `git clone https://github.com/Blightyboi/OuterWilds-Dualsense.git`.
+2. Укажите проекту, где игра и папка модов OWML. В `OuterWilds-Dualsense/OuterWilds-Dualsense.csproj` по умолчанию стоят пути автора (`GameManaged` и `ModsDir` в первом `PropertyGroup`). Либо поправьте их, либо передайте свои в командной строке (пути с пробелами в кавычках):
+
+```bash
+dotnet build OuterWilds-Dualsense -c Release -p:GameManaged="C:\Games\Outer Wilds\OuterWilds_Data\Managed" -p:ModsDir="C:\OWML\Mods\Blightyboi.OuterWilds-Dualsense"
+```
+
+3. Если пути уже исправлены в файле проекта, достаточно `dotnet build OuterWilds-Dualsense -c Release`.
+4. После успешной сборки проект копирует `DualSenseMod.dll`, `DualSenseMod.pdb`, `manifest.json` и `default-config.json` в `ModsDir`, так что игру можно сразу запускать через OWML. Сами результаты сборки лежат ещё и в `OuterWilds-Dualsense/bin/Release/net48/`.
+
+**Архив для релиза**
+
+Упакуйте в zip папку `Blightyboi.OuterWilds-Dualsense`, в которой лежат `DualSenseMod.dll`, `manifest.json`, `default-config.json` и `LICENSE`. Свои `config.json` и `effects.json` в архив класть не нужно (это ваши локальные настройки). Внутри архива пути должны быть с прямыми слэшами (7-Zip и `zip` так и делают; `Compress-Archive` в Windows PowerShell 5.1 нет).
+
+**Частые проблемы**
+
+- *«Не удалось найти тип или имя пространства имён ...»* (`UnityEngine`, `OWML`, `Assembly-CSharp`): `GameManaged` указывает не на ту папку или OWML не установлен в этой копии игры.
+- *Ошибка восстановления пакетов при первой сборке:* не скачался NuGet-пакет `Microsoft.NETFramework.ReferenceAssemblies`; проверьте соединение.
+- *Игра не загружает новую сборку:* убедитесь, что `ModsDir` это папка, которую читает OWML (`<OWML>/Mods/Blightyboi.OuterWilds-Dualsense`), и что игра перезапущена.
+- Если делаете форк мода, поменяйте `uniqueName` и `author` в `manifest.json`, чтобы не конфликтовать с оригиналом.
 
 ## Лицензия
 
