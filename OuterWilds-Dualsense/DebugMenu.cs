@@ -22,7 +22,7 @@ namespace OuterWildsDualSense
 		public static bool Previewing { get; private set; }
 		private bool _blockInput = true;
 		private bool _inputBlocked;
-		private Rect _window = new Rect(20, 20, 560, 720);
+		private Rect _window = new Rect(20, 20, 960, 760);
 		private Vector2 _scroll;
 		private string _status = "";
 		private float _statusUntil;
@@ -149,42 +149,248 @@ namespace OuterWildsDualSense
 			if (!_open) return;
 			GUI.depth = -1000;
 			// Keep the whole window on the screen, whatever the resolution, so that the list can always be scrolled to its end.
-			_window.height = Mathf.Min(720f, Screen.height - 40f);
+			_window.width = Mathf.Min(960f, Screen.width - 40f);
+			_window.height = Mathf.Min(760f, Screen.height - 40f);
 			_window.x = Mathf.Clamp(_window.x, 0f, Mathf.Max(0f, Screen.width - _window.width));
 			_window.y = Mathf.Clamp(_window.y, 0f, Mathf.Max(0f, Screen.height - _window.height));
 			_window = GUILayout.Window(0x0D5E, _window, DrawWindow, "DualSense effects  (F1 closes)");
 			DrawPickerCursor();
 		}
 
-		private void DrawWindow(int id)
-		{
-			_scroll = GUILayout.BeginScrollView(_scroll, GUILayout.Height(_window.height - 130f));
+		// ---- Look: the sidebar tabs, the group banners and the effect cards are three clearly different things.
 
-			// Groups are paths ("World sounds/Campfire"): draw a header for every level that starts here, and the effects
-			// only while all the levels above them are open.
-			string[] last = new string[0];
+		private GUIStyle _sTab, _sTabOn, _sSection, _sSub, _sCard, _sCardTitle, _sHint, _sPlay, _sStop, _sSmall, _sTitle, _sCount;
+
+		private static Texture2D Solid(Color c)
+		{
+			var t = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+			t.SetPixel(0, 0, c);
+			t.Apply();
+			t.hideFlags = HideFlags.HideAndDontSave;
+			return t;
+		}
+
+		private static GUIStyle Flat(Color normal, Color hover, Color text, int size, FontStyle font, TextAnchor anchor, int pad)
+		{
+			var s = new GUIStyle(GUI.skin.button);
+			var n = Solid(normal);
+			var h = Solid(hover);
+			s.normal.background = s.focused.background = s.onNormal.background = s.onFocused.background = n;
+			s.hover.background = s.active.background = s.onHover.background = s.onActive.background = h;
+			s.normal.textColor = s.hover.textColor = s.active.textColor = s.focused.textColor = text;
+			s.onNormal.textColor = s.onHover.textColor = s.onActive.textColor = s.onFocused.textColor = text;
+			s.fontSize = size;
+			s.fontStyle = font;
+			s.alignment = anchor;
+			s.richText = true;
+			s.border = new RectOffset(0, 0, 0, 0);
+			s.padding = new RectOffset(pad, pad, 2, 2);
+			s.margin = new RectOffset(0, 0, 2, 2);
+			return s;
+		}
+
+		private void EnsureStyles()
+		{
+			if (_sTab != null) return;
+			_sTab = Flat(new Color(0.15f, 0.16f, 0.19f), new Color(0.24f, 0.26f, 0.31f), new Color(0.85f, 0.87f, 0.9f), 14, FontStyle.Normal, TextAnchor.MiddleLeft, 12);
+			_sTabOn = Flat(new Color(0.95f, 0.58f, 0.16f), new Color(1f, 0.66f, 0.26f), new Color(0.1f, 0.07f, 0.02f), 14, FontStyle.Bold, TextAnchor.MiddleLeft, 12);
+			_sSection = Flat(new Color(0.1f, 0.38f, 0.5f), new Color(0.14f, 0.46f, 0.6f), Color.white, 15, FontStyle.Bold, TextAnchor.MiddleLeft, 10);
+			_sSub = Flat(new Color(0.24f, 0.31f, 0.38f), new Color(0.3f, 0.39f, 0.47f), new Color(0.92f, 0.95f, 1f), 13, FontStyle.Bold, TextAnchor.MiddleLeft, 10);
+			_sCardTitle = Flat(new Color(0f, 0f, 0f, 0f), new Color(1f, 1f, 1f, 0.08f), new Color(0.95f, 0.95f, 0.95f), 13, FontStyle.Normal, TextAnchor.MiddleLeft, 4);
+			_sPlay = Flat(new Color(0.2f, 0.55f, 0.32f), new Color(0.26f, 0.66f, 0.4f), Color.white, 12, FontStyle.Bold, TextAnchor.MiddleCenter, 4);
+			_sStop = Flat(new Color(0.75f, 0.28f, 0.22f), new Color(0.86f, 0.35f, 0.28f), Color.white, 12, FontStyle.Bold, TextAnchor.MiddleCenter, 4);
+			_sSmall = Flat(new Color(0.3f, 0.31f, 0.35f), new Color(0.4f, 0.41f, 0.46f), new Color(0.9f, 0.9f, 0.92f), 12, FontStyle.Normal, TextAnchor.MiddleCenter, 4);
+			_sCard = new GUIStyle(GUI.skin.box);
+			_sCard.normal.background = Solid(new Color(0.11f, 0.12f, 0.14f));
+			_sCard.padding = new RectOffset(8, 8, 4, 6);
+			_sCard.margin = new RectOffset(0, 0, 3, 3);
+			_sHint = new GUIStyle(GUI.skin.label) { wordWrap = true, fontSize = 12, fontStyle = FontStyle.Italic };
+			_sHint.normal.textColor = new Color(0.65f, 0.68f, 0.72f);
+			_sTitle = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold };
+			_sTitle.normal.textColor = new Color(0.95f, 0.58f, 0.16f);
+			_sCount = new GUIStyle(GUI.skin.label) { fontSize = 12 };
+			_sCount.normal.textColor = new Color(0.65f, 0.68f, 0.72f);
+		}
+
+		private string _section;
+		private string _search = "";
+		private List<string> _sections;
+		private readonly Dictionary<string, int> _sectionCount = new Dictionary<string, int>();
+
+		private static string Top(EffectDef def)
+		{
+			int slash = def.Group.IndexOf('/');
+			return slash < 0 ? def.Group : def.Group.Substring(0, slash);
+		}
+
+		private static bool IsEdited(EffectDef def)
+		{
+			foreach (var p in def.Params) if (Math.Abs(p.Value - p.Default) > 1e-6f) return true;
+			return false;
+		}
+
+		private void EnsureSections()
+		{
+			if (_sections != null) return;
+			_sections = new List<string>();
 			foreach (var def in Effects.All)
 			{
-				var parts = def.Group.Split('/');
-				int same = 0;
-				while (same < parts.Length && same < last.Length && parts[same] == last[same]) same++;
-				for (int level = same; level < parts.Length; level++)
-				{
-					if (AncestorsOpen(parts, level)) DrawGroupHeader(string.Join("/", parts, 0, level + 1), parts[level], level);
-				}
-				last = parts;
-				if (AncestorsOpen(parts, parts.Length)) DrawEffect(def, parts.Length);
+				string top = Top(def);
+				if (!_sections.Contains(top)) _sections.Add(top);
+				int n;
+				_sectionCount.TryGetValue(top, out n);
+				_sectionCount[top] = n + 1;
 			}
+			if (_section == null && _sections.Count > 0) _section = _sections[0];
+		}
 
-			GUILayout.EndScrollView();
+		private void DrawWindow(int id)
+		{
+			EnsureStyles();
+			EnsureSections();
+
+			// Search across all sections.
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Search", GUILayout.Width(50));
+			string searched = GUILayout.TextField(_search, GUILayout.Height(24));
+			if (searched != _search) { _search = searched; _scroll = Vector2.zero; }
+			if (_search.Length > 0 && GUILayout.Button("x", _sSmall, GUILayout.Width(28), GUILayout.Height(24)))
+			{
+				_search = "";
+				_scroll = Vector2.zero;
+			}
+			GUILayout.EndHorizontal();
+			GUILayout.Space(4);
+
+			GUILayout.BeginHorizontal();
+			DrawSidebar();
+			GUILayout.Space(8);
+			GUILayout.BeginVertical();
+			DrawContent();
+			GUILayout.EndVertical();
+			GUILayout.EndHorizontal();
+
 			DrawFooter();
 			GUI.DragWindow(new Rect(0, 0, 10000, 22));
 		}
 
-		/// <summary>True when the first <paramref name="count"/> levels of the path are all open.</summary>
+		/// <summary>The sections (first level of the group path) as a column of tabs; the open one is orange.</summary>
+		private void DrawSidebar()
+		{
+			var edited = new HashSet<string>();
+			foreach (var def in Effects.All) if (IsEdited(def)) edited.Add(Top(def));
+
+			bool searching = _search.Trim().Length >= 2;
+			GUILayout.BeginVertical(GUILayout.Width(210));
+			foreach (var section in _sections)
+			{
+				bool on = !searching && section == _section;
+				string text = section + "  <color=#8a8f99>" + _sectionCount[section] + "</color>" + (edited.Contains(section) ? "  <color=#ffd966>*</color>" : "");
+				if (GUILayout.Button(text, on ? _sTabOn : _sTab, GUILayout.Height(32)))
+				{
+					_section = section;
+					_search = "";
+					_scroll = Vector2.zero;
+				}
+			}
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("*  has values changed from the defaults", _sCount);
+			GUILayout.EndVertical();
+		}
+
+		private bool Matches(EffectDef def)
+		{
+			string q = _search.Trim();
+			return def.Label.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
+				|| def.Id.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
+				|| def.Group.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0;
+		}
+
+		private int CountIn(string group)
+		{
+			int n = 0;
+			foreach (var def in Effects.All) if (def.Group == group || def.Group.StartsWith(group + "/")) n++;
+			return n;
+		}
+
+		private void DrawContent()
+		{
+			bool searching = _search.Trim().Length >= 2;
+
+			// Title row of the section.
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(searching ? "Search: " + _search.Trim() : _section, _sTitle);
+			GUILayout.FlexibleSpace();
+			if (!searching)
+			{
+				if (GUILayout.Button("Expand all", _sSmall, GUILayout.Width(90), GUILayout.Height(24))) SetSectionOpen(true);
+				if (GUILayout.Button("Collapse all", _sSmall, GUILayout.Width(90), GUILayout.Height(24))) SetSectionOpen(false);
+				if (GUILayout.Button("Reset section", _sSmall, GUILayout.Width(100), GUILayout.Height(24)))
+				{
+					Effects.ResetGroup(_section);
+					Say("Section reset: " + _section);
+				}
+			}
+			GUILayout.EndHorizontal();
+			GUILayout.Space(4);
+
+			_scroll = GUILayout.BeginScrollView(_scroll, GUILayout.Height(_window.height - 190f));
+			string[] last = new string[0];
+			string lastGroup = null;
+			int shown = 0;
+			foreach (var def in Effects.All)
+			{
+				var parts = def.Group.Split('/');
+				if (searching)
+				{
+					if (!Matches(def)) continue;
+					shown++;
+					if (def.Group != lastGroup)
+					{
+						lastGroup = def.Group;
+						GUILayout.Space(4);
+						GUILayout.Label(def.Group.Replace("/", "   >   "), _sSub);
+					}
+					DrawEffect(def, 0);
+					continue;
+				}
+
+				if (parts[0] != _section) continue;
+				shown++;
+
+				// Subgroups: a banner for every level below the section that starts here; the effects only while all the
+				// banners above them are open.
+				int same = 0;
+				while (same < parts.Length && same < last.Length && parts[same] == last[same]) same++;
+				for (int level = Math.Max(same, 1); level < parts.Length; level++)
+				{
+					if (AncestorsOpen(parts, level)) DrawGroupHeader(string.Join("/", parts, 0, level + 1), parts[level], level);
+				}
+				last = parts;
+				if (AncestorsOpen(parts, parts.Length)) DrawEffect(def, 14 * Math.Max(parts.Length - 1, 0));
+			}
+			if (shown == 0) GUILayout.Label(searching ? "Nothing found." : "Empty.", _sHint);
+			GUILayout.EndScrollView();
+		}
+
+		private void SetSectionOpen(bool open)
+		{
+			foreach (var def in Effects.All)
+			{
+				if (Top(def) != _section) continue;
+				var parts = def.Group.Split('/');
+				for (int level = 1; level < parts.Length; level++)
+				{
+					string path = string.Join("/", parts, 0, level + 1);
+					if (open) _openGroups.Add(path); else _openGroups.Remove(path);
+				}
+			}
+		}
+
+		/// <summary>True when the levels 1..count-1 of the path (everything below the section) are all open.</summary>
 		private bool AncestorsOpen(string[] parts, int count)
 		{
-			for (int i = 0; i < count; i++)
+			for (int i = 1; i < count; i++)
 				if (!_openGroups.Contains(string.Join("/", parts, 0, i + 1))) return false;
 			return true;
 		}
@@ -192,13 +398,15 @@ namespace OuterWildsDualSense
 		private void DrawGroupHeader(string group, string title, int level)
 		{
 			bool open = _openGroups.Contains(group);
+			GUILayout.Space(level == 1 ? 6 : 2);
 			GUILayout.BeginHorizontal();
-			GUILayout.Space(16 * level);
-			if (GUILayout.Button((open ? "[-]  " : "[+]  ") + title, GUILayout.Height(26)))
+			GUILayout.Space(14 * (level - 1));
+			string text = (open ? "v   " : ">   ") + (level == 1 ? title.ToUpperInvariant() : title) + "   <color=#9db4c4>" + CountIn(group) + "</color>";
+			if (GUILayout.Button(text, level == 1 ? _sSection : _sSub, GUILayout.Height(level == 1 ? 30 : 26)))
 			{
 				if (open) _openGroups.Remove(group); else _openGroups.Add(group);
 			}
-			if (GUILayout.Button("Reset group", GUILayout.Width(100), GUILayout.Height(26)))
+			if (GUILayout.Button("Reset", _sSmall, GUILayout.Width(56), GUILayout.Height(level == 1 ? 30 : 26)))
 			{
 				Effects.ResetGroup(group);
 				Say("Group reset: " + group);
@@ -208,43 +416,42 @@ namespace OuterWildsDualSense
 
 		private int _depth;
 
-		private void DrawEffect(EffectDef def, int depth)
+		/// <summary>One effect as a dark card: the title with Play and Reset on the right, the values below when opened.</summary>
+		private void DrawEffect(EffectDef def, int indent)
 		{
-			_depth = depth;
+			_depth = 0;
 			bool open = _openEffects.Contains(def.Id);
 			GUILayout.BeginHorizontal();
-			GUILayout.Space(16 * depth);
-			if (GUILayout.Button((open ? "- " : "+ ") + def.Label, GUILayout.Height(22)))
+			GUILayout.Space(indent);
+			GUILayout.BeginVertical(_sCard);
+
+			GUILayout.BeginHorizontal();
+			string title = (open ? "v   " : ">   ") + def.Label + (IsEdited(def) ? "   <color=#ffd966>(changed)</color>" : "");
+			if (GUILayout.Button(title, _sCardTitle, GUILayout.Height(24)))
 			{
 				if (open) _openEffects.Remove(def.Id); else _openEffects.Add(def.Id);
 			}
 			if (def.Preview != null)
 			{
 				bool on = _playing == def;
-				var before = GUI.color;
-				if (on) GUI.color = new Color(1f, 0.55f, 0.45f);
-				if (GUILayout.Button(on ? "Stop" : "Play", GUILayout.Width(60), GUILayout.Height(22)))
+				if (GUILayout.Button(on ? "Stop" : "Play", on ? _sStop : _sPlay, GUILayout.Width(56), GUILayout.Height(24)))
 				{
 					if (on) StopPreview(); else StartPreview(def);
 				}
-				GUI.color = before;
 			}
-			if (GUILayout.Button("Reset", GUILayout.Width(60), GUILayout.Height(22)))
+			if (GUILayout.Button("Reset", _sSmall, GUILayout.Width(56), GUILayout.Height(24)))
 				Effects.Reset(def);
 			GUILayout.EndHorizontal();
 
-			if (!open) return;
-
-			if (!string.IsNullOrEmpty(def.Hint))
+			if (open)
 			{
-				GUILayout.BeginHorizontal();
-				GUILayout.Space(16 * depth + 16);
-				GUILayout.Label(def.Hint);
-				GUILayout.EndHorizontal();
+				if (!string.IsNullOrEmpty(def.Hint)) GUILayout.Label(def.Hint, _sHint);
+				if (IsColorEffect(def)) DrawColorEditor(def);
+				else foreach (var p in def.Params) DrawParam(def, p);
 			}
-			if (IsColorEffect(def)) DrawColorEditor(def);
-			else foreach (var p in def.Params) DrawParam(def, p);
-			GUILayout.Space(6);
+
+			GUILayout.EndVertical();
+			GUILayout.EndHorizontal();
 		}
 
 		private void DrawParam(EffectDef def, Param p)
