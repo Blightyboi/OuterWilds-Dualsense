@@ -265,6 +265,8 @@ namespace OuterWildsDualSense
 				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			Define("sig.piano", signals, "Signal: Solanum (piano)", "OW_TravelerTheme_piano, low end 0.05-0.19, the strongest of them.")
 				.Add("gain", "Strength", 1.5f, 0, 40);
+			Define("sig.finale", signals, "Signal: finale of the travelers (Eye of the Universe)", "OW Traveler Theme ... FINAL TIME (4 variants), 26 s, low end 0.12: when all travelers play, the Eye swaps the six signals for this one clip, faded in over 5 s. Only in the Eye.")
+				.Add("gain", "Strength", 1.3f, 0, 15);
 			Define("sig.prisoner", signals, "Signal: Prisoner (DLC)", "OW_TravelerTheme_newtraveler 061021 AP, low end 0.03, steady.")
 				.Add("gain", "Strength", 5f, 0, 40);
 			Define("sig.quantum", signals, "Signal: Quantum signal", "OW_QuantumSignal, 48 s loop, low end 0.04-0.08.")
@@ -548,6 +550,12 @@ namespace OuterWildsDualSense
 				.Add("gain", "Strength", 1.5f, 0, 20);
 			Define("eye.collapse", eye, "Smoke sphere collapsing", "fogsphere_jump2_delayed, 0.9 s, volume 0.4 (low end 0.040, up to 0.11): PossibilitySphereController.OnCollapse before the big bang.")
 				.Add("gain", "Strength", 3.5f, 0, 15);
+			Define("eye.foam", eye, "Falling into the vortex (music)", "OW Eye Of The Universe 082818_2 AP, a 16 s swell (low end 0.03, up to 0.12) that EyeVortexTrigger fades in when the player enters the vortex and cuts off at the throw into the observatory. An exception to the no-music rule.")
+				.Add("gain", "Strength", 4f, 0, 15);
+			Define("eye.galaxy", eye, "Mini galaxy bursting", "Jump_Into_TinyGalaxy_v2_01..04, 2.3 s (volume 0.2, peak 0.72, no low end): MiniGalaxy plays it when the player touches a galaxy of the Forest of Galaxies, and at random later when they go out. A tick.")
+				.Add("gain", "Strength", 20f, 0, 60)
+				.Add("tone", "Tick tone Hz", 110f, 40, 300)
+				.Add("release", "Tick decay speed Hz (lower = longer tick)", 30f, 3, 200);
 			const string lantern = "World sounds/Hollow's Lantern";
 			Define("hl.launch", lantern, "Volcano launching a meteor", "FireBall_01, 2.3 s (low end 0.073, up to 0.21), played slowed to pitch 0.4-0.6 so the real low end is bigger. MeteorLauncher plays it every 5-20 s per volcano, only while the player is on the moon.")
 				.Add("gain", "Strength", 2.5f, 0, 12);

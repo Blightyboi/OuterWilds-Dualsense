@@ -127,6 +127,16 @@ namespace OuterWildsDualSense
 			new Rule { ClipPrefix = "BigBang_Explo", EffectId = "eye.bigbang", GameRolloff = true },
 			new Rule { ClipPrefix = "fogsphere_pulse", EffectId = "eye.pulse", GameRolloff = true },
 			new Rule { ClipPrefix = "fogsphere_jump2", EffectId = "eye.collapse", GameRolloff = true },
+			// The fall into the vortex (EyeVortexTrigger._musicSource: fades in when the player enters the vortex, a 16 s swell that
+			// is cut off when the player is thrown into the observatory), an exception to the no-music rule. Followed by the volume.
+			new Rule { ClipPrefix = "OW Eye Of The Universe 082818_2", EffectId = "eye.foam", Loop = true, GameRolloff = true },
+			// A mini galaxy of the Forest of Galaxies bursts when the player touches it (MiniGalaxy.OnEntry), or at random later
+			// once the lights go out. Loud but without any low end, so a tick.
+			new Rule { ClipPrefix = "Jump_Into_TinyGalaxy", EffectId = "eye.galaxy", GameRolloff = true, Crackle = true },
+			// The finale of the travelers' music: when all of them play, QuantumCampsite swaps the six signals for one clip
+			// (CosmicInflationController._travelerFinaleSource, faded in over 5 s), so the signals' haptics would stop. Only in the Eye.
+			new Rule { ClipPrefix = "OW Traveler Theme 091118 AP FINAL TIME", EffectId = "sig.finale", Loop = true, GameRolloff = true },
+			new Rule { ClipPrefix = "OW Traveler Theme 021821 AP FINAL TIME", EffectId = "sig.finale", Loop = true, GameRolloff = true },
 
 			// Brittle Hollow's black hole (BlackHole_BH): its ambience (BlackHoleAmbience, the same clip the signal dish plays for
 			// Brittle Hollow, so the dish rule above takes it under the dish) grows as you approach by the source's own rolloff.
