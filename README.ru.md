@@ -8,6 +8,10 @@
 Мод DualSense для **Outer Wilds** (через [OWML](https://github.com/ow-mods/owml)): настоящий тактильный отклик через аудиоканалы контроллера, адаптивные триггеры, лайтбар по планетам, управление тачпадом и гироскопом.
 
 > Неофициальный фанатский мод. Не связан с Mobius Digital и Annapurna Interactive. В моде нет ресурсов игры: все звуки читаются из вашей копии игры во время работы.
+>
+> This work is unofficial Fan Content created under permission from the Mobius Digital Fan Content Policy. It includes materials which are the property of Mobius Digital and it is neither approved nor endorsed by Mobius Digital.
+>
+> *(Перевод: эта работа является неофициальным фанатским контентом, созданным по разрешению в рамках Fan Content Policy Mobius Digital. Она содержит материалы, принадлежащие Mobius Digital, и не одобрена и не поддерживается Mobius Digital.)*
 
 ## Возможности
 
