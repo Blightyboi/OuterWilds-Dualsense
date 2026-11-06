@@ -6,10 +6,8 @@ namespace OuterWildsDualSense
 	/// <summary>
 	/// Sits next to a game AudioSource and turns what it plays into haptics. The game's audio is never changed.
 	///
-	/// Live mode (default): the samples the source plays are copied through OnAudioFilterRead and turned into
-	/// haptics on the fly. Needs no extra files.
-	/// Extracted mode (config "useExtractedClips"): looping sources play a haptic waveform prepared by
-	/// tools/extract_haptics.py instead; sources without such a file fall back to live mode.
+	/// The samples the source plays are copied through OnAudioFilterRead and turned into haptics on the fly.
+	/// Needs no extra files.
 	/// </summary>
 	public class HapticTap : MonoBehaviour
 	{
@@ -85,16 +83,12 @@ namespace OuterWildsDualSense
 		private float _forcedPan = float.NaN;
 
 		private HapticSource _active;            // whatever is currently registered with the output
-		private HapticLoopSource _loop;          // extracted mode
-		private HapticStream _tapStream;         // live mode
-		private AudioClip _loopClip;
-		private bool _loopOn;
+		private HapticStream _tapStream;
 
 		// Set on the main thread, read on the audio thread.
 		private volatile float _volume;
 		private volatile float _liveGain;
 		private float _peakVolume = 0.25f;
-		private volatile bool _suppressLiveTap;  // an extracted one-shot played on this source
 		private float _lpCoeff, _hpCoeff, _broadCoeff, _releaseCoeff, _bandCoeff, _refDecay, _phaseStep1, _phaseStep2;
 
 		// Live filter state (audio thread only).
@@ -132,22 +126,6 @@ namespace OuterWildsDualSense
 			}
 			tap._forcedPan = pan;
 			return tap;
-		}
-
-		/// <summary>Plays an extracted one-shot haptic for a PlayOneShot on this source.</summary>
-		public void PlayOneShot(float[] wave, int rate, float volume)
-		{
-			var haptics = DualSenseMod.Haptics;
-			if (haptics == null || wave == null || _source == null) return;
-
-			float pan = float.IsNaN(_forcedPan) ? _source.panStereo : _forcedPan;
-			float angle = (Mathf.Clamp(pan, -1f, 1f) + 1f) * 0.25f * Mathf.PI;
-			var shot = new HapticOneShotSource(wave, rate, Mathf.Clamp01(volume * 1.2f));
-			shot.GainLeft = Mathf.Cos(angle);
-			shot.GainRight = Mathf.Sin(angle);
-			haptics.AddSource(Mark(shot));
-			_suppressLiveTap = true;
-			DualSenseMod.Log(string.Format("Haptic one-shot on '{0}' ({1} samples, volume {2:F2})", name, wave.Length, volume));
 		}
 
 		private void Start()
@@ -204,31 +182,15 @@ namespace OuterWildsDualSense
 			var haptics = DualSenseMod.Haptics;
 			if (haptics != null && _active != null) haptics.RemoveSource(_active);
 			_active = null;
-			_loop = null;
 			_tapStream = null;
 		}
 
-		/// <summary>Extracted mode for looping sources with a prepared file, live mode otherwise.</summary>
+		/// <summary>Registers the live tap stream with the output.</summary>
 		private void ChooseMode()
 		{
 			var haptics = DualSenseMod.Haptics;
 			var mod = DualSenseMod.Instance;
 			if (haptics == null || mod == null) return;
-
-			AudioClip clip = _source.clip;
-			if (mod.UseExtractedClips && _source.loop && clip != null)
-			{
-				if (_loop != null && clip == _loopClip) return;
-				Unregister();
-				_loopClip = clip;
-				float[] wave = HapticClipBank.Get(clip);
-				if (wave != null)
-				{
-					_loop = haptics.AddSource(Mark(new HapticLoopSource(wave, clip.frequency)));
-					_active = _loop;
-					return;
-				}
-			}
 
 			if (_tapStream == null)
 			{
@@ -307,17 +269,6 @@ namespace OuterWildsDualSense
 			_active.GainLeft = Mathf.Cos(angle);
 			_active.GainRight = Mathf.Sin(angle);
 
-			if (_loop != null)
-			{
-				bool on = gain > 0.01f;
-				if (on != _loopOn)
-				{
-					_loopOn = on;
-					DualSenseMod.Log(string.Format("Haptic loop '{0}' ({1}) {2}, gain {3:F2}", name, _loopClip.name, on ? "on" : "off", gain));
-				}
-				_loop.TargetGain = gain;
-			}
-
 			var mod = DualSenseMod.Instance;
 			if (mod != null && mod.DebugLog && _source.isPlaying)
 			{
@@ -326,7 +277,7 @@ namespace OuterWildsDualSense
 				{
 					_logTimer = 0f;
 					DualSenseMod.Debug(string.Format("tap {0}: mode={1} volume={2:F2} pan={3:F2} gain={4:F2} outPeak={5:F3}",
-						name, _loop != null ? "clip" : "live", _volume, pan, gain, _peakOut));
+						name, "live", _volume, pan, gain, _peakOut));
 					_peakOut = 0f;
 				}
 			}
@@ -341,7 +292,7 @@ namespace OuterWildsDualSense
 		private void OnAudioFilterRead(float[] data, int channels)
 		{
 			var stream = _tapStream;
-			if (stream == null || channels < 1 || _suppressLiveTap) return;
+			if (stream == null || channels < 1) return;
 
 			int frames = data.Length / channels;
 			if (_block.Length < frames) _block = new float[frames];

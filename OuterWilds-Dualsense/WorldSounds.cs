@@ -519,7 +519,6 @@ namespace OuterWildsDualSense
 
 			try
 			{
-				SoundWatch.Report(source, clip);
 				if (!mod.Enabled || !mod.AudioHaptics || DualSenseMod.Haptics == null) return;
 
 				Rule? found = null;

@@ -15,12 +15,8 @@ namespace OuterWildsDualSense
 
 		public bool Enabled = true;
 		public bool AdaptiveTriggers = true;
-		public float TriggerStrength = 1f;
 		public bool Lightbar = true;
 		public bool AudioHaptics = true;
-		public float HapticGain = 1f;
-		public bool UseExtractedClips;
-		public string WatchClip = "";
 		public bool DebugLog;
 		public bool DebugMenuEnabled;
 		/// <summary>0 = off, 1 = full (roll, pitch, yaw), 2 = roll only.</summary>
@@ -65,7 +61,7 @@ namespace OuterWildsDualSense
 			WindowHaptics.Tick();
 			var live = Effects.Get("hap.live");
 			var rumble = Effects.Get("hap.rumble");
-			Haptics.MasterGain = HapticGain * live["gain"];
+			Haptics.MasterGain = live["gain"];
 			Haptics.Rumble.LowHz = rumble["lowHz"];
 			Haptics.Rumble.HighHz = rumble["highHz"];
 			Haptics.Rumble.LowLevel = rumble["lowLevel"];
@@ -83,13 +79,8 @@ namespace OuterWildsDualSense
 		{
 			Enabled = config.Enabled;
 			AdaptiveTriggers = config.GetSettingsValue<bool>("adaptiveTriggers");
-			TriggerStrength = Mathf.Clamp(config.GetSettingsValue<float>("triggerStrength"), 0f, 2f);
 			Lightbar = config.GetSettingsValue<bool>("lightbar");
 			AudioHaptics = config.GetSettingsValue<bool>("audioHaptics");
-			UseExtractedClips = config.GetSettingsValue<bool>("useExtractedClips");
-			WatchClip = config.GetSettingsValue<string>("watchClip") ?? "";
-			HapticGain = Mathf.Clamp(config.GetSettingsValue<float>("hapticGain"), 0f, 4f);
-			if (Haptics != null) Haptics.MasterGain = HapticGain;
 			DebugLog = config.GetSettingsValue<bool>("debugLog");
 			DebugMenuEnabled = config.GetSettingsValue<bool>("debugMenu");
 			GyroMode = ParseGyroMode(config.GetSettingsValue<string>("gyroMode"));
@@ -116,7 +107,7 @@ namespace OuterWildsDualSense
 			if (Time.unscaledTime < _hapticRetry) return false;
 			_hapticRetry = Time.unscaledTime + 3f;
 			Haptics = HapticAudio.TryCreate(Log);
-			if (Haptics != null) Haptics.MasterGain = Instance.HapticGain;
+			if (Haptics != null) Haptics.MasterGain = 1f;
 			return Haptics != null;
 		}
 

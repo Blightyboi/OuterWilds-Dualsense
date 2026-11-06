@@ -49,7 +49,7 @@ namespace OuterWildsDualSense
 					|| OWInput.IsInputMode(InputMode.Roasting);
 				if (mod.AdaptiveTriggers && !paused && __instance.enabled && DualSenseMod.GamepadInUse())
 				{
-					TriggerLogic.Compute(mod.TriggerStrength, out left, out right);
+					TriggerLogic.Compute(1f, out left, out right);
 
 					// Effects the game asks for itself (ship ignition, turbulence) win over ours.
 					TriggerEffect gameLeft, gameRight;
@@ -61,7 +61,7 @@ namespace OuterWildsDualSense
 					{
 						var boost = Effects.Get("jp.boost");
 						right = TriggerEffect.Vibration(boost.Int("zone"), boost.Int("freq"),
-							Mathf.Clamp(Mathf.RoundToInt(boost.Int("amp") * mod.TriggerStrength), 1, 8));
+							Mathf.Clamp(Mathf.RoundToInt(boost.Int("amp")), 1, 8));
 					}
 
 					TornadoHaptics.ApplyTriggers(ref left, ref right); // full resistance while a tornado holds the player; last word
@@ -132,7 +132,7 @@ namespace OuterWildsDualSense
 
 		private static TriggerEffect Convert(object fx)
 		{
-			float strengthScale = DualSenseMod.Instance.TriggerStrength * (float)_mScale.Invoke(fx, null);
+			float strengthScale = (float)_mScale.Invoke(fx, null);
 			var mode = (GameMode)System.Convert.ToInt32(_fMode.GetValue(fx));
 			switch (mode)
 			{

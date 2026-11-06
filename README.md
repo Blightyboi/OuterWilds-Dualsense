@@ -36,14 +36,14 @@ Options → Mods → OuterWilds-Dualsense:
 
 | Setting | What it does |
 |---|---|
-| `adaptiveTriggers`, `triggerStrength` | adaptive triggers on/off and their strength |
+| `adaptiveTriggers` | adaptive triggers on/off |
 | `lightbar` | lightbar by planet |
-| `audioHaptics`, `hapticGain` | haptic feedback on/off and the overall gain |
+| `audioHaptics` | haptic feedback on/off |
 | `gyroMode` | **experimental**; `Off` (default), `Full` (roll, pitch, yaw) or `Roll only` |
 | `debugMenu` | allows the F1 tuning menu |
 | `debugLog` | verbose log (for bug reports) |
 
-`useExtractedClips` and `watchClip` are developer options and normally stay as they are.
+The strength of every effect is set in the F1 menu (see below).
 
 ## The F1 menu
 
@@ -53,7 +53,7 @@ Turn on `debugMenu` in the mod settings, then press **F1** in the game. Open a g
 
 - *No haptics, but the triggers work:* the controller's audio device is missing or disabled in Windows (check the Sound settings, the USB cable and the port). The mod reopens the output by itself after a reconnect.
 - *Nothing works:* make sure the controller is connected by USB, not Bluetooth. If you use Steam Input for the game, try turning it off for Outer Wilds (it may hide the controller from the mod).
-- *Haptics are too weak or too strong:* use `hapticGain`, or tune one effect in the F1 menu.
+- *Haptics are too weak or too strong:* tune the effect in the F1 menu (the strength of each effect; "Master gain" in the engine sounds group scales all haptics).
 - For bug reports please attach the OWML log and, if possible, switch on `debugLog` first.
 
 ## Building
