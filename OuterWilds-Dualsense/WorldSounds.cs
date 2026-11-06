@@ -565,6 +565,17 @@ namespace OuterWildsDualSense
 			bool crackle = rule.Crackle;
 			Func<float> ride = rule.Lift ? LiftSpeed(source) : null;
 			tap.FollowVolume = true;
+			// Signalscope signals: the game scales the volume with how exactly the scope points at the signal (only the last fifth
+			// of the angle counts as 1), so in play they came out far weaker than the F1 Play button. Once the signal is audible
+			// at all it is felt at the level of the Play button (a source at SignalPreviewVolume), whatever the aim.
+			if (rule.EffectId.StartsWith("sig.") && rule.EffectId != "sig.finale")
+			{
+				// The scene gives the signal sources their own base volume (0.2 whistling, 0.3 drums, 0.6 harmonica, 0.7 beacon...),
+				// and AudioSource.volume is that base times the game's fade, while the Play button's source has a base of 1. So use the
+				// game's own fade (0..1) instead of the final volume, or the quieter signals are felt half as strong as in F1.
+				var owSource = source.GetComponent<OWAudioSource>();
+				tap.VolumeShape = v => Mathf.Clamp01((owSource != null ? owSource.GetLocalVolume() : v) / 0.15f) * EffectPreview.SignalPreviewVolume;
+			}
 			tap.MuteOnSignal = rule.EffectId == "scope.static";
 			if (crackle)
 			{

@@ -71,6 +71,9 @@ namespace OuterWildsDualSense
 		/// <summary>Dynamic mode: scale the strength by the source's current volume (loops the game fades in and out).</summary>
 		public bool FollowVolume;
 
+		/// <summary>Optional: reshapes the source volume before it scales the strength (signals of the signalscope).</summary>
+		public Func<float, float> VolumeShape;
+
 		/// <summary>Silence completely (not just to the game's fifth) while a signal is tuned in: the scope's static.</summary>
 		public bool MuteOnSignal;
 
@@ -276,7 +279,7 @@ namespace OuterWildsDualSense
 			{
 				if (_dynamic)
 				{
-					gain = (GainOverride != null ? GainOverride() : OneShotGain) * (FollowVolume ? _volume : 1f);
+					gain = (GainOverride != null ? GainOverride() : OneShotGain) * (FollowVolume ? (VolumeShape != null ? VolumeShape(_volume) : _volume) : 1f);
 				}
 				else if (_thrust != null)
 				{

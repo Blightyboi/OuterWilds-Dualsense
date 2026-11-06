@@ -36,7 +36,7 @@ namespace OuterWildsDualSense
 
 		/// <summary>Attaches the Play buttons to the effect definitions.</summary>
 		/// <summary>The scope's signals only reach full volume dead centre; the F1 Play button plays them at about the level of a good lock.</summary>
-		private const float SignalPreviewVolume = 0.5f;
+		internal const float SignalPreviewVolume = 0.5f;
 
 		public static void Wire()
 		{
