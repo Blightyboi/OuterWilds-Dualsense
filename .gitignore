@@ -34,6 +34,8 @@ Thumbs.db
 
 # Markdown notes stay local (plan, CLAUDE.md)
 *.md
+!README.md
+!README.ru.md
 
 # Audio derived from game assets must not be committed
 *.wav
