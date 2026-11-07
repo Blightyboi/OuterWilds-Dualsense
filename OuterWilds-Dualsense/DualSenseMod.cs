@@ -52,9 +52,12 @@ namespace OuterWildsDualSense
 			// The F1 menu lets them through only while one of its Play buttons is on, so they can be tried on a paused game.
 			// The same goes for playing on the keyboard or mouse: the controller lies on the desk then, so it falls silent until
 			// the game sees a controller input again (OWInput.UsingGamepad, the last device that gave a command).
-			bool silent = (OWTime.IsPaused(OWTime.PauseType.Menu) || !GamepadInUse()) && !(DebugMenu.IsOpen && DebugMenu.Previewing);
-			float step = Time.unscaledDeltaTime / (silent ? 0.25f : 0.4f);
-			Haptics.PauseGain = Mathf.MoveTowards(Haptics.PauseGain, silent ? 0f : 1f, step);
+			// The sounds of the pause menu itself (HapticSource.IgnorePause) pass the pause but not the keyboard.
+			bool previewing = DebugMenu.IsOpen && DebugMenu.Previewing;
+			bool paused = OWTime.IsPaused(OWTime.PauseType.Menu) && !previewing;
+			bool keyboard = !GamepadInUse() && !previewing;
+			Haptics.PauseGain = Mathf.MoveTowards(Haptics.PauseGain, paused ? 0f : 1f, Time.unscaledDeltaTime / (paused ? 0.25f : 0.4f));
+			Haptics.InputGain = Mathf.MoveTowards(Haptics.InputGain, keyboard ? 0f : 1f, Time.unscaledDeltaTime / (keyboard ? 0.25f : 0.4f));
 			// While an F1 Play button is on, the rest of the game's haptics fall silent so the two do not mix.
 			Haptics.GameGain = Mathf.MoveTowards(Haptics.GameGain, DebugMenu.IsOpen && DebugMenu.Previewing ? 0f : 1f, Time.unscaledDeltaTime / 0.15f);
 			TornadoHaptics.Tick();

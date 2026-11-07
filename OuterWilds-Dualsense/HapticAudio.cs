@@ -21,6 +21,9 @@ namespace OuterWildsDualSense
 		/// </summary>
 		public volatile bool Preview;
 
+		/// <summary>True for the sounds of the pause menu: they are felt while the game is paused, when everything else is silent.</summary>
+		public volatile bool IgnorePause;
+
 		/// <summary>Called from the output thread. step = sourceRate / outputRate.</summary>
 		public abstract float Next(double step);
 	}
@@ -223,6 +226,9 @@ namespace OuterWildsDualSense
 		/// </summary>
 		public volatile float PauseGain = 1f;
 
+		/// <summary>0 while the player uses keyboard and mouse, 1 with a controller. Silences everything, the pause menu included.</summary>
+		public volatile float InputGain = 1f;
+
 		/// <summary>Set while the F1 menu calls a Preview action: sources added meanwhile belong to the preview.</summary>
 		public static volatile bool PreviewScope;
 
@@ -375,7 +381,8 @@ namespace OuterWildsDualSense
 			Array.Clear(buffer, offset, frames * frameBytes);
 
 			var streams = _streams;
-			float master = MasterGain * PauseGain;
+			float master = MasterGain * InputGain;
+			float pause = PauseGain;
 			float game = GameGain;
 			for (int f = 0; f < frames; f++)
 			{
@@ -383,7 +390,7 @@ namespace OuterWildsDualSense
 				for (int s = 0; s < streams.Length; s++)
 				{
 					var st = streams[s];
-					float v = st.Next((double)st.SourceRate / Rate) * (st.Preview ? 1f : game);
+					float v = st.Next((double)st.SourceRate / Rate) * (st.Preview ? 1f : game) * (st.IgnorePause ? 1f : pause);
 					left += v * st.GainLeft;
 					right += v * st.GainRight;
 				}

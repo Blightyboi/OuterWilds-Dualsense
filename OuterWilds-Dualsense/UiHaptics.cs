@@ -49,6 +49,10 @@ namespace OuterWildsDualSense
 			DualSenseMod.EnsureHaptics();
 			var source = controller.GetComponent<OWAudioSource>();
 			Tap(source);
+
+			// The pause menu plays its sounds on this source while the game is paused, and everything else falls silent then.
+			var tap = source != null ? source.GetComponent<HapticTap>() : null;
+			if (tap != null) tap.IgnorePause = true;
 		}
 
 		/// <summary>Taps the one-shot sources of the ship log and the menu. Safe to call repeatedly.</summary>

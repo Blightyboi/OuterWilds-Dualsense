@@ -17,7 +17,21 @@ namespace OuterWildsDualSense
 		private T Mark<T>(T source) where T : HapticSource
 		{
 			if (_fromPreview) source.Preview = true;
+			if (_ignorePause) source.IgnorePause = true;
 			return source;
+		}
+
+		private bool _ignorePause;
+
+		/// <summary>The sounds of this source are felt while the game is paused (the pause menu).</summary>
+		public bool IgnorePause
+		{
+			get { return _ignorePause; }
+			set
+			{
+				_ignorePause = value;
+				if (_tapStream != null) _tapStream.IgnorePause = value;
+			}
 		}
 
 		private const float MinVolume = 0.01f;
