@@ -21,7 +21,7 @@ A DualSense mod for **Outer Wilds** (via [OWML](https://github.com/ow-mods/owml)
 
 ## Requirements
 
-- Windows, Outer Wilds (Steam), [OWML](https://github.com/ow-mods/owml) 2.16.2.
+- Windows, Outer Wilds (Steam), [OWML](https://github.com/ow-mods/owml) 2.16.3.
 - A **DualSense** connected by **USB**. Bluetooth is not supported (the output report for it is not implemented).
 - For the haptics the controller must show up in Windows as an audio device ("Speakers (DualSense Wireless Controller)"). The mod finds it by itself.
 

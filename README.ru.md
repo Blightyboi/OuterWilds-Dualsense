@@ -23,7 +23,7 @@
 
 ## Требования
 
-- Windows, Outer Wilds (Steam), [OWML](https://github.com/ow-mods/owml) 2.16.2.
+- Windows, Outer Wilds (Steam), [OWML](https://github.com/ow-mods/owml) 2.16.3.
 - **DualSense**, подключённый по **USB**. Bluetooth не поддерживается (его формат отчёта не реализован).
 - Для хаптики контроллер должен быть виден в Windows как аудиоустройство («Динамики (DualSense Wireless Controller)»). Мод находит его сам.
 
