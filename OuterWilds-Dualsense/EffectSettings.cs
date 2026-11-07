@@ -872,6 +872,8 @@ namespace OuterWildsDualSense
 			Define("light.settings", light, "Lightbar behaviour", "The colour follows the planet or place where the character is.")
 				.Add("fadeSeconds", "Blend time between places (s)", 1f, 0, 5)
 				.Add("brightness", "Brightness", 1f, 0, 1);
+			Define("lightflash.quantum", light, "Quantum Moon: change of place", "While the pointer of the locator in the Nomai tower on the Quantum Moon moves to the new place, the lightbar jumps between the colours of the moon's places in a random order, for exactly as long as the pointer moves, and then shows the colour of the new place at once.")
+				.Add("step", "Time per colour (s)", 0.12f, 0.04f, 0.6f);
 			Define("light.color", light, "Default (menu and open space)")
 				.Add("r", "Red", 255, 0, 255, true)
 				.Add("g", "Green", 110, 0, 255, true)
@@ -912,7 +914,7 @@ namespace OuterWildsDualSense
 				.Add("r", "Red", 237, 0, 255, true)
 				.Add("g", "Green", 58, 0, 255, true)
 				.Add("b", "Blue", 0, 0, 255, true);
-			Define("light.quantum", light, "Quantum Moon")
+			Define("light.quantum", light, "Quantum Moon (own colour, used when its place is unknown)")
 				.Add("r", "Red", 117, 0, 255, true)
 				.Add("g", "Green", 20, 0, 255, true)
 				.Add("b", "Blue", 173, 0, 255, true);

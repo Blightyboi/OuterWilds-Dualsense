@@ -371,6 +371,8 @@ namespace OuterWildsDualSense
 			Effects.Get("sun.ambience").Preview = () => WorldSounds.HoldLoop("sun.ambience", AudioType.Sun_Ambience_LP);
 			Effects.Get("whs.activate").Preview = () => WorldSounds.Preview(AudioType.WHS_StationActivation);
 			Effects.Get("whs.activate").PreviewPeriod = 9f;
+			Effects.Get("lightflash.quantum").Preview = PlanetLight.TestRun;
+			Effects.Get("lightflash.quantum").PreviewPeriod = 3f;
 			Effects.Get("eye.pulse").Preview = () => WorldSounds.Preview(AudioType.EyeSmokeSpherePulse);
 			Effects.Get("eye.pulse").PreviewPeriod = 2f;
 			Effects.Get("eye.collapse").Preview = () => WorldSounds.Preview(AudioType.EyeSmokeSphereCollapse);
