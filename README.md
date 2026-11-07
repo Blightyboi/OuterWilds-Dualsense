@@ -14,7 +14,7 @@ A DualSense mod for **Outer Wilds** (via [OWML](https://github.com/ow-mods/owml)
 - **Haptic feedback**: almost every sound of the game that you can feel is turned into haptics: the jetpack and the ship's engines, footsteps, jumps and landings, impacts and damage, hazards, water, machinery, doors and lifts, the environments of the planets and much more. The whole Solar System and the **Echoes of the Eye** DLC are covered. Music is left out, except for the signalscope signals.
 - **Adaptive triggers**: the jetpack, the ship and some special situations of the game. They switch off in menus, loading, while you sleep or roast a marshmallow, and when the autopilot flies.
 - **Lightbar** in the colour of the planet you are on (colours are editable).
-- **Touchpad** as input: pan, rotate and zoom the map, pan the ship log map, scroll long texts, press to open an entry in rumor mode. On-screen prompts show PS5 button icons.
+- **Touchpad** as input: pan, rotate and zoom the map, pan the ship log map, scroll long texts, press to open and close an entry in rumor mode. On-screen prompts show PS5 button icons.
 - **Gyro steering (experimental, off by default)**: tilt the controller to roll (and pitch and yaw) the ship and the jetpack in zero gravity. Hold **L3** and press **R3** to recalibrate. This feature is experimental: it may feel imprecise, drift or behave unexpectedly, and it only works while the game counts the controller as the active input device.
 - **Tuning menu (F1)**: strength, tone and colour of every effect with a **Play** button to feel it. Values are saved to `effects.json`.
 - Haptics fall silent while the game is paused and when you play on keyboard and mouse.

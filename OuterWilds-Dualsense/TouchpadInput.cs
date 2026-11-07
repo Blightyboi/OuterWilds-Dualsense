@@ -27,11 +27,13 @@ namespace OuterWildsDualSense
 			get { return Rumor != null && Traverse.Create(Rumor).Field("_descriptionField").GetValue<ShipLogEntryDescriptionField>().IsVisible(); }
 		}
 
-		/// <summary>True once per touchpad press while it is wanted (rumor mode, text closed); used for the interact command.</summary>
+		/// <summary>
+		/// True once per touchpad press while it is wanted (rumor mode); used for the interact command, which the game
+		/// uses both to open the entry text and to close it again.
+		/// </summary>
 		public static bool TakeClick()
 		{
 			if (!InRumorUpdate || Time.unscaledTime > _clickUntil || Rumor == null) return false;
-			if (TextOpen) { _clickUntil = 0f; return false; }
 			_clickUntil = 0f;
 			return true;
 		}
@@ -185,8 +187,8 @@ namespace OuterWildsDualSense
 		private static int WantedPrompt()
 		{
 			if (InMap) return TouchpadPrompts.Map;
-			if (Rumor == null) return -1;
-			return TextOpen ? -1 : TouchpadPrompts.Open; // with the text open the game's own scroll prompt carries the touchpad
+			// In rumor mode there is no prompt of ours: the game's own "read" prompt (square) and "scroll text" prompt carry the touchpad.
+			return -1;
 		}
 
 		private static void Reset()
@@ -258,7 +260,19 @@ namespace OuterWildsDualSense
 	[HarmonyPatch(typeof(ShipLogDetectiveMode), nameof(ShipLogDetectiveMode.EnterMode))]
 	internal static class RumorEnterPatch
 	{
-		private static void Postfix(ShipLogDetectiveMode __instance) { TouchpadInput.Rumor = __instance; }
+		private static void Postfix(ShipLogDetectiveMode __instance)
+		{
+			TouchpadInput.Rumor = __instance;
+
+			// The game's own "view entry" prompt (square, in the middle of the screen) gets the touchpad as a second icon, like the
+			// scroll prompt does: the prompt set below adds the icon and the slash. Built again once, as the game built it before.
+			var view = Traverse.Create(__instance).Field("_viewEntryPrompt").GetValue<ScreenPrompt>();
+			if (view != null && TouchpadPrompts.ScrollPrompts.Add(view))
+			{
+				var manager = Locator.GetPromptManager();
+				if (manager != null) manager.TriggerRebuild(view);
+			}
+		}
 	}
 
 	/// <summary>Only the rumor mode's own update may take the click, other code also asks for the interact button.</summary>
@@ -293,7 +307,7 @@ namespace OuterWildsDualSense
 	{
 		private static Sprite _icon;
 
-		/// <summary>The game's own "scroll text" prompt of the ship log (right stick); the touchpad is added to it.</summary>
+		/// <summary>The game's own prompts that get the touchpad as a second icon after a slash: "scroll text" (right stick) and "view entry" (square) of the ship log.</summary>
 		public static readonly System.Collections.Generic.HashSet<ScreenPrompt> ScrollPrompts = new System.Collections.Generic.HashSet<ScreenPrompt>(); // one per ship log mode
 
 		public static Sprite Icon()
